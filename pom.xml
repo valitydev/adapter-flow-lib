@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>dev.vality</groupId>
+        <artifactId>library-parent-pom</artifactId>
+        <version>1.0.2</version>
+        <relativePath/>
+    </parent>
+
+    <artifactId>adapter-flow-lib</artifactId>
+    <version>0.0.1</version>
+    <packaging>jar</packaging>
+
+    <name>adapter-flow-lib</name>
+    <description>Adapter flows libs for reuse</description>
+    <url>https://github.com/valitydev/adapter-flow-lib.git</url>
+
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <email>devs@vality.dev</email>
+            <organization>Vality</organization>
+            <organizationUrl>https://vality.dev</organizationUrl>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git://github.com/valitydev/library-parent-pom.git</connection>
+        <developerConnection>scm:git:ssh://github.com/valitydev/library-parent-pom.git</developerConnection>
+        <url>https://github.com/valitydev/library-parent-pom/tree/master</url>
+    </scm>
+
+    <properties>
+        <maven.compiler.source>15</maven.compiler.source>
+        <maven.compiler.target>15</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <pubRepoId>ossrh</pubRepoId>
+        <pubRepo>https://s01.oss.sonatype.org/content/repositories/releases</pubRepo>
+        <pubSnapRepoId>ossrh</pubSnapRepoId>
+        <pubSnapRepo>https://s01.oss.sonatype.org/content/repositories/snapshots</pubSnapRepo>
+        <pubStagingRepoId>ossrh</pubStagingRepoId>
+        <pubStagingRepo>https://s01.oss.sonatype.org/</pubStagingRepo>
+        <checkstyle.config.path>
+            https://raw.githubusercontent.com/valitydev/java-checkstyle-config/master/conf/rbkmoney_google_checkstyle.xml
+        </checkstyle.config.path>
+        <checkstyle.config.suppressions.path>
+            https://raw.githubusercontent.com/valitydev/java-checkstyle-config/master/conf/checkstyle-suppressions.xml
+        </checkstyle.config.suppressions.path>
+        <bender-proto.version>1.20-be9cdeb</bender-proto.version>
+
+        <apache.commons.lang3.version>3.10</apache.commons.lang3.version>
+        <apache.commons.codec.version>1.15</apache.commons.codec.version>
+
+        <slf4j.version>1.7.33</slf4j.version>
+        <lombok.version>1.18.22</lombok.version>
+        <logback.version>1.2.10</logback.version>
+        <logstash-logback-encoder.version>7.0.1</logstash-logback-encoder.version>
+
+        <jackson.version>2.11.2</jackson.version>
+        <woody.version>[1.0.4,)</woody.version>
+
+        <damsel.version>1.544-dcd92dd</damsel.version>
+        <cds-proto.version>1.62-07f2b0f</cds-proto.version>
+
+        <error-mapping-java.version>1.0.6</error-mapping-java.version>
+        <adapter-client-lib.version>1.0.1</adapter-client-lib.version>
+        <adapter-common-lib.version>1.0.0</adapter-common-lib.version>
+        <junit-jupiter-engine.version>5.8.2</junit-jupiter-engine.version>
+        <nop-rolling.version>0.0.1</nop-rolling.version>
+    </properties>
+
+    <dependencies>
+
+        <!-- Third party libs -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${apache.commons.lang3.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>${apache.commons.codec.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>${logback.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.logstash.logback</groupId>
+            <artifactId>logstash-logback-encoder</artifactId>
+            <version>${logstash-logback-encoder.version}</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <!--Vality libs-->
+        <dependency>
+            <groupId>dev.vality</groupId>
+            <artifactId>damsel</artifactId>
+            <version>${damsel.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>dev.vality.woody</groupId>
+            <artifactId>woody-thrift</artifactId>
+            <version>${woody.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>dev.vality</groupId>
+            <artifactId>adapter-common-lib</artifactId>
+            <version>${adapter-common-lib.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>dev.vality.adapter-client-lib</groupId>
+            <artifactId>cds-client-storage</artifactId>
+            <version>${adapter-client-lib.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>dev.vality.adapter-client-lib</groupId>
+            <artifactId>hellgate-adapter-client</artifactId>
+            <version>${adapter-client-lib.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>dev.vality</groupId>
+            <artifactId>bender-proto</artifactId>
+            <version>${bender-proto.version}</version>
+        </dependency>
+
+        <!-- Test -->
+        <!--Spring libs-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <version>2.6.3</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.hibernate</groupId>
+                    <artifactId>hibernate-validator</artifactId>
+                </exclusion>
+            </exclusions>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+            <version>2.6.3</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <version>2.6.3</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.hamcrest</groupId>
+                    <artifactId>hamcrest-library</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+            <version>2.6.3</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${junit-jupiter-engine.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>dev.vality.geck</groupId>
+            <artifactId>serializer</artifactId>
+            <version>0.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>dev.vality.logback</groupId>
+            <artifactId>nop-rolling</artifactId>
+            <version>1.0.0</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.2.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.8.0</version>
+                    <configuration>
+                        <source>${maven.compiler.source}</source>
+                        <target>${maven.compiler.target}</target>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+</project>
