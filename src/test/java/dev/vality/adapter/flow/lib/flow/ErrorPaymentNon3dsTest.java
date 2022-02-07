@@ -36,9 +36,7 @@ import static org.mockito.ArgumentMatchers.any;
         AdapterProperties.class, CallbackUrlExtractor.class, StepResolverImpl.class,
         TimerProperties.class})
 @TestPropertySource(properties = {"error-mapping.file=classpath:fixture/errors.json"})
-public class ErrorPaymentNon3dsTest {
-
-    public static final String TEST_TRX_ID = "testTrxId";
+public class ErrorPaymentNon3dsTest extends AbstractPaymentTest {
 
     @Autowired
     private ProviderProxySrv.Iface serverHandlerLogDecorator;
@@ -69,8 +67,8 @@ public class ErrorPaymentNon3dsTest {
     @Test
     public void testErrorPayment() throws TException {
         // pay
-        PaymentContext paymentContext = MockUtil.buildPaymentContext(String.valueOf(new Date().getTime()));
-        paymentContext.getPaymentInfo().getPayment().setMakeRecurrent(true);
+        PaymentContext paymentContext = MockUtil.buildPaymentContext(String.valueOf(new Date().getTime()),
+                MockUtil.buildOptionsOneStage());
 
         PaymentProxyResult paymentProxyResult = serverHandlerLogDecorator.processPayment(paymentContext);
         assertTrue(paymentProxyResult.getIntent().isSetFinish());

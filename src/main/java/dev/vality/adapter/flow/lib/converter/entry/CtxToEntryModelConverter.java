@@ -6,6 +6,7 @@ import dev.vality.adapter.common.state.deserializer.AdapterDeserializer;
 import dev.vality.adapter.common.state.utils.AdapterStateUtils;
 import dev.vality.adapter.common.utils.converter.CardDataUtils;
 import dev.vality.adapter.common.utils.converter.TargetStatusResolver;
+import dev.vality.adapter.flow.lib.constant.MetaData;
 import dev.vality.adapter.flow.lib.model.*;
 import dev.vality.adapter.flow.lib.service.IdGenerator;
 import dev.vality.cds.client.storage.CdsClientStorage;
@@ -41,8 +42,8 @@ public class CtxToEntryModelConverter implements Converter<PaymentContext, Gener
         AdapterContext adapterContext = AdapterStateUtils.getAdapterContext(context, adapterDeserializer);
         PaymentResource paymentResource = payment.getPaymentResource();
 
-        MobilePaymentData.MobilePaymentDataBuilder mobilePaymentDataBuilder = MobilePaymentData.builder();
-        dev.vality.adapter.flow.lib.model.CardData.CardDataBuilder cardDataBuilder =
+        MobilePaymentData.MobilePaymentDataBuilder<?, ?> mobilePaymentDataBuilder = MobilePaymentData.builder();
+        dev.vality.adapter.flow.lib.model.CardData.CardDataBuilder<?, ?> cardDataBuilder =
                 dev.vality.adapter.flow.lib.model.CardData.builder();
         if (paymentResource.isSetDisposablePaymentResource()
                 && (context.getSession().getState() == null || context.getSession().getState().length == 0)
@@ -63,8 +64,8 @@ public class CtxToEntryModelConverter implements Converter<PaymentContext, Gener
         }
 
         String orderId = idGenerator.get(paymentInfo.getInvoice().getId()).toString();
-        RecurrentPaymentData recurrentPaymentData = initRecurrentPaymentData(payment, paymentResource);
         TransactionInfo trx = payment.getTrx();
+        RecurrentPaymentData recurrentPaymentData = initRecurrentPaymentData(payment, paymentResource, trx);
         return GeneralEntryStateModel.builder()
                 .baseRequestModel(BaseRequestModel.builder().recurrentPaymentData(recurrentPaymentData)
                         .mobilePaymentData(mobilePaymentDataBuilder.build())
@@ -98,12 +99,18 @@ public class CtxToEntryModelConverter implements Converter<PaymentContext, Gener
         return refundData;
     }
 
-    private RecurrentPaymentData initRecurrentPaymentData(InvoicePayment payment, PaymentResource paymentResource) {
-        RecurrentPaymentData.RecurrentPaymentDataBuilder recurrentPaymentDataBuilder = RecurrentPaymentData.builder()
+    private RecurrentPaymentData initRecurrentPaymentData(InvoicePayment payment,
+                                                          PaymentResource paymentResource,
+                                                          TransactionInfo transactionInfo) {
+        RecurrentPaymentData.RecurrentPaymentDataBuilder<?, ?> recurrentPaymentDataBuilder = RecurrentPaymentData
+                .builder()
                 .makeRecurrent(payment.make_recurrent);
         if (paymentResource.isSetRecurrentPaymentResource()) {
             recurrentPaymentDataBuilder
                     .recToken(paymentResource.getRecurrentPaymentResource().getRecToken());
+        } else if (transactionInfo != null && transactionInfo.getExtra() != null
+                && transactionInfo.getExtra().containsKey(MetaData.META_REC_TOKEN)) {
+            recurrentPaymentDataBuilder.recToken(transactionInfo.getExtra().get(MetaData.META_REC_TOKEN));
         }
         return recurrentPaymentDataBuilder.build();
     }

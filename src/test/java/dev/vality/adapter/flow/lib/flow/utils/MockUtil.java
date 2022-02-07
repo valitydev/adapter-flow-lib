@@ -140,7 +140,7 @@ public class MockUtil {
                 .when(benderClient).generateID(any(), any(), any());
     }
 
-    public static PaymentContext buildPaymentContext(String invoiceId) {
+    public static PaymentContext buildPaymentContext(String invoiceId, Map<String, String> options) {
         return new PaymentContext()
                 .setSession(new Session()
                         .setTarget(TargetInvoicePaymentStatus.processed(
@@ -169,11 +169,15 @@ public class MockUtil {
                         )
                 )
 
-                .setOptions(buildOptions());
+                .setOptions(options);
     }
 
-    private static Map<String, String> buildOptions() {
+    public static Map<String, String> buildOptionsOneStage() {
         return Map.of(OptionFields.STAGE.name(), Stage.ONE);
+    }
+
+    public static Map<String, String> buildOptionsTwoStage() {
+        return Map.of();
     }
 
     public static PaymentTool buildPaymentTool() {
@@ -188,7 +192,8 @@ public class MockUtil {
     }
 
     public static PaymentContext buildRecurrentPaymentContext(String invoiceId, String token) {
-        PaymentContext paymentContext = MockUtil.buildPaymentContext(invoiceId);
+        PaymentContext paymentContext = MockUtil.buildPaymentContext(invoiceId,
+                MockUtil.buildOptionsOneStage());
         paymentContext.getPaymentInfo().getPayment()
                 .setPaymentResource(PaymentResource.recurrent_payment_resource(new RecurrentPaymentResource()
                         .setPaymentTool(MockUtil.buildPaymentTool())
@@ -196,7 +201,7 @@ public class MockUtil {
         return paymentContext;
     }
 
-    public static RecurrentTokenContext buildRecurrentTokenContext(String recurrentId) {
+    public static RecurrentTokenContext buildRecurrentTokenContext(String recurrentId, Map<String, String> options) {
         return new RecurrentTokenContext()
                 .setSession(new RecurrentTokenSession())
                 .setTokenInfo(new RecurrentTokenInfo()
@@ -215,6 +220,6 @@ public class MockUtil {
                                         .setCurrency(new Currency()
                                                 .setSymbolicCode("RUB")
                                                 .setNumericCode((short) 643)))))
-                .setOptions(buildOptions());
+                .setOptions(options);
     }
 }

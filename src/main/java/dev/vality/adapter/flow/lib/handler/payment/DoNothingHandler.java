@@ -23,6 +23,9 @@ public class DoNothingHandler implements CommonHandler<GeneralExitStateModel, Ge
         adapterContext.setTrxId(entryStateModel.getBaseRequestModel().getProviderTrxId());
         exitStateModel.setNextStep(Step.DO_NOTHING);
         exitStateModel.setTrxExtra(entryStateModel.getBaseRequestModel().getSavedData());
+        if (entryStateModel.getBaseRequestModel().getRecurrentPaymentData().isMakeRecurrent()) {
+            exitStateModel.setRecToken(entryStateModel.getBaseRequestModel().getRecurrentPaymentData().getRecToken());
+        }
         return exitStateModel;
     }
 

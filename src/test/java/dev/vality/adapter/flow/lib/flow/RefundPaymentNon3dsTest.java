@@ -2,7 +2,6 @@ package dev.vality.adapter.flow.lib.flow;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.vality.adapter.flow.lib.client.RemoteClient;
-import dev.vality.adapter.flow.lib.constant.Step;
 import dev.vality.adapter.flow.lib.flow.config.AppConfig;
 import dev.vality.adapter.flow.lib.flow.config.HandlerConfig;
 import dev.vality.adapter.flow.lib.flow.config.ProcessorConfig;
@@ -14,7 +13,6 @@ import dev.vality.adapter.flow.lib.utils.CallbackUrlExtractor;
 import dev.vality.adapter.flow.lib.utils.TimerProperties;
 import dev.vality.bender.BenderSrv;
 import dev.vality.cds.client.storage.CdsClientStorage;
-import dev.vality.damsel.domain.InvoicePaymentCaptured;
 import dev.vality.damsel.domain.InvoicePaymentRefunded;
 import dev.vality.damsel.domain.TargetInvoicePaymentStatus;
 import dev.vality.damsel.proxy_provider.*;
@@ -34,7 +32,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 
 @ExtendWith(SpringExtension.class)
@@ -44,15 +41,10 @@ import static org.mockito.ArgumentMatchers.any;
 @TestPropertySource(properties = {"server.rest.port=8083",
         "error-mapping.file=classpath:fixture/errors.json",
         "service.secret.enabled=true"})
-public class RefundPaymentNon3dsTest {
+public class RefundPaymentNon3dsTest extends AbstractPaymentTest {
 
     public static final String RECURRENT_TOKEN = "recurrentToken";
     public static final String TEST_TRX_ID = "testTrxId";
-
-    @Autowired
-    private ProviderProxySrv.Iface serverHandlerLogDecorator;
-
-    protected AdapterDeserializer adapterDeserializer = new AdapterDeserializer(new ObjectMapper());
 
     @MockBean
     private CdsClientStorage cdsClientStorage;
@@ -80,33 +72,17 @@ public class RefundPaymentNon3dsTest {
     public void testRefund() throws TException {
 
         // auth
-        PaymentContext paymentContext = MockUtil.buildPaymentContext(String.valueOf(new Date().getTime()));
+        PaymentContext paymentContext = MockUtil.buildPaymentContext(String.valueOf(new Date().getTime()),
+                MockUtil.buildOptionsOneStage());
 
-        PaymentProxyResult paymentProxyResult = serverHandlerLogDecorator.processPayment(paymentContext);
-        assertNotNull(paymentProxyResult.getTrx().getId());
-        assertEquals(new Success(), paymentProxyResult.getIntent().getFinish().getStatus().getSuccess());
-        assertEquals(Step.DO_NOTHING, adapterDeserializer.read(paymentProxyResult.getNextState()).getNextStep());
+        PaymentProxyResult paymentProxyResult = checkSuccessAuthOrPay(paymentContext);
 
         //capture
-        paymentContext
-                .getSession()
-                .setTarget(TargetInvoicePaymentStatus.captured(new InvoicePaymentCaptured()))
-                .setState(new byte[] {});
-        paymentContext.getPaymentInfo().getPayment().setTrx(paymentProxyResult.getTrx());
-        PaymentProxyResult paymentProxyResultDeposit = serverHandlerLogDecorator.processPayment(paymentContext);
-        assertEquals(paymentProxyResultDeposit.getIntent().getFinish().getStatus().getSuccess(), new Success());
+        PaymentProxyResult paymentProxyResultDeposit =
+                checkSuccessCapture(paymentContext, paymentProxyResult, new byte[] {});
 
         //refund
-        paymentContext
-                .getSession()
-                .setTarget(TargetInvoicePaymentStatus.refunded(new InvoicePaymentRefunded()))
-                .setState(paymentProxyResultDeposit.getNextState());
-        paymentContext
-                .getPaymentInfo()
-                .setRefund(new InvoicePaymentRefund()
-                        .setCash(new Cash(1100, null)));
-        PaymentProxyResult paymentProxyResultRefunded = serverHandlerLogDecorator.processPayment(paymentContext);
-        assertEquals(paymentProxyResultRefunded.getIntent().getFinish().getStatus().getSuccess(), new Success());
+        checkSuccessRefund(1100L, paymentContext, paymentProxyResultDeposit);
     }
 
 }

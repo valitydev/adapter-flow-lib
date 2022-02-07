@@ -6,7 +6,9 @@ import dev.vality.adapter.flow.lib.model.GeneralEntryStateModel;
 import dev.vality.adapter.flow.lib.model.GeneralExitStateModel;
 import dev.vality.adapter.flow.lib.utils.ErrorUtils;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RequiredArgsConstructor
 public class RedirectProcessor implements Processor<GeneralExitStateModel, BaseResponseModel, GeneralEntryStateModel> {
 
@@ -17,9 +19,11 @@ public class RedirectProcessor implements Processor<GeneralExitStateModel, BaseR
         if (!ErrorUtils.isError(response)
                 && response.getThreeDsData() != null
                 && response.getThreeDsData().getThreeDsType() != null) {
+            log.debug("Start redirect process response: {} entryStateModel: {}", response, entryStateModel);
             GeneralExitStateModel exitStateModel = new GeneralExitStateModel();
             exitStateModel.setThreeDsData(response.getThreeDsData());
             exitStateModel.setGeneralEntryStateModel(entryStateModel);
+            log.debug("Finish redirect process response: {} entryStateModel: {}", response, entryStateModel);
             return exitStateModel;
         }
 

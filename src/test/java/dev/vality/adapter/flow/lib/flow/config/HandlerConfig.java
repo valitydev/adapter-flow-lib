@@ -23,6 +23,7 @@ import dev.vality.adapter.flow.lib.model.BaseResponseModel;
 import dev.vality.adapter.flow.lib.model.GeneralEntryStateModel;
 import dev.vality.adapter.flow.lib.model.GeneralExitStateModel;
 import dev.vality.adapter.flow.lib.service.IdGenerator;
+import dev.vality.adapter.flow.lib.service.ResultIntentResolver;
 import dev.vality.adapter.flow.lib.utils.AdapterProperties;
 import dev.vality.adapter.flow.lib.utils.CallbackUrlExtractor;
 import dev.vality.adapter.flow.lib.utils.ThreeDsV2CallbackDeserializer;
@@ -101,15 +102,20 @@ public class HandlerConfig {
     }
 
     @Bean
+    public ResultIntentResolver resultIntentResolver(
+            TimerProperties timerProperties,
+            CallbackUrlExtractor callbackUrlExtractor) {
+        return new ResultIntentResolver(timerProperties, callbackUrlExtractor);
+    }
+
+    @Bean
     public ExitModelToProxyResultConverter exitModelToProxyResultConverter(
             ErrorMapping errorMapping,
-            TimerProperties timerProperties,
             AdapterSerializer adapterSerializer,
-            CallbackUrlExtractor callbackUrlExtractor) {
+            ResultIntentResolver resultIntentResolver) {
         return new ExitModelToProxyResultConverter(errorMapping,
-                timerProperties,
                 adapterSerializer,
-                callbackUrlExtractor);
+                resultIntentResolver);
     }
 
     @Bean
