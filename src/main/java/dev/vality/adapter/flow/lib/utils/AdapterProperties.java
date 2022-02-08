@@ -1,10 +1,14 @@
 package dev.vality.adapter.flow.lib.utils;
 
 import dev.vality.adapter.common.properties.CommonAdapterProperties;
-import lombok.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.validation.annotation.Validated;
+
+import java.util.List;
 
 @Data
 @Configuration
@@ -15,5 +19,14 @@ import org.springframework.validation.annotation.Validated;
 public class AdapterProperties extends CommonAdapterProperties {
 
     private String defaultTermUrl;
+
+    private List<String> tagGeneratorFieldNames = List.of(
+            "MD",
+            "threeDSMethodData",
+            "threeDSSessionData",
+            "md",
+            "ThreeDSMethodData",
+            "ThreeDSSessionData"
+    );
 
 }

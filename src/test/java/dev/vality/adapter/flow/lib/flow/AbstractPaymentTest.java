@@ -1,20 +1,48 @@
 package dev.vality.adapter.flow.lib.flow;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dev.vality.adapter.flow.lib.client.RemoteClient;
 import dev.vality.adapter.flow.lib.constant.Step;
+import dev.vality.adapter.flow.lib.controller.ThreeDsCallbackController;
+import dev.vality.adapter.flow.lib.flow.config.AppConfig;
+import dev.vality.adapter.flow.lib.flow.config.HandlerConfig;
+import dev.vality.adapter.flow.lib.flow.config.ProcessorConfig;
+import dev.vality.adapter.flow.lib.flow.config.TomcatEmbeddedConfiguration;
 import dev.vality.adapter.flow.lib.utils.AdapterDeserializer;
+import dev.vality.adapter.flow.lib.utils.CallbackUrlExtractor;
+import dev.vality.adapter.flow.lib.utils.TimerProperties;
+import dev.vality.adapter.helpers.hellgate.HellgateAdapterClient;
+import dev.vality.bender.BenderSrv;
+import dev.vality.cds.client.storage.CdsClientStorage;
 import dev.vality.damsel.domain.InvoicePaymentCaptured;
 import dev.vality.damsel.domain.InvoicePaymentRefunded;
 import dev.vality.damsel.domain.TargetInvoicePaymentStatus;
 import dev.vality.damsel.proxy_provider.*;
+import dev.vality.java.damsel.utils.verification.ProxyProviderVerification;
 import org.apache.thrift.TException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.test.context.ContextConfiguration;
 
+import static dev.vality.java.damsel.utils.creators.DomainPackageCreators.createTargetProcessed;
 import static org.junit.jupiter.api.Assertions.*;
 
+
+@PropertySource("classpath:application.yaml")
+@ContextConfiguration(classes = {HandlerConfig.class, AppConfig.class, ProcessorConfig.class,
+        ThreeDsCallbackController.class, TomcatEmbeddedConfiguration.class,
+        CallbackUrlExtractor.class, StepResolverImpl.class, TimerProperties.class})
 public class AbstractPaymentTest {
 
-    public static final String TEST_TRX_ID = "testTrxId";
+    @MockBean
+    protected CdsClientStorage cdsClientStorage;
+    @MockBean
+    protected BenderSrv.Iface benderClient;
+    @MockBean
+    protected RemoteClient client;
+    @MockBean
+    protected HellgateAdapterClient hellgateAdapterClient;
 
     @Autowired
     protected ProviderProxySrv.Iface serverHandlerLogDecorator;
@@ -42,7 +70,8 @@ public class AbstractPaymentTest {
         return paymentProxyResultDeposit;
     }
 
-    protected void checkSuccessRefund(Long refundAmount, PaymentContext paymentContext,
+    protected void checkSuccessRefund(Long refundAmount,
+                                      PaymentContext paymentContext,
                                       PaymentProxyResult paymentProxyResultDeposit)
             throws TException {
         paymentContext.getSession()
@@ -55,4 +84,31 @@ public class AbstractPaymentTest {
         assertEquals(paymentProxyResultRefunded.getIntent().getFinish().getStatus().getSuccess(), new Success());
     }
 
+    protected PaymentProxyResult checkSuccessFinishThreeDs(PaymentContext context,
+                                                           PaymentProxyResult proxyResult,
+                                                           PaymentCallbackResult paymentCallbackResult)
+            throws TException {
+        context.getPaymentInfo().getPayment().setTrx(proxyResult.getTrx());
+        context.getSession().setState(paymentCallbackResult.getResult().getNextState());
+        context.getSession().setTarget(createTargetProcessed());
+        PaymentProxyResult paymentProxyResult = serverHandlerLogDecorator.processPayment(context);
+        String trxId = paymentProxyResult.getTrx().getId();
+        assertTrue(ProxyProviderVerification.isSuccess(paymentProxyResult));
+        assertEquals(trxId, paymentProxyResult.getTrx().getId());
+        return paymentProxyResult;
+    }
+
+    protected PaymentProxyResult checkSuspend(Step step,
+                                              PaymentContext context,
+                                              PaymentProxyResult proxyResult,
+                                              PaymentCallbackResult paymentCallbackResult)
+            throws TException {
+        context.getPaymentInfo().getPayment().setTrx(proxyResult.getTrx());
+        context.getSession().setState(paymentCallbackResult.getResult().getNextState());
+        context.getSession().setTarget(createTargetProcessed());
+        PaymentProxyResult paymentProxyResult = serverHandlerLogDecorator.processPayment(context);
+        assertTrue(paymentProxyResult.getIntent().getSuspend().getUserInteraction().isSetRedirect());
+        assertEquals(step, adapterDeserializer.read(paymentProxyResult.getNextState()).getNextStep());
+        return paymentProxyResult;
+    }
 }

@@ -17,17 +17,17 @@ public class StepResolverImpl implements StepResolver<GeneralEntryStateModel, Ge
     @Override
     public Step resolveEntry(GeneralEntryStateModel stateModel) {
         TargetStatus targetStatus = stateModel.getTargetStatus();
-        Step nextStep = stateModel.getCurrentStep();
+        Step currentStep = stateModel.getCurrentStep();
         if (targetStatus == null) {
-            return Objects.requireNonNullElse(nextStep, Step.AUTH);
+            return Objects.requireNonNullElse(currentStep, Step.AUTH);
         }
         switch (targetStatus) {
             case PROCESSED:
                 if (Stage.ONE.equals(stateModel.getBaseRequestModel().getAdapterConfigurations()
                         .get(OptionFields.STAGE.name()))) {
-                    return Objects.requireNonNullElse(nextStep, Step.PAY);
+                    return Objects.requireNonNullElse(currentStep, Step.PAY);
                 } else {
-                    return Objects.requireNonNullElse(nextStep, Step.AUTH);
+                    return Objects.requireNonNullElse(currentStep, Step.AUTH);
                 }
             case CAPTURED:
                 if (Stage.ONE.equals(
@@ -63,8 +63,12 @@ public class StepResolverImpl implements StepResolver<GeneralEntryStateModel, Ge
                     return Step.DO_NOTHING;
                 }
             case CHECK_NEED_3DS_V2:
-                return Step.FINISH_THREE_DS_V2;
-            case FINISH_THREE_DS_V1, CANCEL, REFUND, CAPTURE:
+                if (exitStateModel.getThreeDsData() != null) {
+                    return Step.FINISH_THREE_DS_V2;
+                } else {
+                    return Step.DO_NOTHING;
+                }
+            case FINISH_THREE_DS_V1, FINISH_THREE_DS_V2, CANCEL, REFUND, CAPTURE:
                 return Step.DO_NOTHING;
             default:
                 return step;

@@ -1,7 +1,7 @@
 spring:
   application:
-    name: '@name@'
-    description: '@description@'
+    name: adapter
+    description: adapter
   main:
     allow-bean-definition-overriding: true
 ---
@@ -9,7 +9,7 @@ management:
   security:
     flag: false
   server:
-    port: @management.port@
+    port: 8083
   metrics:
     export:
       statsd:
@@ -30,14 +30,14 @@ management:
         include: health,info,prometheus
 ---
 info:
-  version: '@version@'
+  version: test
   stage: dev
 ---
 server:
-  port: '@server.port@'
+  port: 8022
   rest:
-    port: '@server.rest.port@'
-    endpoint: otkrytie
+    port: 8080
+    endpoint: adapter
 ---
 http.properties:
   requestTimeout: 60000

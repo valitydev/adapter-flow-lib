@@ -29,9 +29,12 @@ public class ResultIntentResolver {
         Step currentStep = entryStateModel.getCurrentStep();
         return switch (nextStep) {
             case AUTH -> createIntentWithSleepIntent(0);
-            case FINISH_THREE_DS_V1, FINISH_THREE_DS_V2 -> createIntentWithSuspendIntent(exitStateModel);
+            case FINISH_THREE_DS_V1, CHECK_NEED_3DS_V2, FINISH_THREE_DS_V2 -> createIntentWithSuspendIntent(
+                    exitStateModel);
             case DO_NOTHING -> switch (currentStep) {
-                case DO_NOTHING, PAY, AUTH, CAPTURE -> initFinishIntent(exitStateModel, entryStateModel);
+                case CHECK_NEED_3DS_V2, FINISH_THREE_DS_V1, FINISH_THREE_DS_V2, DO_NOTHING, PAY, AUTH, CAPTURE -> initFinishIntent(
+                        exitStateModel,
+                        entryStateModel);
                 case REFUND, CANCEL -> createFinishIntentSuccess();
                 default -> throw new IllegalStateException("Wrong currentStep: " + currentStep);
             };
@@ -61,9 +64,13 @@ public class ResultIntentResolver {
                 entryStateModel.getBaseRequestModel().getAdapterConfigurations(),
                 timerProperties.getRedirectTimeout());
         return ProxyProviderPackageCreators.createIntentWithSuspendIntent(
-                threeDsData.getUniqRedirectOperationIdName(),
+                initTag(threeDsData),
                 timerRedirectTimeout,
                 createPostUserInteraction(threeDsData.getAcsUrl(), params));
+    }
+
+    private String initTag(ThreeDsData threeDsData) {
+        return threeDsData.getParameters().get("");
     }
 
 }

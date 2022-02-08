@@ -1,8 +1,8 @@
 package dev.vality.adapter.flow.lib.converter.exit;
 
-import dev.vality.adapter.common.state.serializer.AdapterSerializer;
 import dev.vality.adapter.flow.lib.model.GeneralExitStateModel;
 import dev.vality.adapter.flow.lib.service.ResultIntentResolver;
+import dev.vality.adapter.flow.lib.utils.AdapterSerializer;
 import dev.vality.damsel.proxy_provider.Intent;
 import dev.vality.damsel.proxy_provider.PaymentProxyResult;
 import dev.vality.error.mapping.ErrorMapping;

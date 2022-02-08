@@ -3,12 +3,11 @@ package dev.vality.adapter.flow.lib.flow.config;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.vality.adapter.common.mapper.SimpleErrorMapping;
-import dev.vality.adapter.common.state.deserializer.AdapterDeserializer;
-import dev.vality.adapter.common.state.deserializer.CallbackDeserializer;
 import dev.vality.adapter.common.state.deserializer.RecurrentTokenDeserializer;
-import dev.vality.adapter.common.state.serializer.AdapterSerializer;
 import dev.vality.adapter.common.state.serializer.RecurrentTokenSerializer;
-import dev.vality.adapter.flow.lib.utils.ThreeDsV2CallbackDeserializer;
+import dev.vality.adapter.flow.lib.utils.AdapterDeserializer;
+import dev.vality.adapter.flow.lib.utils.AdapterSerializer;
+import dev.vality.adapter.flow.lib.utils.ParametersDeserializer;
 import dev.vality.error.mapping.ErrorMapping;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -24,13 +23,13 @@ import java.io.IOException;
 public class AppConfig {
 
     @Bean
-    public static PropertySourcesPlaceholderConfigurer properties(){
+    public static PropertySourcesPlaceholderConfigurer properties() {
         PropertySourcesPlaceholderConfigurer pspc
                 = new PropertySourcesPlaceholderConfigurer();
-        Resource[] resources = new ClassPathResource[ ]
-                { new ClassPathResource( "application.yaml" ) };
-        pspc.setLocations( resources );
-        pspc.setIgnoreUnresolvablePlaceholders( true );
+        Resource[] resources = new ClassPathResource[]
+                {new ClassPathResource("application.yaml")};
+        pspc.setLocations(resources);
+        pspc.setIgnoreUnresolvablePlaceholders(true);
         return pspc;
     }
 
@@ -69,13 +68,8 @@ public class AppConfig {
     }
 
     @Bean
-    public CallbackDeserializer callbackDeserializer(ObjectMapper objectMapper) {
-        return new CallbackDeserializer(objectMapper);
-    }
-
-    @Bean
-    public ThreeDsV2CallbackDeserializer threeDsV2CallbackDeserializer(ObjectMapper objectMapper) {
-        return new ThreeDsV2CallbackDeserializer(objectMapper);
+    public ParametersDeserializer parametersDeserializer(ObjectMapper objectMapper) {
+        return new ParametersDeserializer(objectMapper);
     }
 
 }

@@ -1,14 +1,13 @@
 package dev.vality.adapter.flow.lib.converter.entry;
 
 import dev.vality.adapter.common.enums.TargetStatus;
-import dev.vality.adapter.common.model.AdapterContext;
-import dev.vality.adapter.common.state.deserializer.AdapterDeserializer;
-import dev.vality.adapter.common.state.utils.AdapterStateUtils;
 import dev.vality.adapter.common.utils.converter.CardDataUtils;
 import dev.vality.adapter.common.utils.converter.TargetStatusResolver;
 import dev.vality.adapter.flow.lib.constant.MetaData;
 import dev.vality.adapter.flow.lib.model.*;
 import dev.vality.adapter.flow.lib.service.IdGenerator;
+import dev.vality.adapter.flow.lib.utils.AdapterDeserializer;
+import dev.vality.adapter.flow.lib.utils.AdapterStateUtils;
 import dev.vality.cds.client.storage.CdsClientStorage;
 import dev.vality.cds.client.storage.utils.BankCardExtractor;
 import dev.vality.cds.storage.Auth3DS;
@@ -39,7 +38,8 @@ public class CtxToEntryModelConverter implements Converter<PaymentContext, Gener
         PaymentInfo paymentInfo = context.getPaymentInfo();
         InvoicePayment payment = paymentInfo.getPayment();
         TargetStatus targetStatus = TargetStatusResolver.extractTargetStatus(context.getSession().getTarget());
-        AdapterContext adapterContext = AdapterStateUtils.getAdapterContext(context, adapterDeserializer);
+        GeneralExitStateModel generalExitStateModel =
+                AdapterStateUtils.getGeneralExitStateModel(context, adapterDeserializer);
         PaymentResource paymentResource = payment.getPaymentResource();
 
         MobilePaymentData.MobilePaymentDataBuilder<?, ?> mobilePaymentDataBuilder = MobilePaymentData.builder();
@@ -79,10 +79,11 @@ public class CtxToEntryModelConverter implements Converter<PaymentContext, Gener
                                 .ip(ProxyProviderPackageCreators.extractIpAddress(context))
                                 .build())
                         .adapterConfigurations(context.getOptions())
-                        .providerTrxId(trx != null ? trx.getId() : adapterContext.getTrxId())
+                        .providerTrxId(trx != null ? trx.getId() : generalExitStateModel.getProviderTrxId())
                         .savedData(trx != null ? trx.getExtra() : new HashMap<>())
                         .build())
                 .targetStatus(targetStatus)
+                .currentStep(generalExitStateModel.getNextStep())
                 .redirectUrl(payment.isSetPayerSessionInfo() ? payment.getPayerSessionInfo().getRedirectUrl() : null)
                 .build();
     }
