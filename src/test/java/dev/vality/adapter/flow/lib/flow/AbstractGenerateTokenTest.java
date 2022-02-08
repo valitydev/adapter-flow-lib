@@ -15,9 +15,6 @@ import dev.vality.adapter.flow.lib.utils.TimerProperties;
 import dev.vality.adapter.helpers.hellgate.HellgateAdapterClient;
 import dev.vality.bender.BenderSrv;
 import dev.vality.cds.client.storage.CdsClientStorage;
-import dev.vality.damsel.domain.InvoicePaymentCaptured;
-import dev.vality.damsel.domain.InvoicePaymentRefunded;
-import dev.vality.damsel.domain.TargetInvoicePaymentStatus;
 import dev.vality.damsel.proxy_provider.*;
 import dev.vality.java.damsel.utils.verification.ProxyProviderVerification;
 import org.apache.thrift.TException;
@@ -26,6 +23,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.test.context.ContextConfiguration;
 
+import static dev.vality.adapter.flow.lib.flow.ForwardRecurrentPaymentNon3dsTest.RECURRENT_TOKEN;
 import static dev.vality.java.damsel.utils.creators.DomainPackageCreators.createTargetProcessed;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -34,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @ContextConfiguration(classes = {HandlerConfig.class, AppConfig.class, ProcessorConfig.class,
         ThreeDsCallbackController.class, TomcatEmbeddedConfiguration.class, TagManagementService.class,
         CallbackUrlExtractor.class, StepResolverImpl.class, GenerateTokenStepResolverImpl.class, TimerProperties.class})
-public class AbstractPaymentTest {
+public class AbstractGenerateTokenTest {
 
     @MockBean
     protected CdsClientStorage cdsClientStorage;
@@ -49,40 +47,43 @@ public class AbstractPaymentTest {
     protected ProviderProxySrv.Iface serverHandlerLogDecorator;
     protected AdapterDeserializer adapterDeserializer = new AdapterDeserializer(new ObjectMapper());
 
-    protected PaymentProxyResult checkSuccessAuthOrPay(PaymentContext paymentContext) throws TException {
-        PaymentProxyResult paymentProxyResult = serverHandlerLogDecorator.processPayment(paymentContext);
-        assertNotNull(paymentProxyResult.getTrx().getId());
-        assertTrue(paymentProxyResult.getIntent().isSetFinish());
-        assertEquals(Step.DO_NOTHING, adapterDeserializer.read(paymentProxyResult.getNextState()).getNextStep());
-        return paymentProxyResult;
+    protected RecurrentTokenProxyResult checkSuccessAuthOrPay(RecurrentTokenContext paymentContext) throws TException {
+        RecurrentTokenProxyResult recurrentTokenProxyResult = serverHandlerLogDecorator.generateToken(paymentContext);
+        assertNotNull(recurrentTokenProxyResult.getTrx().getId());
+        assertTrue(recurrentTokenProxyResult.getIntent().isSetSleep());
+        assertEquals(Step.CAPTURE, adapterDeserializer.read(recurrentTokenProxyResult.getNextState()).getNextStep());
+        return recurrentTokenProxyResult;
     }
 
-    protected PaymentProxyResult checkSuccessCapture(PaymentContext paymentContext,
-                                                     PaymentProxyResult paymentProxyResult,
-                                                     byte[] state)
+    protected RecurrentTokenProxyResult checkSleepWithStatus(Step step,
+                                                             RecurrentTokenContext recurrentTokenContext,
+                                                             RecurrentTokenProxyResult recurrentTokenProxyResult,
+                                                             byte[] state)
             throws TException {
-        paymentContext.getSession()
-                .setTarget(TargetInvoicePaymentStatus.captured(new InvoicePaymentCaptured()))
+        recurrentTokenContext.getSession()
                 .setState(state);
-        paymentContext.getPaymentInfo().getPayment().setTrx(paymentProxyResult.getTrx());
-        PaymentProxyResult paymentProxyResultDeposit = serverHandlerLogDecorator.processPayment(paymentContext);
-        assertTrue(paymentProxyResultDeposit.getIntent().getFinish().getStatus().isSetSuccess());
-        assertEquals(Step.DO_NOTHING, adapterDeserializer.read(paymentProxyResultDeposit.getNextState()).getNextStep());
+        recurrentTokenContext.getTokenInfo().setTrx(recurrentTokenProxyResult.getTrx());
+        RecurrentTokenProxyResult paymentProxyResultDeposit =
+                serverHandlerLogDecorator.generateToken(recurrentTokenContext);
+        assertTrue(paymentProxyResultDeposit.getIntent().isSetSleep());
+        assertEquals(step, adapterDeserializer.read(paymentProxyResultDeposit.getNextState()).getNextStep());
         return paymentProxyResultDeposit;
     }
 
-    protected void checkSuccessRefund(Long refundAmount,
-                                      PaymentContext paymentContext,
-                                      PaymentProxyResult paymentProxyResultDeposit)
+    protected RecurrentTokenProxyResult checkSuccessRefund(RecurrentTokenContext recurrentTokenContext,
+                                                           RecurrentTokenProxyResult recurrentTokenProxyResult,
+                                                           byte[] state)
             throws TException {
-        paymentContext.getSession()
-                .setTarget(TargetInvoicePaymentStatus.refunded(new InvoicePaymentRefunded()))
-                .setState(paymentProxyResultDeposit.getNextState());
-        paymentContext.getPaymentInfo()
-                .setRefund(new InvoicePaymentRefund()
-                        .setCash(new Cash(refundAmount, null)));
-        PaymentProxyResult paymentProxyResultRefunded = serverHandlerLogDecorator.processPayment(paymentContext);
-        assertEquals(paymentProxyResultRefunded.getIntent().getFinish().getStatus().getSuccess(), new Success());
+        recurrentTokenContext.getSession().setState(state);
+        recurrentTokenContext.getTokenInfo().setTrx(recurrentTokenProxyResult.getTrx());
+        RecurrentTokenProxyResult paymentProxyResultRefunded =
+                serverHandlerLogDecorator.generateToken(recurrentTokenContext);
+        assertEquals(paymentProxyResultRefunded.getIntent().getFinish().getStatus().getSuccess(),
+                new RecurrentTokenSuccess(RECURRENT_TOKEN));
+        assertNotNull(paymentProxyResultRefunded.getIntent().getFinish().getStatus().getSuccess().getToken());
+        assertEquals(Step.DO_NOTHING,
+                adapterDeserializer.read(paymentProxyResultRefunded.getNextState()).getNextStep());
+        return paymentProxyResultRefunded;
     }
 
     protected PaymentProxyResult checkSuccessFinishThreeDs(PaymentContext context,

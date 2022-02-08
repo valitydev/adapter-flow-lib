@@ -29,7 +29,7 @@ public class ThreeDsAdapterService {
     }
 
     public String receiveRecurrentIncomingParameters(HttpServletRequest servletRequest) {
-        return this.processCallback(servletRequest, hgClient::processPaymentCallback);
+        return this.processCallback(servletRequest, hgClient::processRecurrentTokenCallback);
     }
 
     private String processCallback(HttpServletRequest servletRequest,

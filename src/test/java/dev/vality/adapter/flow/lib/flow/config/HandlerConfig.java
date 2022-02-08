@@ -1,10 +1,11 @@
 package dev.vality.adapter.flow.lib.flow.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dev.vality.adapter.common.handler.CommonHandler;
 import dev.vality.adapter.common.handler.ServerHandlerLogDecorator;
 import dev.vality.adapter.common.processor.Processor;
+import dev.vality.adapter.common.properties.CommonTimerProperties;
 import dev.vality.adapter.flow.lib.client.RemoteClient;
-import dev.vality.adapter.flow.lib.controller.ThreeDsCallbackController;
 import dev.vality.adapter.flow.lib.converter.base.EntryModelToBaseRequestModelConverter;
 import dev.vality.adapter.flow.lib.converter.entry.CtxToEntryModelConverter;
 import dev.vality.adapter.flow.lib.converter.entry.RecCtxToEntryModelConverter;
@@ -94,8 +95,14 @@ public class HandlerConfig {
     }
 
     @Bean
-    public ExitModelToRecTokenProxyResultConverter exitModelToRecTokenProxyResultConverter() {
-        return new ExitModelToRecTokenProxyResultConverter(null, null, null);
+    public ExitModelToRecTokenProxyResultConverter exitModelToRecTokenProxyResultConverter(
+            ErrorMapping errorMapping,
+            CommonTimerProperties commonTimerProperties,
+            AdapterSerializer adapterSerializer,
+            CallbackUrlExtractor callbackUrlExtractor,
+            TagManagementService tagManagementService) {
+        return new ExitModelToRecTokenProxyResultConverter(errorMapping, commonTimerProperties, adapterSerializer,
+                callbackUrlExtractor, tagManagementService);
     }
 
     @Bean
@@ -131,8 +138,9 @@ public class HandlerConfig {
     @Bean
     public ResultIntentResolver resultIntentResolver(
             TimerProperties timerProperties,
-            CallbackUrlExtractor callbackUrlExtractor) {
-        return new ResultIntentResolver(timerProperties, callbackUrlExtractor);
+            CallbackUrlExtractor callbackUrlExtractor,
+            TagManagementService tagManagementService) {
+        return new ResultIntentResolver(timerProperties, callbackUrlExtractor, tagManagementService);
     }
 
     @Bean
@@ -151,21 +159,40 @@ public class HandlerConfig {
     }
 
     @Bean
-    public ServerFlowHandler serverFlowHandler(RemoteClient client,
-                                               EntryModelToBaseRequestModelConverter entryModelToBaseRequestModelConverter,
-                                               Processor<GeneralExitStateModel, BaseResponseModel, GeneralEntryStateModel> baseProcessor,
-                                               StepResolver<GeneralEntryStateModel, GeneralExitStateModel> stepResolverImpl) {
+    public ServerFlowHandler serverFlowHandler(
+            RemoteClient client,
+            EntryModelToBaseRequestModelConverter entryModelToBaseRequestModelConverter,
+            Processor<GeneralExitStateModel, BaseResponseModel, GeneralEntryStateModel> baseProcessor,
+            StepResolver<GeneralEntryStateModel, GeneralExitStateModel> stepResolverImpl) {
         return new ServerFlowHandler(
-                List.of(new AuthHandler(client, entryModelToBaseRequestModelConverter, baseProcessor),
-                        new CancelHandler(client, entryModelToBaseRequestModelConverter, baseProcessor),
-                        new CaptureHandler(client, entryModelToBaseRequestModelConverter, baseProcessor),
-                        new Check3dsV2Handler(client, entryModelToBaseRequestModelConverter, baseProcessor),
-                        new DoNothingHandler(),
-                        new Finish3dsHandler(client, entryModelToBaseRequestModelConverter, baseProcessor),
-                        new Finish3dsV2Handler(client, entryModelToBaseRequestModelConverter, baseProcessor),
-                        new PaymentHandler(client, entryModelToBaseRequestModelConverter, baseProcessor),
-                        new RefundHandler(client, entryModelToBaseRequestModelConverter, baseProcessor)),
+                getHandlers(client, entryModelToBaseRequestModelConverter, baseProcessor),
                 stepResolverImpl);
+    }
+
+    @Bean
+    public ServerFlowHandler generateTokenFlowHandler(
+            RemoteClient client,
+            EntryModelToBaseRequestModelConverter entryModelToBaseRequestModelConverter,
+            Processor<GeneralExitStateModel, BaseResponseModel, GeneralEntryStateModel> baseProcessor,
+            StepResolver<GeneralEntryStateModel, GeneralExitStateModel> generateTokenStepResolverImpl) {
+        return new ServerFlowHandler(
+                getHandlers(client, entryModelToBaseRequestModelConverter, baseProcessor),
+                generateTokenStepResolverImpl);
+    }
+
+    private List<CommonHandler<GeneralExitStateModel, GeneralEntryStateModel>> getHandlers(
+            RemoteClient client,
+            EntryModelToBaseRequestModelConverter entryModelToBaseRequestModelConverter,
+            Processor<GeneralExitStateModel, BaseResponseModel, GeneralEntryStateModel> baseProcessor) {
+        return List.of(new AuthHandler(client, entryModelToBaseRequestModelConverter, baseProcessor),
+                new CancelHandler(client, entryModelToBaseRequestModelConverter, baseProcessor),
+                new CaptureHandler(client, entryModelToBaseRequestModelConverter, baseProcessor),
+                new Check3dsV2Handler(client, entryModelToBaseRequestModelConverter, baseProcessor),
+                new DoNothingHandler(),
+                new Finish3dsHandler(client, entryModelToBaseRequestModelConverter, baseProcessor),
+                new Finish3dsV2Handler(client, entryModelToBaseRequestModelConverter, baseProcessor),
+                new PaymentHandler(client, entryModelToBaseRequestModelConverter, baseProcessor),
+                new RefundHandler(client, entryModelToBaseRequestModelConverter, baseProcessor));
     }
 
     @Bean
@@ -188,7 +215,8 @@ public class HandlerConfig {
             RecCtxToEntryModelConverter recCtxToEntryStateModelConverter,
             ExitModelToRecTokenProxyResultConverter exitModelToRecTokenProxyResultConverter,
             ExitModelToProxyResultConverter exitModelToProxyResultConverter,
-            ServerFlowHandler serverFlowHandler) {
+            ServerFlowHandler serverFlowHandler,
+            ServerFlowHandler generateTokenFlowHandler) {
         return new AdapterServerHandler(paymentContextValidator,
                 recurrentTokenContextValidator,
                 paymentCallbackHandler,
@@ -197,7 +225,9 @@ public class HandlerConfig {
                 recCtxToEntryStateModelConverter,
                 exitModelToRecTokenProxyResultConverter,
                 exitModelToProxyResultConverter,
-                serverFlowHandler);
+                serverFlowHandler,
+                generateTokenFlowHandler
+        );
     }
 
     @Bean

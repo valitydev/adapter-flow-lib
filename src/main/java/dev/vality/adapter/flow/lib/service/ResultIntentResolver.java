@@ -22,6 +22,7 @@ public class ResultIntentResolver {
 
     private final CommonTimerProperties timerProperties;
     private final CallbackUrlExtractor callbackUrlExtractor;
+    private final TagManagementService tagManagementService;
 
     public Intent initIntentByStep(GeneralExitStateModel exitStateModel) {
         Step nextStep = exitStateModel.getNextStep();
@@ -64,13 +65,10 @@ public class ResultIntentResolver {
                 entryStateModel.getBaseRequestModel().getAdapterConfigurations(),
                 timerProperties.getRedirectTimeout());
         return ProxyProviderPackageCreators.createIntentWithSuspendIntent(
-                initTag(threeDsData),
+                tagManagementService.findTag(threeDsData.getParameters()),
                 timerRedirectTimeout,
                 createPostUserInteraction(threeDsData.getAcsUrl(), params));
     }
 
-    private String initTag(ThreeDsData threeDsData) {
-        return threeDsData.getParameters().get("");
-    }
 
 }

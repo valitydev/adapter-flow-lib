@@ -29,10 +29,11 @@ public class AdapterServerHandler implements ProviderProxySrv.Iface {
     private final ExitModelToRecTokenProxyResultConverter exitModelToRecTokenProxyResultConverter;
     private final ExitModelToProxyResultConverter exitModelToProxyResultConverter;
     private final ServerFlowHandler serverFlowHandler;
+    private final ServerFlowHandler generateTokenFlowHandler;
 
     @Override
     public RecurrentTokenProxyResult generateToken(RecurrentTokenContext context) throws TException {
-        return serverFlowHandler.handle(recurrentTokenContextValidator,
+        return generateTokenFlowHandler.handle(recurrentTokenContextValidator,
                 recCtxToEntryStateModelConverter,
                 exitModelToRecTokenProxyResultConverter,
                 context);

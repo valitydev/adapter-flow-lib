@@ -24,6 +24,8 @@ public class AdapterProperties extends CommonAdapterProperties {
             "MD",
             "threeDSMethodData",
             "threeDSSessionData",
+            "ThreeDsMethodData",
+            "threeDsMethodData",
             "md",
             "ThreeDSMethodData",
             "ThreeDSSessionData"
