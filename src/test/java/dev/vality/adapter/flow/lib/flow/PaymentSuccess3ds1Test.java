@@ -35,6 +35,7 @@ import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
+import static dev.vality.adapter.flow.lib.flow.utils.BeanUtils.createParesBuffer;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -108,13 +109,6 @@ public class PaymentSuccess3ds1Test extends AbstractPaymentTest {
 
         //refund
         checkSuccessRefund(1100L, paymentContext, paymentProxyResultDeposit);
-    }
-
-    protected ByteBuffer createParesBuffer(String pares, String md) throws JsonProcessingException {
-        Map<String, String> map = new HashMap<>();
-        map.put(ThreeDsFields.PA_RES.getValue(), pares);
-        map.put(ThreeDsFields.MD.getValue(), md);
-        return CommonConverter.mapToByteBuffer(map);
     }
 
 }

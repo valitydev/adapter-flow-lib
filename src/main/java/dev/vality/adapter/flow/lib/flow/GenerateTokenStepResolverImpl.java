@@ -48,10 +48,12 @@ public class GenerateTokenStepResolverImpl implements StepResolver<GeneralEntryS
                 } else {
                     return Step.CAPTURE;
                 }
-            case FINISH_THREE_DS_V1, FINISH_THREE_DS_V2, REFUND:
-                return Step.DO_NOTHING;
+            case FINISH_THREE_DS_V1, FINISH_THREE_DS_V2:
+                return Step.CAPTURE;
             case CAPTURE:
                 return Step.REFUND;
+            case REFUND:
+                return Step.DO_NOTHING;
             default:
                 return step;
         }

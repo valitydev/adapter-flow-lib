@@ -1,10 +1,15 @@
 package dev.vality.adapter.flow.lib.flow.utils;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import dev.vality.adapter.common.constants.ThreeDsFields;
 import dev.vality.adapter.flow.lib.constant.ThreeDsType;
 import dev.vality.adapter.flow.lib.model.BaseResponseModel;
 import dev.vality.adapter.flow.lib.model.ThreeDsData;
+import dev.vality.java.damsel.converter.CommonConverter;
 
+import java.nio.ByteBuffer;
 import java.util.HashMap;
+import java.util.Map;
 
 public class BeanUtils {
 
@@ -36,5 +41,12 @@ public class BeanUtils {
                 .acsUrl("http://localhost/3ds")
                 .parameters(parameters)
                 .build();
+    }
+
+    public static ByteBuffer createParesBuffer(String pares, String md) throws JsonProcessingException {
+        Map<String, String> map = new HashMap<>();
+        map.put(ThreeDsFields.PA_RES.getValue(), pares);
+        map.put(ThreeDsFields.MD.getValue(), md);
+        return CommonConverter.mapToByteBuffer(map);
     }
 }

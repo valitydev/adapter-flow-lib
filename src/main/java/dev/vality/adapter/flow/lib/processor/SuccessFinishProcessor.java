@@ -9,6 +9,7 @@ import dev.vality.adapter.flow.lib.model.GeneralExitStateModel;
 import dev.vality.adapter.flow.lib.utils.ErrorUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,8 +36,9 @@ public class SuccessFinishProcessor
                 if (saveData == null) {
                     saveData = new HashMap<>();
                 }
-                saveData.put(MetaData.META_REC_TOKEN, response.getRecurrentToken());
-                exitStateModel.setRecToken(response.getRecurrentToken());
+                String recToken = initRecurrentToken(response, entryStateModel);
+                saveData.put(MetaData.META_REC_TOKEN, recToken);
+                exitStateModel.setRecToken(recToken);
             }
             exitStateModel.setTrxExtra(saveData);
             log.debug("Finish success process response: {} entryStateModel: {}", response, entryStateModel);
@@ -48,5 +50,16 @@ public class SuccessFinishProcessor
         }
 
         throw new IllegalStateException("Processor didn't match for response " + response);
+    }
+
+    private String initRecurrentToken(BaseResponseModel response, GeneralEntryStateModel entryStateModel) {
+        if (StringUtils.hasText(response.getRecurrentToken())) {
+            return response.getRecurrentToken();
+        } else if (entryStateModel.getBaseRequestModel().getRecurrentPaymentData() != null
+                && StringUtils.hasText(entryStateModel.getBaseRequestModel().getRecurrentPaymentData()
+                .getRecToken())) {
+            return entryStateModel.getBaseRequestModel().getRecurrentPaymentData().getRecToken();
+        }
+        return null;
     }
 }

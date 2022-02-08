@@ -1,11 +1,15 @@
 package dev.vality.adapter.flow.lib.flow;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import dev.vality.adapter.common.constants.ThreeDsFields;
 import dev.vality.adapter.flow.lib.constant.Step;
 import dev.vality.adapter.flow.lib.flow.utils.BeanUtils;
 import dev.vality.adapter.flow.lib.flow.utils.MockUtil;
 import dev.vality.adapter.flow.lib.model.BaseResponseModel;
+import dev.vality.damsel.proxy_provider.RecurrentTokenCallbackResult;
 import dev.vality.damsel.proxy_provider.RecurrentTokenContext;
 import dev.vality.damsel.proxy_provider.RecurrentTokenProxyResult;
+import dev.vality.java.damsel.converter.CommonConverter;
 import org.apache.thrift.TException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,17 +19,21 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.nio.ByteBuffer;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 import static dev.vality.adapter.flow.lib.flow.ForwardRecurrentPaymentNon3dsTest.RECURRENT_TOKEN;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 
 @ExtendWith(SpringExtension.class)
 @TestPropertySource(properties = {"server.rest.port=8083",
         "error-mapping.file=classpath:fixture/errors.json",
         "service.secret.enabled=true"})
-public class GenerateTokenNon3dsTest extends AbstractGenerateTokenTest {
+public class GenerateToken3ds1Test extends AbstractGenerateTokenTest {
 
     @BeforeEach
     public void setUp() throws TException {
@@ -33,32 +41,50 @@ public class GenerateTokenNon3dsTest extends AbstractGenerateTokenTest {
         MockUtil.mockAllWithout3Ds(cdsClientStorage, benderClient);
 
         BaseResponseModel baseResponseModel = BeanUtils.createBaseResponseModel();
-        baseResponseModel.setRecurrentToken(RECURRENT_TOKEN);
+        baseResponseModel.setThreeDsData(BeanUtils.create3Ds1(baseResponseModel));
+
+        BaseResponseModel baseResponseModelRec = BeanUtils.createBaseResponseModel();
+        baseResponseModelRec.setRecurrentToken(RECURRENT_TOKEN);
 
         Mockito.when(client.auth(any())).thenReturn(baseResponseModel);
         Mockito.when(client.pay(any())).thenReturn(baseResponseModel);
-        Mockito.when(client.capture(any())).thenReturn(baseResponseModel);
-        Mockito.when(client.refund(any())).thenReturn(baseResponseModel);
+        Mockito.when(client.finish3ds(any())).thenReturn(BeanUtils.createBaseResponseModel());
+        Mockito.when(client.refund(any())).thenReturn(BeanUtils.createBaseResponseModel());
+        Mockito.when(client.capture(any())).thenReturn(baseResponseModelRec);
     }
 
     @Test
-    public void testPaymentOneStage() throws TException {
+    public void testPaymentOneStage() throws TException, JsonProcessingException {
         // pay
         Map<String, String> options = MockUtil.buildOptionsOneStage();
         testPayment(options);
     }
 
     @Test
-    public void testPaymentTwoStage() throws TException {
+    public void testPaymentTwoStage() throws TException, JsonProcessingException {
         // auth
         Map<String, String> options = MockUtil.buildOptionsTwoStage();
         testPayment(options);
     }
 
-    private void testPayment(Map<String, String> options) throws TException {
+    private void testPayment(Map<String, String> options) throws TException, JsonProcessingException {
         RecurrentTokenContext paymentContext = MockUtil.buildRecurrentTokenContext(String.valueOf(new Date().getTime()),
                 options);
-        RecurrentTokenProxyResult paymentProxyResult = checkSuccessAuthOrPay(paymentContext);
+        RecurrentTokenProxyResult paymentProxyResult = serverHandlerLogDecorator.generateToken(paymentContext);
+        assertTrue(paymentProxyResult.getIntent().getSuspend().getUserInteraction().isSetRedirect());
+        assertEquals(Step.FINISH_THREE_DS_V1,
+                adapterDeserializer.read(paymentProxyResult.getNextState()).getNextStep());
+
+        ByteBuffer byteBuffer = BeanUtils.createParesBuffer("pares", "md");
+        paymentContext.getTokenInfo().setTrx(paymentProxyResult.getTrx());
+        paymentContext.getSession().setState(paymentProxyResult.getNextState());
+        RecurrentTokenCallbackResult paymentCallbackResult = serverHandlerLogDecorator.handleRecurrentTokenCallback(
+                byteBuffer,
+                paymentContext);
+
+        //finish three ds
+        paymentProxyResult = checkSuccessFinishThreeDs(paymentContext, paymentProxyResult, paymentCallbackResult);
+
 
         //capture
         paymentProxyResult = checkSleepWithStatus(Step.REFUND, paymentContext, paymentProxyResult,
@@ -67,4 +93,5 @@ public class GenerateTokenNon3dsTest extends AbstractGenerateTokenTest {
         //refund
         checkSuccessRefund(paymentContext, paymentProxyResult, paymentProxyResult.getNextState());
     }
+
 }

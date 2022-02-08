@@ -80,7 +80,7 @@ public class RecCtxToEntryModelConverter implements Converter<RecurrentTokenCont
                         .recurrentPaymentData(RecurrentPaymentData
                                 .builder()
                                 .makeRecurrent(true)
-                                .recToken(transactionInfo != null
+                                .recToken(transactionInfo != null && transactionInfo.getExtra() != null
                                         ? transactionInfo.getExtra().get(MetaData.META_REC_TOKEN)
                                         : null)
                                 .build())

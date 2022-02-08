@@ -86,16 +86,15 @@ public class AbstractGenerateTokenTest {
         return paymentProxyResultRefunded;
     }
 
-    protected PaymentProxyResult checkSuccessFinishThreeDs(PaymentContext context,
-                                                           PaymentProxyResult proxyResult,
-                                                           PaymentCallbackResult paymentCallbackResult)
+    protected RecurrentTokenProxyResult checkSuccessFinishThreeDs(RecurrentTokenContext context,
+                                                                  RecurrentTokenProxyResult proxyResult,
+                                                                  RecurrentTokenCallbackResult paymentCallbackResult)
             throws TException {
-        context.getPaymentInfo().getPayment().setTrx(proxyResult.getTrx());
+        context.getTokenInfo().setTrx(proxyResult.getTrx());
         context.getSession().setState(paymentCallbackResult.getResult().getNextState());
-        context.getSession().setTarget(createTargetProcessed());
-        PaymentProxyResult paymentProxyResult = serverHandlerLogDecorator.processPayment(context);
+        RecurrentTokenProxyResult paymentProxyResult = serverHandlerLogDecorator.generateToken(context);
         String trxId = paymentProxyResult.getTrx().getId();
-        assertTrue(ProxyProviderVerification.isSuccess(paymentProxyResult));
+        assertTrue(ProxyProviderVerification.isSleep(paymentProxyResult));
         assertEquals(trxId, paymentProxyResult.getTrx().getId());
         return paymentProxyResult;
     }
