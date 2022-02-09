@@ -35,13 +35,11 @@ public class ExitModelToProxyResultConverter implements Converter<GeneralExitSta
         }
 
         Intent intent = resultIntentResolver.initIntentByStep(exitStateModel);
-        byte[] nextState = adapterSerializer.writeByte(exitStateModel);
-        Map<String, String> trxExtra = exitStateModel.getTrxExtra();
 
         return new PaymentProxyResult(intent)
-                .setNextState(nextState)
+                .setNextState(adapterSerializer.writeByte(exitStateModel))
                 .setTrx(DomainPackageCreators.createTransactionInfo(
-                        exitStateModel.getProviderTrxId(), trxExtra)
+                        exitStateModel.getProviderTrxId(), exitStateModel.getTrxExtra())
                 );
     }
 

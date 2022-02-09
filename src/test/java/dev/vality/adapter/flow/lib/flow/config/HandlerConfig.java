@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.vality.adapter.common.handler.CommonHandler;
 import dev.vality.adapter.common.handler.ServerHandlerLogDecorator;
 import dev.vality.adapter.common.processor.Processor;
-import dev.vality.adapter.common.properties.CommonTimerProperties;
 import dev.vality.adapter.flow.lib.client.RemoteClient;
 import dev.vality.adapter.flow.lib.converter.base.EntryModelToBaseRequestModelConverter;
 import dev.vality.adapter.flow.lib.converter.entry.CtxToEntryModelConverter;
@@ -22,10 +21,7 @@ import dev.vality.adapter.flow.lib.handler.payment.*;
 import dev.vality.adapter.flow.lib.model.BaseResponseModel;
 import dev.vality.adapter.flow.lib.model.GeneralEntryStateModel;
 import dev.vality.adapter.flow.lib.model.GeneralExitStateModel;
-import dev.vality.adapter.flow.lib.service.IdGenerator;
-import dev.vality.adapter.flow.lib.service.ResultIntentResolver;
-import dev.vality.adapter.flow.lib.service.TagManagementService;
-import dev.vality.adapter.flow.lib.service.ThreeDsAdapterService;
+import dev.vality.adapter.flow.lib.service.*;
 import dev.vality.adapter.flow.lib.utils.*;
 import dev.vality.adapter.helpers.hellgate.HellgateAdapterClient;
 import dev.vality.bender.BenderSrv;
@@ -92,15 +88,23 @@ public class HandlerConfig {
                 idGenerator);
     }
 
+
+    @Bean
+    public RecurrentResultIntentResolver recurrentResultIntentResolver(
+            TimerProperties timerProperties,
+            CallbackUrlExtractor callbackUrlExtractor,
+            TagManagementService tagManagementService) {
+        return new RecurrentResultIntentResolver(timerProperties, callbackUrlExtractor, tagManagementService);
+    }
+
     @Bean
     public ExitModelToRecTokenProxyResultConverter exitModelToRecTokenProxyResultConverter(
             ErrorMapping errorMapping,
-            CommonTimerProperties commonTimerProperties,
             AdapterSerializer adapterSerializer,
-            CallbackUrlExtractor callbackUrlExtractor,
-            TagManagementService tagManagementService) {
-        return new ExitModelToRecTokenProxyResultConverter(errorMapping, commonTimerProperties, adapterSerializer,
-                callbackUrlExtractor, tagManagementService);
+            RecurrentResultIntentResolver recurrentResultIntentResolver) {
+        return new ExitModelToRecTokenProxyResultConverter(errorMapping,
+                adapterSerializer,
+                recurrentResultIntentResolver);
     }
 
     @Bean

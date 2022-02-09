@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @Slf4j
 @RestController
@@ -18,12 +19,15 @@ public class ThreeDsCallbackController {
     private final ThreeDsAdapterService threeDsAdapterService;
 
     @PostMapping({"term_url"})
-    public String receivePaymentIncomingParameters(HttpServletRequest servletRequest) {
-        return this.threeDsAdapterService.receivePaymentIncomingParameters(servletRequest);
+    public String receivePaymentIncomingParameters(HttpServletRequest servletRequest,
+                                                   HttpServletResponse servletResponse) {
+        return this.threeDsAdapterService.receivePaymentIncomingParameters(servletRequest, servletResponse);
     }
 
     @PostMapping({"rec_term_url"})
-    public String receiveRecurrentIncomingParameters(HttpServletRequest servletRequest) {
-        return this.threeDsAdapterService.receiveRecurrentIncomingParameters(servletRequest);
+    public String receiveRecurrentIncomingParameters(HttpServletRequest servletRequest,
+                                                     HttpServletResponse servletResponse) {
+        return this.threeDsAdapterService.receiveRecurrentIncomingParameters(servletRequest, servletResponse);
     }
+
 }

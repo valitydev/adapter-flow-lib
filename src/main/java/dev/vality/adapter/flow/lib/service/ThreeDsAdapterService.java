@@ -1,5 +1,6 @@
 package dev.vality.adapter.flow.lib.service;
 
+import dev.vality.adapter.flow.lib.utils.CallbackUrlExtractor;
 import dev.vality.adapter.flow.lib.utils.ParameterSerializer;
 import dev.vality.adapter.flow.lib.utils.ParametersDeserializer;
 import dev.vality.adapter.helpers.hellgate.HellgateAdapterClient;
@@ -7,8 +8,10 @@ import dev.vality.adapter.helpers.hellgate.exception.HellgateException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
@@ -24,15 +27,18 @@ public class ThreeDsAdapterService {
     private final ParametersDeserializer parametersDeserializer;
     private final TagManagementService tagManagementService;
 
-    public String receivePaymentIncomingParameters(HttpServletRequest servletRequest) {
-        return this.processCallback(servletRequest, hgClient::processPaymentCallback);
+    public String receivePaymentIncomingParameters(HttpServletRequest servletRequest,
+                                                   HttpServletResponse servletResponse) {
+        return this.processCallback(servletRequest, servletResponse, hgClient::processPaymentCallback);
     }
 
-    public String receiveRecurrentIncomingParameters(HttpServletRequest servletRequest) {
-        return this.processCallback(servletRequest, hgClient::processRecurrentTokenCallback);
+    public String receiveRecurrentIncomingParameters(HttpServletRequest servletRequest,
+                                                     HttpServletResponse servletResponse) {
+        return this.processCallback(servletRequest, servletResponse, hgClient::processRecurrentTokenCallback);
     }
 
     private String processCallback(HttpServletRequest servletRequest,
+                                   HttpServletResponse servletResponse,
                                    BiFunction<String, ByteBuffer, ByteBuffer> hgFunction) {
         String resp = "";
         Map<String, String> parameters = this.parametersDeserializer.read(servletRequest);
@@ -42,6 +48,9 @@ public class ThreeDsAdapterService {
             ByteBuffer callback = ByteBuffer.wrap(this.parameterSerializer.writeByte(parameters));
             ByteBuffer response = hgFunction.apply(tagManagementService.findTag(parameters), callback);
             resp = new String(response.array(), StandardCharsets.UTF_8);
+            if (StringUtils.hasText(parameters.get(CallbackUrlExtractor.TERMINATION_URI))) {
+                servletResponse.sendRedirect(parameters.get(CallbackUrlExtractor.TERMINATION_URI));
+            }
         } catch (HellgateException var9) {
             log.warn("Failed handle callback for recurrent", var9);
         } catch (Exception var10) {
