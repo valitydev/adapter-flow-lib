@@ -1,7 +1,6 @@
 package dev.vality.adapter.flow.lib.flow;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import dev.vality.adapter.common.constants.ThreeDsFields;
 import dev.vality.adapter.flow.lib.constant.Step;
 import dev.vality.adapter.flow.lib.flow.utils.BeanUtils;
 import dev.vality.adapter.flow.lib.flow.utils.MockUtil;
@@ -9,7 +8,6 @@ import dev.vality.adapter.flow.lib.model.BaseResponseModel;
 import dev.vality.damsel.proxy_provider.PaymentCallbackResult;
 import dev.vality.damsel.proxy_provider.PaymentContext;
 import dev.vality.damsel.proxy_provider.PaymentProxyResult;
-import dev.vality.java.damsel.converter.CommonConverter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.thrift.TException;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,18 +19,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.util.HashMap;
 import java.util.Map;
 
 import static dev.vality.adapter.flow.lib.flow.utils.BeanUtils.createParesBuffer;

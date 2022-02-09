@@ -1,9 +1,6 @@
 package dev.vality.adapter.flow.lib.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
 import java.util.Map;

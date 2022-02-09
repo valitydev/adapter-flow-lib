@@ -5,7 +5,6 @@ import dev.vality.adapter.flow.lib.constant.MetaData;
 import dev.vality.adapter.flow.lib.model.*;
 import dev.vality.adapter.flow.lib.service.IdGenerator;
 import dev.vality.adapter.flow.lib.utils.AdapterDeserializer;
-import dev.vality.adapter.flow.lib.utils.AdapterProperties;
 import dev.vality.adapter.flow.lib.utils.AdapterStateUtils;
 import dev.vality.cds.client.storage.CdsClientStorage;
 import dev.vality.cds.client.storage.utils.BankCardExtractor;
@@ -37,7 +36,6 @@ public class RecCtxToEntryModelConverter implements Converter<RecurrentTokenCont
 
     private final AdapterDeserializer adapterDeserializer;
     private final CdsClientStorage cdsStorage;
-    private final AdapterProperties adapterProperties;
     private final IdGenerator idGenerator;
 
     @Override

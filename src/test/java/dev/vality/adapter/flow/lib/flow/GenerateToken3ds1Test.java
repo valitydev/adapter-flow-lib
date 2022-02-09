@@ -1,7 +1,6 @@
 package dev.vality.adapter.flow.lib.flow;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import dev.vality.adapter.common.constants.ThreeDsFields;
 import dev.vality.adapter.flow.lib.constant.Step;
 import dev.vality.adapter.flow.lib.flow.utils.BeanUtils;
 import dev.vality.adapter.flow.lib.flow.utils.MockUtil;
@@ -9,7 +8,6 @@ import dev.vality.adapter.flow.lib.model.BaseResponseModel;
 import dev.vality.damsel.proxy_provider.RecurrentTokenCallbackResult;
 import dev.vality.damsel.proxy_provider.RecurrentTokenContext;
 import dev.vality.damsel.proxy_provider.RecurrentTokenProxyResult;
-import dev.vality.java.damsel.converter.CommonConverter;
 import org.apache.thrift.TException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,7 +19,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.nio.ByteBuffer;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
 import static dev.vality.adapter.flow.lib.flow.ForwardRecurrentPaymentNon3dsTest.RECURRENT_TOKEN;

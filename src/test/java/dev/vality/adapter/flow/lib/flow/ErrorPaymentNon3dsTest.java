@@ -1,23 +1,16 @@
 package dev.vality.adapter.flow.lib.flow;
 
-import dev.vality.adapter.flow.lib.client.RemoteClient;
 import dev.vality.adapter.flow.lib.flow.utils.BeanUtils;
 import dev.vality.adapter.flow.lib.flow.utils.MockUtil;
 import dev.vality.adapter.flow.lib.model.BaseResponseModel;
-import dev.vality.adapter.helpers.hellgate.HellgateAdapterClient;
-import dev.vality.bender.BenderSrv;
-import dev.vality.cds.client.storage.CdsClientStorage;
 import dev.vality.damsel.proxy_provider.PaymentContext;
 import dev.vality.damsel.proxy_provider.PaymentProxyResult;
-import dev.vality.damsel.proxy_provider.ProviderProxySrv;
 import org.apache.thrift.TException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 

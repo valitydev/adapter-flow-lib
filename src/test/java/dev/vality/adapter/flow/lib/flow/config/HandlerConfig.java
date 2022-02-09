@@ -86,11 +86,9 @@ public class HandlerConfig {
     @Bean
     public RecCtxToEntryModelConverter recCtxToEntryModelConverter(CdsClientStorage cdsClientStorage,
                                                                    AdapterDeserializer adapterDeserializer,
-                                                                   IdGenerator idGenerator,
-                                                                   AdapterProperties adapterProperties) {
+                                                                   IdGenerator idGenerator) {
         return new RecCtxToEntryModelConverter(adapterDeserializer,
                 cdsClientStorage,
-                adapterProperties,
                 idGenerator);
     }
 

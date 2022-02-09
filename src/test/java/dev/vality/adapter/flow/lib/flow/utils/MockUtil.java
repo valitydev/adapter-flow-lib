@@ -11,8 +11,6 @@ import dev.vality.damsel.proxy_provider.Cash;
 import dev.vality.damsel.proxy_provider.Invoice;
 import dev.vality.damsel.proxy_provider.InvoicePayment;
 import dev.vality.damsel.proxy_provider.*;
-import dev.vality.geck.serializer.kit.mock.MockMode;
-import dev.vality.geck.serializer.kit.mock.MockTBaseProcessor;
 import dev.vality.java.cds.utils.model.CardDataProxyModel;
 import org.apache.thrift.TException;
 import org.mockito.stubbing.Answer;

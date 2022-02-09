@@ -8,7 +8,6 @@ import dev.vality.adapter.flow.lib.model.BaseResponseModel;
 import dev.vality.damsel.proxy_provider.PaymentCallbackResult;
 import dev.vality.damsel.proxy_provider.PaymentContext;
 import dev.vality.damsel.proxy_provider.PaymentProxyResult;
-import dev.vality.java.damsel.converter.CommonConverter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.thrift.TException;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,7 +24,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -55,11 +53,15 @@ public class PaymentSuccess3ds2SimpleTest extends AbstractPaymentTest {
         MockUtil.mock3ds1SessionData(cdsClientStorage);
         MockUtil.mockIdGenerator(benderClient);
 
+        BaseResponseModel baseResponseModelCheck = BeanUtils.createBaseResponseModel();
+        baseResponseModelCheck.setThreeDsData(BeanUtils.create3Ds2FullCheck());
+
         BaseResponseModel baseResponseModel = BeanUtils.createBaseResponseModel();
-        baseResponseModel.setThreeDsData(BeanUtils.create3Ds2Full(baseResponseModel));
-        Mockito.when(client.auth(any())).thenReturn(baseResponseModel);
-        Mockito.when(client.pay(any())).thenReturn(baseResponseModel);
+
+        Mockito.when(client.auth(any())).thenReturn(baseResponseModelCheck);
+        Mockito.when(client.pay(any())).thenReturn(baseResponseModelCheck);
         Mockito.when(client.capture(any())).thenReturn(baseResponseModel);
+        Mockito.when(client.check3dsV2(any())).thenReturn(baseResponseModel);
         Mockito.when(client.refund(any())).thenReturn(baseResponseModel);
     }
 
@@ -88,7 +90,7 @@ public class PaymentSuccess3ds2SimpleTest extends AbstractPaymentTest {
         baseResponseModel.setThreeDsData(null);
         Mockito.when(client.check3dsV2(any())).thenReturn(baseResponseModel);
 
-        ByteBuffer byteBuffer = createBuffer("cres", "threeDSMethodData");
+        ByteBuffer byteBuffer = BeanUtils.createSessionBuffer("cres", "threeDSMethodData");
         paymentContext.getPaymentInfo().getPayment().setTrx(paymentProxyResult.getTrx());
         paymentContext.getSession().setState(paymentProxyResult.getNextState());
         PaymentCallbackResult paymentCallbackResult = serverHandlerLogDecorator.handlePaymentCallback(byteBuffer,
@@ -103,13 +105,6 @@ public class PaymentSuccess3ds2SimpleTest extends AbstractPaymentTest {
 
         //refund
         checkSuccessRefund(1100L, paymentContext, paymentProxyResultDeposit);
-    }
-
-    protected ByteBuffer createBuffer(String cres, String threeDSSessionData) throws JsonProcessingException {
-        Map<String, String> map = new HashMap<>();
-        map.put("cRes", cres);
-        map.put("ThreeDSSessionData", threeDSSessionData);
-        return CommonConverter.mapToByteBuffer(map);
     }
 
 }

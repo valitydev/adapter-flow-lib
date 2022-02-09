@@ -1,7 +1,6 @@
 package dev.vality.adapter.flow.lib.handler;
 
 import dev.vality.adapter.common.Validator;
-import dev.vality.adapter.common.exception.UnsupportedMethodException;
 import dev.vality.adapter.common.handler.CommonHandler;
 import dev.vality.adapter.flow.lib.flow.StepResolver;
 import dev.vality.adapter.flow.lib.model.GeneralEntryStateModel;

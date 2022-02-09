@@ -3,8 +3,6 @@ package dev.vality.adapter.flow.lib.handler.payment;
 import dev.vality.adapter.common.handler.CommonHandlerImpl;
 import dev.vality.adapter.common.processor.Processor;
 import dev.vality.adapter.flow.lib.client.RemoteClient;
-import dev.vality.adapter.flow.lib.constant.OptionFields;
-import dev.vality.adapter.flow.lib.constant.Stage;
 import dev.vality.adapter.flow.lib.constant.Step;
 import dev.vality.adapter.flow.lib.model.BaseRequestModel;
 import dev.vality.adapter.flow.lib.model.BaseResponseModel;
