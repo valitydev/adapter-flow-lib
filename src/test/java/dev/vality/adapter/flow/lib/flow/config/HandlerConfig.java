@@ -204,7 +204,7 @@ public class HandlerConfig {
     }
 
     @Bean
-    public ProviderProxySrv.Iface adapterServerHandler(
+    public ProviderProxySrv.Iface serverHandlerLogDecorator(
             PaymentContextValidator paymentContextValidator,
             RecurrentTokenContextValidator recurrentTokenContextValidator,
             PaymentCallbackHandler paymentCallbackHandler,
@@ -215,7 +215,7 @@ public class HandlerConfig {
             ExitModelToProxyResultConverter exitModelToProxyResultConverter,
             ServerFlowHandler serverFlowHandler,
             ServerFlowHandler generateTokenFlowHandler) {
-        return new AdapterServerHandler(paymentContextValidator,
+        return new ServerHandlerLogDecorator(new AdapterServerHandler(paymentContextValidator,
                 recurrentTokenContextValidator,
                 paymentCallbackHandler,
                 recurrentTokenCallbackHandler,
@@ -225,12 +225,7 @@ public class HandlerConfig {
                 exitModelToProxyResultConverter,
                 serverFlowHandler,
                 generateTokenFlowHandler
-        );
-    }
-
-    @Bean
-    public ProviderProxySrv.Iface serverHandlerLogDecorator(ProviderProxySrv.Iface adapterServerHandler) {
-        return new ServerHandlerLogDecorator(adapterServerHandler);
+        ));
     }
 
 }

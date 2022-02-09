@@ -47,6 +47,7 @@ public class AbstractPaymentTest {
 
     @Autowired
     protected ProviderProxySrv.Iface serverHandlerLogDecorator;
+
     protected AdapterDeserializer adapterDeserializer = new AdapterDeserializer(new ObjectMapper());
 
     protected PaymentProxyResult checkSuccessAuthOrPay(PaymentContext paymentContext) throws TException {

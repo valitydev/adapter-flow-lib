@@ -42,21 +42,12 @@
     </scm>
 
     <properties>
-        <maven.compiler.source>15</maven.compiler.source>
-        <maven.compiler.target>15</maven.compiler.target>
+        <dockerfile.registry>${env.REGISTRY}</dockerfile.registry>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <pubRepoId>ossrh</pubRepoId>
-        <pubRepo>https://s01.oss.sonatype.org/content/repositories/releases</pubRepo>
-        <pubSnapRepoId>ossrh</pubSnapRepoId>
-        <pubSnapRepo>https://s01.oss.sonatype.org/content/repositories/snapshots</pubSnapRepo>
-        <pubStagingRepoId>ossrh</pubStagingRepoId>
-        <pubStagingRepo>https://s01.oss.sonatype.org/</pubStagingRepo>
-        <checkstyle.config.path>
-            https://raw.githubusercontent.com/valitydev/java-checkstyle-config/master/conf/rbkmoney_google_checkstyle.xml
-        </checkstyle.config.path>
-        <checkstyle.config.suppressions.path>
-            https://raw.githubusercontent.com/valitydev/java-checkstyle-config/master/conf/checkstyle-suppressions.xml
-        </checkstyle.config.suppressions.path>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <java.version>15</java.version>
+        <shared.resources.version>0.3.6</shared.resources.version>
+
         <bender-proto.version>1.20-be9cdeb</bender-proto.version>
 
         <apache.commons.lang3.version>3.10</apache.commons.lang3.version>
@@ -78,6 +69,7 @@
         <adapter-common-lib.version>1.0.0</adapter-common-lib.version>
         <junit-jupiter-engine.version>5.8.2</junit-jupiter-engine.version>
         <nop-rolling.version>0.0.1</nop-rolling.version>
+        <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
     </properties>
 
     <dependencies>
@@ -102,6 +94,7 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>${lombok.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
@@ -154,6 +147,7 @@
             <groupId>dev.vality</groupId>
             <artifactId>bender-proto</artifactId>
             <version>${bender-proto.version}</version>
+            <scope>provided</scope>
         </dependency>
 
         <!-- Test -->
@@ -162,12 +156,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
             <version>2.6.3</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.hibernate</groupId>
-                    <artifactId>hibernate-validator</artifactId>
-                </exclusion>
-            </exclusions>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -181,12 +169,6 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <version>2.6.3</version>
             <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.hamcrest</groupId>
-                    <artifactId>hamcrest-library</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -204,6 +186,7 @@
             <groupId>dev.vality.geck</groupId>
             <artifactId>serializer</artifactId>
             <version>0.0.1</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>dev.vality.logback</groupId>
@@ -212,35 +195,13 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <version>3.2.1</version>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven-surefire-plugin.version}</version>
             </plugin>
         </plugins>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.8.0</version>
-                    <configuration>
-                        <source>${maven.compiler.source}</source>
-                        <target>${maven.compiler.target}</target>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>
     </build>
 </project>

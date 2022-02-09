@@ -15,10 +15,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -36,18 +32,11 @@ import static org.mockito.ArgumentMatchers.any;
         "adapter.callbackUrl=http://localhost:8080/test",
         "server.rest.endpoint=adapter",
         "server.rest.port=8083"})
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class PaymentSuccess3ds2FullTest extends AbstractPaymentTest {
-
-    @Autowired
-    private TestRestTemplate restTemplate;
-
-    @LocalServerPort
-    int randomServerPort;
 
     @BeforeEach
     public void setUp() throws TException {
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
 
         MockUtil.mock3ds1CardData(cdsClientStorage);
         MockUtil.mock3ds1SessionData(cdsClientStorage);

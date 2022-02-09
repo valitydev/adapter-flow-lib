@@ -47,7 +47,7 @@ public class PaymentSuccess3ds2SimpleTest extends AbstractPaymentTest {
 
     @BeforeEach
     public void setUp() throws TException {
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
 
         MockUtil.mock3ds1CardData(cdsClientStorage);
         MockUtil.mock3ds1SessionData(cdsClientStorage);
