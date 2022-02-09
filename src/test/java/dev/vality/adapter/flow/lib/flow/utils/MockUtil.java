@@ -41,7 +41,8 @@ public class MockUtil {
     public static final String CVV_3DS_2 = "584";
     public static final String CVV_3DS_2_SIMPLE_FLOW = "590";
 
-    public static void mockAllWithout3Ds(CdsClientStorage cdsClientStorage, BenderSrv.Iface benderClient) throws TException {
+    public static void mockAllWithout3Ds(CdsClientStorage cdsClientStorage, BenderSrv.Iface benderClient)
+            throws TException {
         MockUtil.mockCardDataWithout3ds(cdsClientStorage);
         MockUtil.mockSessionData(cdsClientStorage);
         MockUtil.mockIdGenerator(benderClient);
