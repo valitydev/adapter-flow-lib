@@ -9,8 +9,8 @@ import dev.vality.adapter.flow.lib.flow.config.HandlerConfig;
 import dev.vality.adapter.flow.lib.flow.config.ProcessorConfig;
 import dev.vality.adapter.flow.lib.flow.config.TomcatEmbeddedConfiguration;
 import dev.vality.adapter.flow.lib.service.TagManagementService;
-import dev.vality.adapter.flow.lib.utils.AdapterDeserializer;
 import dev.vality.adapter.flow.lib.utils.CallbackUrlExtractor;
+import dev.vality.adapter.flow.lib.utils.TemporaryContextDeserializer;
 import dev.vality.adapter.flow.lib.utils.TimerProperties;
 import dev.vality.adapter.helpers.hellgate.HellgateAdapterClient;
 import dev.vality.bender.BenderSrv;
@@ -48,13 +48,15 @@ public class AbstractPaymentTest {
     @Autowired
     protected ProviderProxySrv.Iface serverHandlerLogDecorator;
 
-    protected AdapterDeserializer adapterDeserializer = new AdapterDeserializer(new ObjectMapper());
+    protected TemporaryContextDeserializer temporaryContextDeserializer =
+            new TemporaryContextDeserializer(new ObjectMapper());
 
     protected PaymentProxyResult checkSuccessAuthOrPay(PaymentContext paymentContext) throws TException {
         PaymentProxyResult paymentProxyResult = serverHandlerLogDecorator.processPayment(paymentContext);
         assertNotNull(paymentProxyResult.getTrx().getId());
         assertTrue(paymentProxyResult.getIntent().isSetFinish());
-        assertEquals(Step.DO_NOTHING, adapterDeserializer.read(paymentProxyResult.getNextState()).getNextStep());
+        assertEquals(Step.DO_NOTHING,
+                temporaryContextDeserializer.read(paymentProxyResult.getNextState()).getNextStep());
         return paymentProxyResult;
     }
 
@@ -68,7 +70,8 @@ public class AbstractPaymentTest {
         paymentContext.getPaymentInfo().getPayment().setTrx(paymentProxyResult.getTrx());
         PaymentProxyResult paymentProxyResultDeposit = serverHandlerLogDecorator.processPayment(paymentContext);
         assertTrue(paymentProxyResultDeposit.getIntent().getFinish().getStatus().isSetSuccess());
-        assertEquals(Step.DO_NOTHING, adapterDeserializer.read(paymentProxyResultDeposit.getNextState()).getNextStep());
+        assertEquals(Step.DO_NOTHING,
+                temporaryContextDeserializer.read(paymentProxyResultDeposit.getNextState()).getNextStep());
         return paymentProxyResultDeposit;
     }
 
@@ -110,7 +113,7 @@ public class AbstractPaymentTest {
         context.getSession().setTarget(createTargetProcessed());
         PaymentProxyResult paymentProxyResult = serverHandlerLogDecorator.processPayment(context);
         assertTrue(paymentProxyResult.getIntent().getSuspend().getUserInteraction().isSetRedirect());
-        assertEquals(step, adapterDeserializer.read(paymentProxyResult.getNextState()).getNextStep());
+        assertEquals(step, temporaryContextDeserializer.read(paymentProxyResult.getNextState()).getNextStep());
         return paymentProxyResult;
     }
 }

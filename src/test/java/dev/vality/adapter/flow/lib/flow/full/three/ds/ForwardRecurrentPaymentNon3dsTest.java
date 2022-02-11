@@ -75,7 +75,8 @@ public class ForwardRecurrentPaymentNon3dsTest extends AbstractPaymentTest {
 
         paymentProxyResult = serverHandlerLogDecorator.processPayment(paymentContext);
         assertNotNull(paymentProxyResult.getTrx().getId());
-        assertEquals(Step.DO_NOTHING, adapterDeserializer.read(paymentProxyResult.getNextState()).getNextStep());
+        assertEquals(Step.DO_NOTHING,
+                temporaryContextDeserializer.read(paymentProxyResult.getNextState()).getNextStep());
 
         // captured
         checkSuccessCapture(paymentContext, paymentProxyResult, paymentProxyResult.getNextState());

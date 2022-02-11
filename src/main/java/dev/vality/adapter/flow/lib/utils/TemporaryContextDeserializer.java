@@ -7,7 +7,7 @@ import dev.vality.adapter.flow.lib.model.TemporaryContext;
 
 import java.io.IOException;
 
-public class AdapterDeserializer implements Deserializer<TemporaryContext> {
+public class TemporaryContextDeserializer implements Deserializer<TemporaryContext> {
     private final ObjectMapper mapper;
 
     public TemporaryContext read(byte[] data) {
@@ -30,7 +30,7 @@ public class AdapterDeserializer implements Deserializer<TemporaryContext> {
         return this.mapper;
     }
 
-    public AdapterDeserializer(ObjectMapper mapper) {
+    public TemporaryContextDeserializer(ObjectMapper mapper) {
         this.mapper = mapper;
     }
 }

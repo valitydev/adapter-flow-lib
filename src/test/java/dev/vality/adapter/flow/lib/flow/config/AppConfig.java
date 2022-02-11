@@ -5,9 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.vality.adapter.common.mapper.SimpleErrorMapping;
 import dev.vality.adapter.common.state.deserializer.RecurrentTokenDeserializer;
 import dev.vality.adapter.common.state.serializer.RecurrentTokenSerializer;
-import dev.vality.adapter.flow.lib.utils.AdapterDeserializer;
-import dev.vality.adapter.flow.lib.utils.AdapterSerializer;
 import dev.vality.adapter.flow.lib.utils.ParametersDeserializer;
+import dev.vality.adapter.flow.lib.utils.TemporaryContextDeserializer;
+import dev.vality.adapter.flow.lib.utils.TemporaryContextSerializer;
 import dev.vality.error.mapping.ErrorMapping;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -58,13 +58,13 @@ public class AppConfig {
     }
 
     @Bean
-    public AdapterDeserializer adapterDeserializer(ObjectMapper objectMapper) {
-        return new AdapterDeserializer(objectMapper);
+    public TemporaryContextDeserializer adapterDeserializer(ObjectMapper objectMapper) {
+        return new TemporaryContextDeserializer(objectMapper);
     }
 
     @Bean
-    public AdapterSerializer adapterSerializer(ObjectMapper objectMapper) {
-        return new AdapterSerializer(objectMapper);
+    public TemporaryContextSerializer adapterSerializer(ObjectMapper objectMapper) {
+        return new TemporaryContextSerializer(objectMapper);
     }
 
     @Bean

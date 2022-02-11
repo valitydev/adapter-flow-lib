@@ -71,7 +71,7 @@ public class GenerateToken3ds1Test extends AbstractGenerateTokenTest {
         RecurrentTokenProxyResult paymentProxyResult = serverHandlerLogDecorator.generateToken(paymentContext);
         assertTrue(paymentProxyResult.getIntent().getSuspend().getUserInteraction().isSetRedirect());
         assertEquals(Step.FINISH_THREE_DS_V1,
-                adapterDeserializer.read(paymentProxyResult.getNextState()).getNextStep());
+                temporaryContextDeserializer.read(paymentProxyResult.getNextState()).getNextStep());
 
         ByteBuffer byteBuffer = BeanUtils.createParesBuffer("pares", "md");
         paymentContext.getTokenInfo().setTrx(paymentProxyResult.getTrx());

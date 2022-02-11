@@ -1,6 +1,0 @@
-[
-  {
-    "codeRegex": ".*",
-    "mapping":"authorization_failed:unknown"
-  }
-]

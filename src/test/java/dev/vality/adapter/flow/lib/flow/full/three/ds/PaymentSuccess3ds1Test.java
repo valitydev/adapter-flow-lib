@@ -84,7 +84,7 @@ public class PaymentSuccess3ds1Test extends AbstractPaymentTest {
         PaymentProxyResult paymentProxyResult = serverHandlerLogDecorator.processPayment(paymentContext);
         assertTrue(paymentProxyResult.getIntent().getSuspend().getUserInteraction().isSetRedirect());
         assertEquals(Step.FINISH_THREE_DS_V1,
-                adapterDeserializer.read(paymentProxyResult.getNextState()).getNextStep());
+                temporaryContextDeserializer.read(paymentProxyResult.getNextState()).getNextStep());
 
         ByteBuffer byteBuffer = createParesBuffer("pares", "md");
         paymentContext.getPaymentInfo().getPayment().setTrx(paymentProxyResult.getTrx());

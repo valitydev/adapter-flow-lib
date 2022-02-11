@@ -85,7 +85,7 @@ public class PaymentSuccess3ds2SimpleTest extends AbstractPaymentTest {
         PaymentProxyResult paymentProxyResult = serverHandlerLogDecorator.processPayment(paymentContext);
         assertTrue(paymentProxyResult.getIntent().getSuspend().getUserInteraction().isSetRedirect());
         assertEquals(Step.CHECK_NEED_3DS_V2,
-                adapterDeserializer.read(paymentProxyResult.getNextState()).getNextStep());
+                temporaryContextDeserializer.read(paymentProxyResult.getNextState()).getNextStep());
 
         BaseResponseModel baseResponseModel = BeanUtils.createBaseResponseModel();
         baseResponseModel.setThreeDsData(null);

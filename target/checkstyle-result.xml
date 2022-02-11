@@ -36,6 +36,8 @@
 </file>
 <file name="/Users/kostyastruga/IdeaProjects/adapter-flow-lib/src/main/java/dev/vality/adapter/flow/lib/converter/exit/ExitModelToProxyResultConverter.java">
 </file>
+<file name="/Users/kostyastruga/IdeaProjects/adapter-flow-lib/src/main/java/dev/vality/adapter/flow/lib/converter/ExitStateModelToTemporaryContextConverter.java">
+</file>
 <file name="/Users/kostyastruga/IdeaProjects/adapter-flow-lib/src/main/java/dev/vality/adapter/flow/lib/converter/base/EntryModelToBaseRequestModelConverter.java">
 </file>
 <file name="/Users/kostyastruga/IdeaProjects/adapter-flow-lib/src/main/java/dev/vality/adapter/flow/lib/processor/RedirectProcessor.java">
@@ -44,9 +46,9 @@
 </file>
 <file name="/Users/kostyastruga/IdeaProjects/adapter-flow-lib/src/main/java/dev/vality/adapter/flow/lib/processor/ErrorProcessor.java">
 </file>
-<file name="/Users/kostyastruga/IdeaProjects/adapter-flow-lib/src/main/java/dev/vality/adapter/flow/lib/utils/AdapterDeserializer.java">
-</file>
 <file name="/Users/kostyastruga/IdeaProjects/adapter-flow-lib/src/main/java/dev/vality/adapter/flow/lib/utils/AdapterStateUtils.java">
+</file>
+<file name="/Users/kostyastruga/IdeaProjects/adapter-flow-lib/src/main/java/dev/vality/adapter/flow/lib/utils/TemporaryContextSerializer.java">
 </file>
 <file name="/Users/kostyastruga/IdeaProjects/adapter-flow-lib/src/main/java/dev/vality/adapter/flow/lib/utils/CallbackUrlExtractor.java">
 </file>
@@ -58,7 +60,7 @@
 </file>
 <file name="/Users/kostyastruga/IdeaProjects/adapter-flow-lib/src/main/java/dev/vality/adapter/flow/lib/utils/ErrorUtils.java">
 </file>
-<file name="/Users/kostyastruga/IdeaProjects/adapter-flow-lib/src/main/java/dev/vality/adapter/flow/lib/utils/AdapterSerializer.java">
+<file name="/Users/kostyastruga/IdeaProjects/adapter-flow-lib/src/main/java/dev/vality/adapter/flow/lib/utils/TemporaryContextDeserializer.java">
 </file>
 <file name="/Users/kostyastruga/IdeaProjects/adapter-flow-lib/src/main/java/dev/vality/adapter/flow/lib/utils/ParameterSerializer.java">
 </file>
@@ -74,11 +76,15 @@
 </file>
 <file name="/Users/kostyastruga/IdeaProjects/adapter-flow-lib/src/main/java/dev/vality/adapter/flow/lib/constant/ThreeDsType.java">
 </file>
+<file name="/Users/kostyastruga/IdeaProjects/adapter-flow-lib/src/main/java/dev/vality/adapter/flow/lib/model/TemporaryContext.java">
+</file>
 <file name="/Users/kostyastruga/IdeaProjects/adapter-flow-lib/src/main/java/dev/vality/adapter/flow/lib/model/CardData.java">
 </file>
 <file name="/Users/kostyastruga/IdeaProjects/adapter-flow-lib/src/main/java/dev/vality/adapter/flow/lib/model/ThreeDSMethodData.java">
 </file>
 <file name="/Users/kostyastruga/IdeaProjects/adapter-flow-lib/src/main/java/dev/vality/adapter/flow/lib/model/BaseRequestModel.java">
+</file>
+<file name="/Users/kostyastruga/IdeaProjects/adapter-flow-lib/src/main/java/dev/vality/adapter/flow/lib/model/EntryStateModel.java">
 </file>
 <file name="/Users/kostyastruga/IdeaProjects/adapter-flow-lib/src/main/java/dev/vality/adapter/flow/lib/model/ThreeDsV2Callback.java">
 </file>
@@ -90,9 +96,7 @@
 </file>
 <file name="/Users/kostyastruga/IdeaProjects/adapter-flow-lib/src/main/java/dev/vality/adapter/flow/lib/model/ThreeDsData.java">
 </file>
-<file name="/Users/kostyastruga/IdeaProjects/adapter-flow-lib/src/main/java/dev/vality/adapter/flow/lib/model/GeneralEntryStateModel.java">
-</file>
-<file name="/Users/kostyastruga/IdeaProjects/adapter-flow-lib/src/main/java/dev/vality/adapter/flow/lib/model/GeneralExitStateModel.java">
+<file name="/Users/kostyastruga/IdeaProjects/adapter-flow-lib/src/main/java/dev/vality/adapter/flow/lib/model/ExitStateModel.java">
 </file>
 <file name="/Users/kostyastruga/IdeaProjects/adapter-flow-lib/src/main/java/dev/vality/adapter/flow/lib/model/MobilePaymentData.java">
 </file>
@@ -118,7 +122,23 @@
 </file>
 <file name="/Users/kostyastruga/IdeaProjects/adapter-flow-lib/src/test/java/dev/vality/adapter/flow/lib/flow/AbstractPaymentTest.java">
 </file>
-<file name="/Users/kostyastruga/IdeaProjects/adapter-flow-lib/src/test/java/dev/vality/adapter/flow/lib/flow/PaymentSuccess3ds2SimpleTest.java">
+<file name="/Users/kostyastruga/IdeaProjects/adapter-flow-lib/src/test/java/dev/vality/adapter/flow/lib/flow/full/three/ds/PaymentSuccess3ds2SimpleTest.java">
+</file>
+<file name="/Users/kostyastruga/IdeaProjects/adapter-flow-lib/src/test/java/dev/vality/adapter/flow/lib/flow/full/three/ds/PaymentNon3dsTest.java">
+</file>
+<file name="/Users/kostyastruga/IdeaProjects/adapter-flow-lib/src/test/java/dev/vality/adapter/flow/lib/flow/full/three/ds/ErrorPaymentNon3dsTest.java">
+</file>
+<file name="/Users/kostyastruga/IdeaProjects/adapter-flow-lib/src/test/java/dev/vality/adapter/flow/lib/flow/full/three/ds/ForwardRecurrentPaymentNon3dsTest.java">
+</file>
+<file name="/Users/kostyastruga/IdeaProjects/adapter-flow-lib/src/test/java/dev/vality/adapter/flow/lib/flow/full/three/ds/PaymentSuccess3ds2FullTest.java">
+</file>
+<file name="/Users/kostyastruga/IdeaProjects/adapter-flow-lib/src/test/java/dev/vality/adapter/flow/lib/flow/full/three/ds/RefundPaymentNon3dsTest.java">
+</file>
+<file name="/Users/kostyastruga/IdeaProjects/adapter-flow-lib/src/test/java/dev/vality/adapter/flow/lib/flow/full/three/ds/GenerateToken3ds1Test.java">
+</file>
+<file name="/Users/kostyastruga/IdeaProjects/adapter-flow-lib/src/test/java/dev/vality/adapter/flow/lib/flow/full/three/ds/GenerateTokenNon3dsTest.java">
+</file>
+<file name="/Users/kostyastruga/IdeaProjects/adapter-flow-lib/src/test/java/dev/vality/adapter/flow/lib/flow/full/three/ds/PaymentSuccess3ds1Test.java">
 </file>
 <file name="/Users/kostyastruga/IdeaProjects/adapter-flow-lib/src/test/java/dev/vality/adapter/flow/lib/flow/config/TomcatEmbeddedConfiguration.java">
 </file>
@@ -128,10 +148,6 @@
 </file>
 <file name="/Users/kostyastruga/IdeaProjects/adapter-flow-lib/src/test/java/dev/vality/adapter/flow/lib/flow/config/AppConfig.java">
 </file>
-<file name="/Users/kostyastruga/IdeaProjects/adapter-flow-lib/src/test/java/dev/vality/adapter/flow/lib/flow/PaymentNon3dsTest.java">
-</file>
-<file name="/Users/kostyastruga/IdeaProjects/adapter-flow-lib/src/test/java/dev/vality/adapter/flow/lib/flow/ErrorPaymentNon3dsTest.java">
-</file>
 <file name="/Users/kostyastruga/IdeaProjects/adapter-flow-lib/src/test/java/dev/vality/adapter/flow/lib/flow/utils/MockUtil.java">
 </file>
 <file name="/Users/kostyastruga/IdeaProjects/adapter-flow-lib/src/test/java/dev/vality/adapter/flow/lib/flow/utils/RecurrentTokenContextValidator.java">
@@ -140,18 +156,6 @@
 </file>
 <file name="/Users/kostyastruga/IdeaProjects/adapter-flow-lib/src/test/java/dev/vality/adapter/flow/lib/flow/utils/PaymentContextValidator.java">
 </file>
-<file name="/Users/kostyastruga/IdeaProjects/adapter-flow-lib/src/test/java/dev/vality/adapter/flow/lib/flow/ForwardRecurrentPaymentNon3dsTest.java">
-</file>
-<file name="/Users/kostyastruga/IdeaProjects/adapter-flow-lib/src/test/java/dev/vality/adapter/flow/lib/flow/PaymentSuccess3ds2FullTest.java">
-</file>
-<file name="/Users/kostyastruga/IdeaProjects/adapter-flow-lib/src/test/java/dev/vality/adapter/flow/lib/flow/RefundPaymentNon3dsTest.java">
-</file>
-<file name="/Users/kostyastruga/IdeaProjects/adapter-flow-lib/src/test/java/dev/vality/adapter/flow/lib/flow/GenerateToken3ds1Test.java">
-</file>
 <file name="/Users/kostyastruga/IdeaProjects/adapter-flow-lib/src/test/java/dev/vality/adapter/flow/lib/flow/AbstractGenerateTokenTest.java">
-</file>
-<file name="/Users/kostyastruga/IdeaProjects/adapter-flow-lib/src/test/java/dev/vality/adapter/flow/lib/flow/GenerateTokenNon3dsTest.java">
-</file>
-<file name="/Users/kostyastruga/IdeaProjects/adapter-flow-lib/src/test/java/dev/vality/adapter/flow/lib/flow/PaymentSuccess3ds1Test.java">
 </file>
 </checkstyle>

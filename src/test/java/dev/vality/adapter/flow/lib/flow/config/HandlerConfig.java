@@ -45,27 +45,27 @@ public class HandlerConfig {
     }
 
     @Bean
-    public PaymentCallbackHandler paymentCallbackHandler(AdapterDeserializer adapterDeserializer,
-                                                         AdapterSerializer adapterSerializer,
+    public PaymentCallbackHandler paymentCallbackHandler(TemporaryContextDeserializer adapterDeserializer,
+                                                         TemporaryContextSerializer temporaryContextSerializer,
                                                          ParametersDeserializer threeDsV2CallbackDeserializer) {
         return new PaymentCallbackHandler(adapterDeserializer,
-                adapterSerializer,
+                temporaryContextSerializer,
                 threeDsV2CallbackDeserializer);
     }
 
     @Bean
     public RecurrentTokenCallbackHandler recurrentTokenCallbackHandler(
-            AdapterDeserializer adapterDeserializer,
-            AdapterSerializer adapterSerializer,
+            TemporaryContextDeserializer adapterDeserializer,
+            TemporaryContextSerializer temporaryContextSerializer,
             ParametersDeserializer parametersDeserializer) {
         return new RecurrentTokenCallbackHandler(adapterDeserializer,
-                adapterSerializer,
+                temporaryContextSerializer,
                 parametersDeserializer);
     }
 
     @Bean
     public CtxToEntryModelConverter ctxToEntryModelConverter(CdsClientStorage cdsClientStorage,
-                                                             AdapterDeserializer adapterDeserializer,
+                                                             TemporaryContextDeserializer adapterDeserializer,
                                                              IdGenerator idGenerator) {
         return new CtxToEntryModelConverter(cdsClientStorage,
                 adapterDeserializer,
@@ -82,7 +82,7 @@ public class HandlerConfig {
 
     @Bean
     public RecCtxToEntryModelConverter recCtxToEntryModelConverter(CdsClientStorage cdsClientStorage,
-                                                                   AdapterDeserializer adapterDeserializer,
+                                                                   TemporaryContextDeserializer adapterDeserializer,
                                                                    IdGenerator idGenerator) {
         return new RecCtxToEntryModelConverter(adapterDeserializer,
                 cdsClientStorage,
@@ -106,11 +106,11 @@ public class HandlerConfig {
     @Bean
     public ExitModelToRecTokenProxyResultConverter exitModelToRecTokenProxyResultConverter(
             ErrorMapping errorMapping,
-            AdapterSerializer adapterSerializer,
+            TemporaryContextSerializer temporaryContextSerializer,
             RecurrentResultIntentResolver recurrentResultIntentResolver,
             ExitStateModelToTemporaryContextConverter exitStateModelToTemporaryContextConverter) {
         return new ExitModelToRecTokenProxyResultConverter(errorMapping,
-                adapterSerializer,
+                temporaryContextSerializer,
                 recurrentResultIntentResolver,
                 exitStateModelToTemporaryContextConverter
         );
@@ -157,11 +157,11 @@ public class HandlerConfig {
     @Bean
     public ExitModelToProxyResultConverter exitModelToProxyResultConverter(
             ErrorMapping errorMapping,
-            AdapterSerializer adapterSerializer,
+            TemporaryContextSerializer temporaryContextSerializer,
             ResultIntentResolver resultIntentResolver,
             ExitStateModelToTemporaryContextConverter exitStateModelToTemporaryContextConverter) {
         return new ExitModelToProxyResultConverter(errorMapping,
-                adapterSerializer,
+                temporaryContextSerializer,
                 resultIntentResolver,
                 exitStateModelToTemporaryContextConverter);
     }

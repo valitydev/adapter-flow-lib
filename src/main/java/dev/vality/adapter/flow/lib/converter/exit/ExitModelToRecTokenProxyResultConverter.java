@@ -3,7 +3,7 @@ package dev.vality.adapter.flow.lib.converter.exit;
 import dev.vality.adapter.flow.lib.converter.ExitStateModelToTemporaryContextConverter;
 import dev.vality.adapter.flow.lib.model.ExitStateModel;
 import dev.vality.adapter.flow.lib.service.RecurrentResultIntentResolver;
-import dev.vality.adapter.flow.lib.utils.AdapterSerializer;
+import dev.vality.adapter.flow.lib.utils.TemporaryContextSerializer;
 import dev.vality.damsel.proxy_provider.RecurrentTokenIntent;
 import dev.vality.damsel.proxy_provider.RecurrentTokenProxyResult;
 import dev.vality.error.mapping.ErrorMapping;
@@ -20,7 +20,7 @@ public class ExitModelToRecTokenProxyResultConverter
         implements Converter<ExitStateModel, RecurrentTokenProxyResult> {
 
     private final ErrorMapping errorMapping;
-    private final AdapterSerializer serializer;
+    private final TemporaryContextSerializer serializer;
     private final RecurrentResultIntentResolver recurrentResultIntentResolver;
     private final ExitStateModelToTemporaryContextConverter contextConverter;
 

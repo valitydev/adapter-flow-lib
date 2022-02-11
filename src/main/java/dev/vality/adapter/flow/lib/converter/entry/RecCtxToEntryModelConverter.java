@@ -4,8 +4,8 @@ import dev.vality.adapter.common.utils.converter.CardDataUtils;
 import dev.vality.adapter.flow.lib.constant.MetaData;
 import dev.vality.adapter.flow.lib.model.*;
 import dev.vality.adapter.flow.lib.service.IdGenerator;
-import dev.vality.adapter.flow.lib.utils.AdapterDeserializer;
 import dev.vality.adapter.flow.lib.utils.AdapterStateUtils;
+import dev.vality.adapter.flow.lib.utils.TemporaryContextDeserializer;
 import dev.vality.cds.client.storage.CdsClientStorage;
 import dev.vality.cds.client.storage.utils.BankCardExtractor;
 import dev.vality.cds.storage.Auth3DS;
@@ -34,14 +34,14 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class RecCtxToEntryModelConverter implements Converter<RecurrentTokenContext, EntryStateModel> {
 
-    private final AdapterDeserializer adapterDeserializer;
+    private final TemporaryContextDeserializer temporaryContextDeserializer;
     private final CdsClientStorage cdsStorage;
     private final IdGenerator idGenerator;
 
     @Override
     public EntryStateModel convert(RecurrentTokenContext context) {
         TemporaryContext generalExitStateModel =
-                AdapterStateUtils.getTemporaryContext(context, adapterDeserializer);
+                AdapterStateUtils.getTemporaryContext(context, temporaryContextDeserializer);
         RecurrentTokenInfo tokenInfo = context.getTokenInfo();
         RecurrentPaymentTool recurrentPaymentTool = tokenInfo.getPaymentTool();
         DisposablePaymentResource paymentResource = recurrentPaymentTool.getPaymentResource();

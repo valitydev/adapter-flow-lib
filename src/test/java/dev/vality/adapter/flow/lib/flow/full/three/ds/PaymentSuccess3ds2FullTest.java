@@ -79,7 +79,7 @@ public class PaymentSuccess3ds2FullTest extends AbstractPaymentTest {
         PaymentProxyResult paymentProxyResult = serverHandlerLogDecorator.processPayment(paymentContext);
         assertTrue(paymentProxyResult.getIntent().getSuspend().getUserInteraction().isSetRedirect());
         assertEquals(Step.CHECK_NEED_3DS_V2,
-                adapterDeserializer.read(paymentProxyResult.getNextState()).getNextStep());
+                temporaryContextDeserializer.read(paymentProxyResult.getNextState()).getNextStep());
 
         ByteBuffer byteBuffer = BeanUtils.createSessionBuffer("methodData", "threeDSSessionData");
         paymentContext.getPaymentInfo().getPayment().setTrx(paymentProxyResult.getTrx());

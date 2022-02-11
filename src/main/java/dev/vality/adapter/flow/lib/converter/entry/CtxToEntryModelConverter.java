@@ -6,8 +6,8 @@ import dev.vality.adapter.common.utils.converter.TargetStatusResolver;
 import dev.vality.adapter.flow.lib.constant.MetaData;
 import dev.vality.adapter.flow.lib.model.*;
 import dev.vality.adapter.flow.lib.service.IdGenerator;
-import dev.vality.adapter.flow.lib.utils.AdapterDeserializer;
 import dev.vality.adapter.flow.lib.utils.AdapterStateUtils;
+import dev.vality.adapter.flow.lib.utils.TemporaryContextDeserializer;
 import dev.vality.cds.client.storage.CdsClientStorage;
 import dev.vality.cds.client.storage.utils.BankCardExtractor;
 import dev.vality.cds.storage.Auth3DS;
@@ -30,7 +30,7 @@ import java.util.HashMap;
 public class CtxToEntryModelConverter implements Converter<PaymentContext, EntryStateModel> {
 
     private final CdsClientStorage cdsStorage;
-    private final AdapterDeserializer adapterDeserializer;
+    private final TemporaryContextDeserializer temporaryContextDeserializer;
     private final IdGenerator idGenerator;
 
     @Override
@@ -38,7 +38,8 @@ public class CtxToEntryModelConverter implements Converter<PaymentContext, Entry
         PaymentInfo paymentInfo = context.getPaymentInfo();
         InvoicePayment payment = paymentInfo.getPayment();
         TargetStatus targetStatus = TargetStatusResolver.extractTargetStatus(context.getSession().getTarget());
-        TemporaryContext temporaryContext = AdapterStateUtils.getTemporaryContext(context, adapterDeserializer);
+        TemporaryContext temporaryContext =
+                AdapterStateUtils.getTemporaryContext(context, temporaryContextDeserializer);
         PaymentResource paymentResource = payment.getPaymentResource();
 
         MobilePaymentData.MobilePaymentDataBuilder<?, ?> mobilePaymentDataBuilder = MobilePaymentData.builder();

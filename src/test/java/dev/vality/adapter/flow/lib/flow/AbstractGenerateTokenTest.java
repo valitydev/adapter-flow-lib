@@ -9,8 +9,8 @@ import dev.vality.adapter.flow.lib.flow.config.HandlerConfig;
 import dev.vality.adapter.flow.lib.flow.config.ProcessorConfig;
 import dev.vality.adapter.flow.lib.flow.config.TomcatEmbeddedConfiguration;
 import dev.vality.adapter.flow.lib.service.TagManagementService;
-import dev.vality.adapter.flow.lib.utils.AdapterDeserializer;
 import dev.vality.adapter.flow.lib.utils.CallbackUrlExtractor;
+import dev.vality.adapter.flow.lib.utils.TemporaryContextDeserializer;
 import dev.vality.adapter.flow.lib.utils.TimerProperties;
 import dev.vality.adapter.helpers.hellgate.HellgateAdapterClient;
 import dev.vality.bender.BenderSrv;
@@ -45,13 +45,15 @@ public class AbstractGenerateTokenTest {
 
     @Autowired
     protected ProviderProxySrv.Iface serverHandlerLogDecorator;
-    protected AdapterDeserializer adapterDeserializer = new AdapterDeserializer(new ObjectMapper());
+    protected TemporaryContextDeserializer temporaryContextDeserializer =
+            new TemporaryContextDeserializer(new ObjectMapper());
 
     protected RecurrentTokenProxyResult checkSuccessAuthOrPay(RecurrentTokenContext paymentContext) throws TException {
         RecurrentTokenProxyResult recurrentTokenProxyResult = serverHandlerLogDecorator.generateToken(paymentContext);
         assertNotNull(recurrentTokenProxyResult.getTrx().getId());
         assertTrue(recurrentTokenProxyResult.getIntent().isSetSleep());
-        assertEquals(Step.CAPTURE, adapterDeserializer.read(recurrentTokenProxyResult.getNextState()).getNextStep());
+        assertEquals(Step.CAPTURE,
+                temporaryContextDeserializer.read(recurrentTokenProxyResult.getNextState()).getNextStep());
         return recurrentTokenProxyResult;
     }
 
@@ -66,7 +68,7 @@ public class AbstractGenerateTokenTest {
         RecurrentTokenProxyResult paymentProxyResultDeposit =
                 serverHandlerLogDecorator.generateToken(recurrentTokenContext);
         assertTrue(paymentProxyResultDeposit.getIntent().isSetSleep());
-        assertEquals(step, adapterDeserializer.read(paymentProxyResultDeposit.getNextState()).getNextStep());
+        assertEquals(step, temporaryContextDeserializer.read(paymentProxyResultDeposit.getNextState()).getNextStep());
         return paymentProxyResultDeposit;
     }
 
@@ -82,7 +84,7 @@ public class AbstractGenerateTokenTest {
                 new RecurrentTokenSuccess(RECURRENT_TOKEN));
         assertNotNull(paymentProxyResultRefunded.getIntent().getFinish().getStatus().getSuccess().getToken());
         assertEquals(Step.DO_NOTHING,
-                adapterDeserializer.read(paymentProxyResultRefunded.getNextState()).getNextStep());
+                temporaryContextDeserializer.read(paymentProxyResultRefunded.getNextState()).getNextStep());
         return paymentProxyResultRefunded;
     }
 
@@ -109,7 +111,7 @@ public class AbstractGenerateTokenTest {
         context.getSession().setTarget(createTargetProcessed());
         PaymentProxyResult paymentProxyResult = serverHandlerLogDecorator.processPayment(context);
         assertTrue(paymentProxyResult.getIntent().getSuspend().getUserInteraction().isSetRedirect());
-        assertEquals(step, adapterDeserializer.read(paymentProxyResult.getNextState()).getNextStep());
+        assertEquals(step, temporaryContextDeserializer.read(paymentProxyResult.getNextState()).getNextStep());
         return paymentProxyResult;
     }
 }

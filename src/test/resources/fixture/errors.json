@@ -1,6 +1,6 @@
 [
   {
     "codeRegex": ".*",
-    "mapping":"authorization_failed:unknown"
+    "mapping": "authorization_failed:unknown"
   }
 ]
