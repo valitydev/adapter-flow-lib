@@ -3,8 +3,8 @@ package dev.vality.adapter.flow.lib.handler;
 import dev.vality.adapter.common.Validator;
 import dev.vality.adapter.common.handler.CommonHandler;
 import dev.vality.adapter.flow.lib.flow.StepResolver;
-import dev.vality.adapter.flow.lib.model.GeneralEntryStateModel;
-import dev.vality.adapter.flow.lib.model.GeneralExitStateModel;
+import dev.vality.adapter.flow.lib.model.EntryStateModel;
+import dev.vality.adapter.flow.lib.model.ExitStateModel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.thrift.TException;
@@ -16,16 +16,16 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ServerFlowHandler {
 
-    private final List<CommonHandler<GeneralExitStateModel, GeneralEntryStateModel>> handlers;
-    private final StepResolver<GeneralEntryStateModel, GeneralExitStateModel> stepResolver;
+    private final List<CommonHandler<ExitStateModel, EntryStateModel>> handlers;
+    private final StepResolver<EntryStateModel, ExitStateModel> stepResolver;
 
     public <T, R> R handle(Validator<T> validator,
-                           Converter<T, GeneralEntryStateModel> entryConverter,
-                           Converter<GeneralExitStateModel, R> exitConverter,
+                           Converter<T, EntryStateModel> entryConverter,
+                           Converter<ExitStateModel, R> exitConverter,
                            T context) throws TException {
-        GeneralEntryStateModel entryStateModel = prepareEntryState(validator, entryConverter, context);
+        EntryStateModel entryStateModel = prepareEntryState(validator, entryConverter, context);
         log.info("EntryStateModel: {}", entryStateModel);
-        GeneralExitStateModel exitStateModel = handlers.stream()
+        ExitStateModel exitStateModel = handlers.stream()
                 .filter(handler -> handler.isHandle(entryStateModel))
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("" + entryStateModel))
@@ -37,11 +37,11 @@ public class ServerFlowHandler {
         return exitConverter.convert(exitStateModel);
     }
 
-    private <T> GeneralEntryStateModel prepareEntryState(Validator<T> validator,
-                                                         Converter<T, GeneralEntryStateModel> entryConverter,
-                                                         T context) {
+    private <T> EntryStateModel prepareEntryState(Validator<T> validator,
+                                                  Converter<T, EntryStateModel> entryConverter,
+                                                  T context) {
         validator.validate(context);
-        GeneralEntryStateModel entryStateModel = entryConverter.convert(context);
+        EntryStateModel entryStateModel = entryConverter.convert(context);
         entryStateModel.setCurrentStep(stepResolver.resolveEntry(entryStateModel));
         return entryStateModel;
     }

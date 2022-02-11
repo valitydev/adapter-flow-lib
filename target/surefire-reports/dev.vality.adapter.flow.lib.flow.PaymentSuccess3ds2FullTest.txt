@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: dev.vality.adapter.flow.lib.flow.PaymentSuccess3ds2FullTest
+-------------------------------------------------------------------------------
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.609 s - in dev.vality.adapter.flow.lib.flow.PaymentSuccess3ds2FullTest

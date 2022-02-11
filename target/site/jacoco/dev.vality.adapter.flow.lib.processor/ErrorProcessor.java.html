@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ErrorProcessor.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">adapter-flow-lib</a> &gt; <a href="index.source.html" class="el_package">dev.vality.adapter.flow.lib.processor</a> &gt; <span class="el_source">ErrorProcessor.java</span></div><h1>ErrorProcessor.java</h1><pre class="source lang-java linenums">package dev.vality.adapter.flow.lib.processor;
+
+import dev.vality.adapter.common.processor.Processor;
+import dev.vality.adapter.flow.lib.model.BaseResponseModel;
+import dev.vality.adapter.flow.lib.model.GeneralEntryStateModel;
+import dev.vality.adapter.flow.lib.model.GeneralExitStateModel;
+import dev.vality.adapter.flow.lib.utils.ErrorUtils;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+<span class="fc" id="L11">@Slf4j</span>
+<span class="fc" id="L12">@RequiredArgsConstructor</span>
+public class ErrorProcessor implements Processor&lt;GeneralExitStateModel, BaseResponseModel, GeneralEntryStateModel&gt; {
+
+    @Override
+    public GeneralExitStateModel process(BaseResponseModel response, GeneralEntryStateModel entryStateModel) {
+<span class="fc" id="L17">        log.debug(&quot;Start error process response: {} entryStateModel: {}&quot;, response, entryStateModel);</span>
+
+<span class="pc bpc" id="L19" title="2 of 4 branches missed.">        if (response != null &amp;&amp; ErrorUtils.isError(response)) {</span>
+<span class="fc" id="L20">            GeneralExitStateModel exitStateModel = new GeneralExitStateModel();</span>
+<span class="fc" id="L21">            exitStateModel.setErrorCode(String.valueOf(response.getErrorCode()));</span>
+<span class="fc" id="L22">            exitStateModel.setErrorMessage(response.getErrorMessage());</span>
+<span class="fc" id="L23">            exitStateModel.setGeneralEntryStateModel(entryStateModel);</span>
+<span class="fc" id="L24">            log.debug(&quot;Finish error process response: {} entryStateModel: {}&quot;, response, entryStateModel);</span>
+<span class="fc" id="L25">            return exitStateModel;</span>
+        }
+
+<span class="nc" id="L28">        GeneralExitStateModel exitStateModel = new GeneralExitStateModel();</span>
+<span class="nc" id="L29">        exitStateModel.setErrorCode(&quot;unknown_error&quot;);</span>
+<span class="nc" id="L30">        exitStateModel.setErrorMessage(&quot;Unknown error reason!&quot;);</span>
+<span class="nc" id="L31">        exitStateModel.setGeneralEntryStateModel(entryStateModel);</span>
+
+<span class="nc" id="L33">        log.debug(&quot;Finish error process response: {} entryStateModel: {}&quot;, response, entryStateModel);</span>
+<span class="nc" id="L34">        return exitStateModel;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

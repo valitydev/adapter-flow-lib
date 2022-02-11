@@ -4,17 +4,17 @@ import dev.vality.adapter.flow.lib.constant.OptionFields;
 import dev.vality.adapter.flow.lib.constant.Stage;
 import dev.vality.adapter.flow.lib.constant.Step;
 import dev.vality.adapter.flow.lib.constant.ThreeDsType;
-import dev.vality.adapter.flow.lib.model.GeneralEntryStateModel;
-import dev.vality.adapter.flow.lib.model.GeneralExitStateModel;
+import dev.vality.adapter.flow.lib.model.EntryStateModel;
+import dev.vality.adapter.flow.lib.model.ExitStateModel;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 
 @Component
-public class GenerateTokenStepResolverImpl implements StepResolver<GeneralEntryStateModel, GeneralExitStateModel> {
+public class GenerateTokenStepResolverImpl implements StepResolver<EntryStateModel, ExitStateModel> {
 
     @Override
-    public Step resolveEntry(GeneralEntryStateModel stateModel) {
+    public Step resolveEntry(EntryStateModel stateModel) {
         Step currentStep = stateModel.getCurrentStep();
         if (Stage.ONE.equals(stateModel.getBaseRequestModel().getAdapterConfigurations()
                 .get(OptionFields.STAGE.name()))) {
@@ -25,8 +25,8 @@ public class GenerateTokenStepResolverImpl implements StepResolver<GeneralEntryS
     }
 
     @Override
-    public Step resolveExit(GeneralExitStateModel exitStateModel) {
-        GeneralEntryStateModel entryStateModel = exitStateModel.getGeneralEntryStateModel();
+    public Step resolveExit(ExitStateModel exitStateModel) {
+        EntryStateModel entryStateModel = exitStateModel.getGeneralEntryStateModel();
         Step step = entryStateModel.getCurrentStep();
         switch (step) {
             case AUTH, PAY:

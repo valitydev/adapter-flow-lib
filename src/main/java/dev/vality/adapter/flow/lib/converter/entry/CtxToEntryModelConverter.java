@@ -27,19 +27,18 @@ import java.util.HashMap;
 
 @Component
 @RequiredArgsConstructor
-public class CtxToEntryModelConverter implements Converter<PaymentContext, GeneralEntryStateModel> {
+public class CtxToEntryModelConverter implements Converter<PaymentContext, EntryStateModel> {
 
     private final CdsClientStorage cdsStorage;
     private final AdapterDeserializer adapterDeserializer;
     private final IdGenerator idGenerator;
 
     @Override
-    public GeneralEntryStateModel convert(PaymentContext context) {
+    public EntryStateModel convert(PaymentContext context) {
         PaymentInfo paymentInfo = context.getPaymentInfo();
         InvoicePayment payment = paymentInfo.getPayment();
         TargetStatus targetStatus = TargetStatusResolver.extractTargetStatus(context.getSession().getTarget());
-        GeneralExitStateModel generalExitStateModel =
-                AdapterStateUtils.getGeneralExitStateModel(context, adapterDeserializer);
+        TemporaryContext temporaryContext = AdapterStateUtils.getTemporaryContext(context, adapterDeserializer);
         PaymentResource paymentResource = payment.getPaymentResource();
 
         MobilePaymentData.MobilePaymentDataBuilder<?, ?> mobilePaymentDataBuilder = MobilePaymentData.builder();
@@ -66,7 +65,7 @@ public class CtxToEntryModelConverter implements Converter<PaymentContext, Gener
         String orderId = idGenerator.get(paymentInfo.getInvoice().getId()).toString();
         TransactionInfo trx = payment.getTrx();
         RecurrentPaymentData recurrentPaymentData = initRecurrentPaymentData(payment, paymentResource, trx);
-        return GeneralEntryStateModel.builder()
+        return EntryStateModel.builder()
                 .baseRequestModel(BaseRequestModel.builder().recurrentPaymentData(recurrentPaymentData)
                         .mobilePaymentData(mobilePaymentDataBuilder.build())
                         .cardData(cardDataBuilder.build())
@@ -79,11 +78,11 @@ public class CtxToEntryModelConverter implements Converter<PaymentContext, Gener
                                 .ip(ProxyProviderPackageCreators.extractIpAddress(context))
                                 .build())
                         .adapterConfigurations(context.getOptions())
-                        .providerTrxId(trx != null ? trx.getId() : generalExitStateModel.getProviderTrxId())
+                        .providerTrxId(trx != null ? trx.getId() : temporaryContext.getProviderTrxId())
                         .savedData(trx != null ? trx.getExtra() : new HashMap<>())
                         .build())
                 .targetStatus(targetStatus)
-                .currentStep(generalExitStateModel.getNextStep())
+                .currentStep(temporaryContext.getNextStep())
                 .redirectUrl(payment.isSetPayerSessionInfo() ? payment.getPayerSessionInfo().getRedirectUrl() : null)
                 .build();
     }

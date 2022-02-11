@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SuccessFinishProcessor.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">adapter-flow-lib</a> &gt; <a href="index.source.html" class="el_package">dev.vality.adapter.flow.lib.processor</a> &gt; <span class="el_source">SuccessFinishProcessor.java</span></div><h1>SuccessFinishProcessor.java</h1><pre class="source lang-java linenums">package dev.vality.adapter.flow.lib.processor;
+
+import dev.vality.adapter.common.model.AdapterContext;
+import dev.vality.adapter.common.processor.Processor;
+import dev.vality.adapter.flow.lib.constant.MetaData;
+import dev.vality.adapter.flow.lib.model.BaseResponseModel;
+import dev.vality.adapter.flow.lib.model.GeneralEntryStateModel;
+import dev.vality.adapter.flow.lib.model.GeneralExitStateModel;
+import dev.vality.adapter.flow.lib.utils.ErrorUtils;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.StringUtils;
+
+import java.util.HashMap;
+import java.util.Map;
+
+<span class="fc" id="L17">@Slf4j</span>
+<span class="fc" id="L18">@RequiredArgsConstructor</span>
+public class SuccessFinishProcessor
+        implements Processor&lt;GeneralExitStateModel, BaseResponseModel, GeneralEntryStateModel&gt; {
+
+    private final Processor&lt;GeneralExitStateModel, BaseResponseModel, GeneralEntryStateModel&gt; nextProcessor;
+
+    @Override
+    public GeneralExitStateModel process(BaseResponseModel response, GeneralEntryStateModel entryStateModel) {
+<span class="fc bfc" id="L26" title="All 2 branches covered.">        if (!ErrorUtils.isError(response)) {</span>
+<span class="fc" id="L27">            log.debug(&quot;Start success process response: {} entryStateModel: {}&quot;, response, entryStateModel);</span>
+<span class="fc" id="L28">            AdapterContext adapterContext = new AdapterContext();</span>
+<span class="fc" id="L29">            adapterContext.setTrxId(response.getProviderTrxId());</span>
+<span class="fc" id="L30">            GeneralExitStateModel exitStateModel = new GeneralExitStateModel();</span>
+<span class="fc" id="L31">            exitStateModel.setGeneralEntryStateModel(entryStateModel);</span>
+<span class="fc" id="L32">            exitStateModel.setProviderTrxId(response.getProviderTrxId());</span>
+<span class="fc" id="L33">            Map&lt;String, String&gt; saveData = response.getSaveData();</span>
+<span class="pc bpc" id="L34" title="1 of 2 branches missed.">            if (entryStateModel.getBaseRequestModel().getRecurrentPaymentData() != null</span>
+<span class="fc bfc" id="L35" title="All 2 branches covered.">                    &amp;&amp; entryStateModel.getBaseRequestModel().getRecurrentPaymentData().isMakeRecurrent()) {</span>
+<span class="pc bpc" id="L36" title="1 of 2 branches missed.">                if (saveData == null) {</span>
+<span class="fc" id="L37">                    saveData = new HashMap&lt;&gt;();</span>
+                }
+<span class="fc" id="L39">                String recToken = initRecurrentToken(response, entryStateModel);</span>
+<span class="fc" id="L40">                saveData.put(MetaData.META_REC_TOKEN, recToken);</span>
+<span class="fc" id="L41">                exitStateModel.setRecToken(recToken);</span>
+            }
+<span class="fc" id="L43">            exitStateModel.setTrxExtra(saveData);</span>
+<span class="fc" id="L44">            log.debug(&quot;Finish success process response: {} entryStateModel: {}&quot;, response, entryStateModel);</span>
+<span class="fc" id="L45">            return exitStateModel;</span>
+        }
+
+<span class="pc bpc" id="L48" title="1 of 2 branches missed.">        if (nextProcessor != null) {</span>
+<span class="fc" id="L49">            return nextProcessor.process(response, entryStateModel);</span>
+        }
+
+<span class="nc" id="L52">        throw new IllegalStateException(&quot;Processor didn't match for response &quot; + response);</span>
+    }
+
+    private String initRecurrentToken(BaseResponseModel response, GeneralEntryStateModel entryStateModel) {
+<span class="fc bfc" id="L56" title="All 2 branches covered.">        if (StringUtils.hasText(response.getRecurrentToken())) {</span>
+<span class="fc" id="L57">            return response.getRecurrentToken();</span>
+<span class="pc bpc" id="L58" title="1 of 2 branches missed.">        } else if (entryStateModel.getBaseRequestModel().getRecurrentPaymentData() != null</span>
+<span class="fc bfc" id="L59" title="All 2 branches covered.">                &amp;&amp; StringUtils.hasText(entryStateModel.getBaseRequestModel().getRecurrentPaymentData()</span>
+<span class="fc" id="L60">                .getRecToken())) {</span>
+<span class="fc" id="L61">            return entryStateModel.getBaseRequestModel().getRecurrentPaymentData().getRecToken();</span>
+        }
+<span class="fc" id="L63">        return null;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

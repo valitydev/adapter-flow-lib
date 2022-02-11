@@ -2,25 +2,25 @@ package dev.vality.adapter.flow.lib.processor;
 
 import dev.vality.adapter.common.processor.Processor;
 import dev.vality.adapter.flow.lib.model.BaseResponseModel;
-import dev.vality.adapter.flow.lib.model.GeneralEntryStateModel;
-import dev.vality.adapter.flow.lib.model.GeneralExitStateModel;
+import dev.vality.adapter.flow.lib.model.EntryStateModel;
+import dev.vality.adapter.flow.lib.model.ExitStateModel;
 import dev.vality.adapter.flow.lib.utils.ErrorUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor
-public class RedirectProcessor implements Processor<GeneralExitStateModel, BaseResponseModel, GeneralEntryStateModel> {
+public class RedirectProcessor implements Processor<ExitStateModel, BaseResponseModel, EntryStateModel> {
 
-    private final Processor<GeneralExitStateModel, BaseResponseModel, GeneralEntryStateModel> nextProcessor;
+    private final Processor<ExitStateModel, BaseResponseModel, EntryStateModel> nextProcessor;
 
     @Override
-    public GeneralExitStateModel process(BaseResponseModel response, GeneralEntryStateModel entryStateModel) {
+    public ExitStateModel process(BaseResponseModel response, EntryStateModel entryStateModel) {
         if (!ErrorUtils.isError(response)
                 && response.getThreeDsData() != null
                 && response.getThreeDsData().getThreeDsType() != null) {
             log.debug("Start redirect process response: {} entryStateModel: {}", response, entryStateModel);
-            GeneralExitStateModel exitStateModel = new GeneralExitStateModel();
+            ExitStateModel exitStateModel = new ExitStateModel();
             exitStateModel.setThreeDsData(response.getThreeDsData());
             exitStateModel.setGeneralEntryStateModel(entryStateModel);
             log.debug("Finish redirect process response: {} entryStateModel: {}", response, entryStateModel);

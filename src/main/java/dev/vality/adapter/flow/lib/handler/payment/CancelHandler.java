@@ -6,23 +6,23 @@ import dev.vality.adapter.flow.lib.client.RemoteClient;
 import dev.vality.adapter.flow.lib.constant.Step;
 import dev.vality.adapter.flow.lib.model.BaseRequestModel;
 import dev.vality.adapter.flow.lib.model.BaseResponseModel;
-import dev.vality.adapter.flow.lib.model.GeneralEntryStateModel;
-import dev.vality.adapter.flow.lib.model.GeneralExitStateModel;
+import dev.vality.adapter.flow.lib.model.EntryStateModel;
+import dev.vality.adapter.flow.lib.model.ExitStateModel;
 import org.springframework.core.convert.converter.Converter;
 
 public class CancelHandler
-        extends CommonHandlerImpl<BaseRequestModel, BaseResponseModel, GeneralEntryStateModel, GeneralExitStateModel> {
+        extends CommonHandlerImpl<BaseRequestModel, BaseResponseModel, EntryStateModel, ExitStateModel> {
 
     public CancelHandler(
             RemoteClient client,
-            Converter<GeneralEntryStateModel, BaseRequestModel> converter,
-            Processor<GeneralExitStateModel, BaseResponseModel, GeneralEntryStateModel> responseProcessorChain
+            Converter<EntryStateModel, BaseRequestModel> converter,
+            Processor<ExitStateModel, BaseResponseModel, EntryStateModel> responseProcessorChain
     ) {
         super(client::cancel, converter, responseProcessorChain);
     }
 
     @Override
-    public boolean isHandle(GeneralEntryStateModel entryStateModel) {
+    public boolean isHandle(EntryStateModel entryStateModel) {
         return Step.CANCEL == entryStateModel.getCurrentStep();
     }
 }

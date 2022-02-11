@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AdapterServerHandler.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">adapter-flow-lib</a> &gt; <a href="index.source.html" class="el_package">dev.vality.adapter.flow.lib.handler</a> &gt; <span class="el_source">AdapterServerHandler.java</span></div><h1>AdapterServerHandler.java</h1><pre class="source lang-java linenums">package dev.vality.adapter.flow.lib.handler;
+
+import dev.vality.adapter.common.Validator;
+import dev.vality.adapter.common.handler.callback.CallbackHandler;
+import dev.vality.adapter.flow.lib.converter.entry.CtxToEntryModelConverter;
+import dev.vality.adapter.flow.lib.converter.entry.RecCtxToEntryModelConverter;
+import dev.vality.adapter.flow.lib.converter.exit.ExitModelToProxyResultConverter;
+import dev.vality.adapter.flow.lib.converter.exit.ExitModelToRecTokenProxyResultConverter;
+import dev.vality.damsel.proxy_provider.*;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.thrift.TException;
+import org.springframework.stereotype.Component;
+
+import java.nio.ByteBuffer;
+
+<span class="fc" id="L17">@Slf4j</span>
+@Component
+<span class="fc" id="L19">@RequiredArgsConstructor</span>
+public class AdapterServerHandler implements ProviderProxySrv.Iface {
+
+    private final Validator&lt;PaymentContext&gt; paymentContextValidator;
+    private final Validator&lt;RecurrentTokenContext&gt; recurrentTokenContextValidator;
+
+    private final CallbackHandler&lt;PaymentCallbackResult, PaymentContext&gt; paymentCallbackHandler;
+    private final CallbackHandler&lt;RecurrentTokenCallbackResult, RecurrentTokenContext&gt; recurrentTokenCallbackHandler;
+    private final CtxToEntryModelConverter ctxToEntryModelConverter;
+    private final RecCtxToEntryModelConverter recCtxToEntryStateModelConverter;
+    private final ExitModelToRecTokenProxyResultConverter exitModelToRecTokenProxyResultConverter;
+    private final ExitModelToProxyResultConverter exitModelToProxyResultConverter;
+    private final ServerFlowHandler serverFlowHandler;
+    private final ServerFlowHandler generateTokenFlowHandler;
+
+    @Override
+    public RecurrentTokenProxyResult generateToken(RecurrentTokenContext context) throws TException {
+<span class="fc" id="L36">        return generateTokenFlowHandler.handle(recurrentTokenContextValidator,</span>
+                recCtxToEntryStateModelConverter,
+                exitModelToRecTokenProxyResultConverter,
+                context);
+    }
+
+    @Override
+    public RecurrentTokenCallbackResult handleRecurrentTokenCallback(
+            ByteBuffer byteBuffer,
+            RecurrentTokenContext context
+    ) throws TException {
+<span class="fc" id="L47">        recurrentTokenContextValidator.validate(context);</span>
+<span class="fc" id="L48">        return recurrentTokenCallbackHandler.handleCallback(byteBuffer, context);</span>
+    }
+
+    @Override
+    public PaymentProxyResult processPayment(PaymentContext context) throws TException {
+<span class="fc" id="L53">        return serverFlowHandler.handle(paymentContextValidator,</span>
+                ctxToEntryModelConverter,
+                exitModelToProxyResultConverter,
+                context);
+    }
+
+    @Override
+    public PaymentCallbackResult handlePaymentCallback(ByteBuffer byteBuffer, PaymentContext context)
+            throws TException {
+<span class="fc" id="L62">        paymentContextValidator.validate(context);</span>
+<span class="fc" id="L63">        return paymentCallbackHandler.handleCallback(byteBuffer, context);</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

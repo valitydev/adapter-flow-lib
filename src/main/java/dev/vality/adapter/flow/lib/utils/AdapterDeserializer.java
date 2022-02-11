@@ -3,26 +3,26 @@ package dev.vality.adapter.flow.lib.utils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.vality.adapter.common.state.deserializer.DeserializationException;
 import dev.vality.adapter.common.state.deserializer.Deserializer;
-import dev.vality.adapter.flow.lib.model.GeneralExitStateModel;
+import dev.vality.adapter.flow.lib.model.TemporaryContext;
 
 import java.io.IOException;
 
-public class AdapterDeserializer implements Deserializer<GeneralExitStateModel> {
+public class AdapterDeserializer implements Deserializer<TemporaryContext> {
     private final ObjectMapper mapper;
 
-    public GeneralExitStateModel read(byte[] data) {
+    public TemporaryContext read(byte[] data) {
         if (data == null) {
-            return new GeneralExitStateModel();
+            return new TemporaryContext();
         } else {
             try {
-                return this.getMapper().readValue(data, GeneralExitStateModel.class);
+                return this.getMapper().readValue(data, TemporaryContext.class);
             } catch (IOException var3) {
                 throw new IllegalArgumentException(var3);
             }
         }
     }
 
-    public GeneralExitStateModel read(String data) {
+    public TemporaryContext read(String data) {
         throw new DeserializationException("Deserialization not supported");
     }
 

@@ -2,8 +2,8 @@ package dev.vality.adapter.flow.lib.flow.config;
 
 import dev.vality.adapter.common.processor.Processor;
 import dev.vality.adapter.flow.lib.model.BaseResponseModel;
-import dev.vality.adapter.flow.lib.model.GeneralEntryStateModel;
-import dev.vality.adapter.flow.lib.model.GeneralExitStateModel;
+import dev.vality.adapter.flow.lib.model.EntryStateModel;
+import dev.vality.adapter.flow.lib.model.ExitStateModel;
 import dev.vality.adapter.flow.lib.processor.ErrorProcessor;
 import dev.vality.adapter.flow.lib.processor.RedirectProcessor;
 import dev.vality.adapter.flow.lib.processor.SuccessFinishProcessor;
@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Configuration;
 public class ProcessorConfig {
 
     @Bean
-    public Processor<GeneralExitStateModel, BaseResponseModel, GeneralEntryStateModel> baseProcessor() {
+    public Processor<ExitStateModel, BaseResponseModel, EntryStateModel> baseProcessor() {
         ErrorProcessor errorProcessor = new ErrorProcessor();
         SuccessFinishProcessor baseProcessor = new SuccessFinishProcessor(errorProcessor);
         return new RedirectProcessor(baseProcessor);

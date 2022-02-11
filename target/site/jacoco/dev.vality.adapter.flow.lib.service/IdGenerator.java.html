@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>IdGenerator.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">adapter-flow-lib</a> &gt; <a href="index.source.html" class="el_package">dev.vality.adapter.flow.lib.service</a> &gt; <span class="el_source">IdGenerator.java</span></div><h1>IdGenerator.java</h1><pre class="source lang-java linenums">package dev.vality.adapter.flow.lib.service;
+
+import dev.vality.bender.BenderSrv;
+import dev.vality.bender.GenerationResult;
+import dev.vality.bender.GenerationSchema;
+import dev.vality.bender.SequenceSchema;
+import dev.vality.msgpack.Nil;
+import dev.vality.msgpack.Value;
+import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
+import org.springframework.stereotype.Service;
+
+@Service
+<span class="fc" id="L14">@RequiredArgsConstructor</span>
+public class IdGenerator {
+
+    private static final String SEQ_ID = &quot;orderId&quot;;
+<span class="fc" id="L18">    private static final Long INITIAL_VALUE = 1000000000000000L;</span>
+
+    private final BenderSrv.Iface benderClient;
+
+    @org.springframework.beans.factory.annotation.Value(&quot;adapter.prefix&quot;)
+    private String adapterPrefix;
+
+<span class="nc" id="L25">    @SneakyThrows</span>
+    public Long get(String invoiceId) {
+<span class="fc" id="L27">        GenerationSchema schema = GenerationSchema.sequence(new SequenceSchema().setSequenceId(SEQ_ID));</span>
+<span class="fc" id="L28">        GenerationResult result = benderClient.generateID(adapterPrefix + invoiceId, schema, Value.nl(new Nil()));</span>
+<span class="fc" id="L29">        return INITIAL_VALUE + Long.parseLong(result.getInternalId());</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

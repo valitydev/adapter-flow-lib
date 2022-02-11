@@ -3,21 +3,21 @@ package dev.vality.adapter.flow.lib.handler.payment;
 import dev.vality.adapter.common.handler.CommonHandler;
 import dev.vality.adapter.common.model.AdapterContext;
 import dev.vality.adapter.flow.lib.constant.Step;
-import dev.vality.adapter.flow.lib.model.GeneralEntryStateModel;
-import dev.vality.adapter.flow.lib.model.GeneralExitStateModel;
+import dev.vality.adapter.flow.lib.model.EntryStateModel;
+import dev.vality.adapter.flow.lib.model.ExitStateModel;
 import org.apache.thrift.TException;
 
 
-public class DoNothingHandler implements CommonHandler<GeneralExitStateModel, GeneralEntryStateModel> {
+public class DoNothingHandler implements CommonHandler<ExitStateModel, EntryStateModel> {
 
     @Override
-    public boolean isHandle(GeneralEntryStateModel model) {
+    public boolean isHandle(EntryStateModel model) {
         return model.getCurrentStep() == Step.DO_NOTHING;
     }
 
     @Override
-    public GeneralExitStateModel handle(GeneralEntryStateModel entryStateModel) throws TException {
-        var exitStateModel = new GeneralExitStateModel();
+    public ExitStateModel handle(EntryStateModel entryStateModel) throws TException {
+        var exitStateModel = new ExitStateModel();
         exitStateModel.setGeneralEntryStateModel(entryStateModel);
         var adapterContext = new AdapterContext();
         adapterContext.setTrxId(entryStateModel.getBaseRequestModel().getProviderTrxId());

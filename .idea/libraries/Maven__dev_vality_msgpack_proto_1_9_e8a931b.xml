@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: dev.vality:msgpack-proto:1.9-e8a931b">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/dev/vality/msgpack-proto/1.9-e8a931b/msgpack-proto-1.9-e8a931b.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/dev/vality/msgpack-proto/1.9-e8a931b/msgpack-proto-1.9-e8a931b-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/dev/vality/msgpack-proto/1.9-e8a931b/msgpack-proto-1.9-e8a931b-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

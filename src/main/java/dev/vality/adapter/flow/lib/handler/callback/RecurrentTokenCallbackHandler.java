@@ -1,7 +1,9 @@
 package dev.vality.adapter.flow.lib.handler.callback;
 
 import dev.vality.adapter.common.handler.callback.CallbackHandler;
-import dev.vality.adapter.flow.lib.model.GeneralExitStateModel;
+import dev.vality.adapter.common.state.deserializer.Deserializer;
+import dev.vality.adapter.common.state.serializer.StateSerializer;
+import dev.vality.adapter.flow.lib.model.TemporaryContext;
 import dev.vality.adapter.flow.lib.utils.AdapterDeserializer;
 import dev.vality.adapter.flow.lib.utils.AdapterSerializer;
 import dev.vality.adapter.flow.lib.utils.AdapterStateUtils;
@@ -23,12 +25,12 @@ import java.util.Map;
 public class RecurrentTokenCallbackHandler
         implements CallbackHandler<RecurrentTokenCallbackResult, RecurrentTokenContext> {
 
-    private final AdapterDeserializer adapterDeserializer;
-    private final AdapterSerializer adapterSerializer;
+    private final Deserializer<TemporaryContext> adapterDeserializer;
+    private final StateSerializer<TemporaryContext> adapterSerializer;
     private final ParametersDeserializer parametersDeserializer;
 
     public RecurrentTokenCallbackResult handleCallback(ByteBuffer callback, RecurrentTokenContext context) {
-        GeneralExitStateModel generalExitStateModel = initAdapterContext(callback, context);
+        TemporaryContext generalExitStateModel = initAdapterContext(callback, context);
         byte[] callbackResponse = new byte[0];
         return ProxyProviderPackageCreators.createRecurrentTokenCallbackResult(callbackResponse,
                 (new RecurrentTokenProxyResult()).setIntent(RecurrentTokenIntent
@@ -38,21 +40,18 @@ public class RecurrentTokenCallbackHandler
         );
     }
 
-    private GeneralExitStateModel initAdapterContext(ByteBuffer callback, RecurrentTokenContext context) {
-        GeneralExitStateModel generalExitStateModel =
-                AdapterStateUtils.getGeneralExitStateModel(context, this.adapterDeserializer);
+    private TemporaryContext initAdapterContext(ByteBuffer callback, RecurrentTokenContext context) {
+        TemporaryContext temporaryContext = AdapterStateUtils.getTemporaryContext(context, this.adapterDeserializer);
         Map<String, String> parameters = parametersDeserializer.read(callback.array());
-        if (generalExitStateModel != null
-                && generalExitStateModel.getGeneralEntryStateModel() != null
-                && generalExitStateModel.getGeneralEntryStateModel().getBaseRequestModel() != null) {
-            generalExitStateModel.getGeneralEntryStateModel().getBaseRequestModel().setThreeDsData(parameters);
+        if (temporaryContext != null) {
+            temporaryContext.setThreeDsData(parameters);
         } else {
             if (parameters == null || parameters.isEmpty()) {
                 throw new RuntimeException("Unknown parameters or baseModel!");
             }
         }
-        log.info("AdapterContext: {} after callback.", generalExitStateModel);
-        return generalExitStateModel;
+        log.info("AdapterContext: {} after callback.", temporaryContext);
+        return temporaryContext;
     }
 
 }

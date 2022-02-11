@@ -5,6 +5,7 @@ import dev.vality.adapter.common.handler.CommonHandler;
 import dev.vality.adapter.common.handler.ServerHandlerLogDecorator;
 import dev.vality.adapter.common.processor.Processor;
 import dev.vality.adapter.flow.lib.client.RemoteClient;
+import dev.vality.adapter.flow.lib.converter.ExitStateModelToTemporaryContextConverter;
 import dev.vality.adapter.flow.lib.converter.base.EntryModelToBaseRequestModelConverter;
 import dev.vality.adapter.flow.lib.converter.entry.CtxToEntryModelConverter;
 import dev.vality.adapter.flow.lib.converter.entry.RecCtxToEntryModelConverter;
@@ -19,8 +20,8 @@ import dev.vality.adapter.flow.lib.handler.callback.PaymentCallbackHandler;
 import dev.vality.adapter.flow.lib.handler.callback.RecurrentTokenCallbackHandler;
 import dev.vality.adapter.flow.lib.handler.payment.*;
 import dev.vality.adapter.flow.lib.model.BaseResponseModel;
-import dev.vality.adapter.flow.lib.model.GeneralEntryStateModel;
-import dev.vality.adapter.flow.lib.model.GeneralExitStateModel;
+import dev.vality.adapter.flow.lib.model.EntryStateModel;
+import dev.vality.adapter.flow.lib.model.ExitStateModel;
 import dev.vality.adapter.flow.lib.service.*;
 import dev.vality.adapter.flow.lib.utils.*;
 import dev.vality.adapter.helpers.hellgate.HellgateAdapterClient;
@@ -98,13 +99,21 @@ public class HandlerConfig {
     }
 
     @Bean
+    public ExitStateModelToTemporaryContextConverter exitStateModelToTemporaryContextConverter() {
+        return new ExitStateModelToTemporaryContextConverter();
+    }
+
+    @Bean
     public ExitModelToRecTokenProxyResultConverter exitModelToRecTokenProxyResultConverter(
             ErrorMapping errorMapping,
             AdapterSerializer adapterSerializer,
-            RecurrentResultIntentResolver recurrentResultIntentResolver) {
+            RecurrentResultIntentResolver recurrentResultIntentResolver,
+            ExitStateModelToTemporaryContextConverter exitStateModelToTemporaryContextConverter) {
         return new ExitModelToRecTokenProxyResultConverter(errorMapping,
                 adapterSerializer,
-                recurrentResultIntentResolver);
+                recurrentResultIntentResolver,
+                exitStateModelToTemporaryContextConverter
+        );
     }
 
     @Bean
@@ -149,10 +158,12 @@ public class HandlerConfig {
     public ExitModelToProxyResultConverter exitModelToProxyResultConverter(
             ErrorMapping errorMapping,
             AdapterSerializer adapterSerializer,
-            ResultIntentResolver resultIntentResolver) {
+            ResultIntentResolver resultIntentResolver,
+            ExitStateModelToTemporaryContextConverter exitStateModelToTemporaryContextConverter) {
         return new ExitModelToProxyResultConverter(errorMapping,
                 adapterSerializer,
-                resultIntentResolver);
+                resultIntentResolver,
+                exitStateModelToTemporaryContextConverter);
     }
 
     @Bean
@@ -164,8 +175,8 @@ public class HandlerConfig {
     public ServerFlowHandler serverFlowHandler(
             RemoteClient client,
             EntryModelToBaseRequestModelConverter entryModelToBaseRequestModelConverter,
-            Processor<GeneralExitStateModel, BaseResponseModel, GeneralEntryStateModel> baseProcessor,
-            StepResolver<GeneralEntryStateModel, GeneralExitStateModel> stepResolverImpl) {
+            Processor<ExitStateModel, BaseResponseModel, EntryStateModel> baseProcessor,
+            StepResolver<EntryStateModel, ExitStateModel> stepResolverImpl) {
         return new ServerFlowHandler(
                 getHandlers(client, entryModelToBaseRequestModelConverter, baseProcessor),
                 stepResolverImpl);
@@ -175,17 +186,17 @@ public class HandlerConfig {
     public ServerFlowHandler generateTokenFlowHandler(
             RemoteClient client,
             EntryModelToBaseRequestModelConverter entryModelToBaseRequestModelConverter,
-            Processor<GeneralExitStateModel, BaseResponseModel, GeneralEntryStateModel> baseProcessor,
-            StepResolver<GeneralEntryStateModel, GeneralExitStateModel> generateTokenStepResolverImpl) {
+            Processor<ExitStateModel, BaseResponseModel, EntryStateModel> baseProcessor,
+            StepResolver<EntryStateModel, ExitStateModel> generateTokenStepResolverImpl) {
         return new ServerFlowHandler(
                 getHandlers(client, entryModelToBaseRequestModelConverter, baseProcessor),
                 generateTokenStepResolverImpl);
     }
 
-    private List<CommonHandler<GeneralExitStateModel, GeneralEntryStateModel>> getHandlers(
+    private List<CommonHandler<ExitStateModel, EntryStateModel>> getHandlers(
             RemoteClient client,
             EntryModelToBaseRequestModelConverter entryModelToBaseRequestModelConverter,
-            Processor<GeneralExitStateModel, BaseResponseModel, GeneralEntryStateModel> baseProcessor) {
+            Processor<ExitStateModel, BaseResponseModel, EntryStateModel> baseProcessor) {
         return List.of(new AuthHandler(client, entryModelToBaseRequestModelConverter, baseProcessor),
                 new CancelHandler(client, entryModelToBaseRequestModelConverter, baseProcessor),
                 new CaptureHandler(client, entryModelToBaseRequestModelConverter, baseProcessor),

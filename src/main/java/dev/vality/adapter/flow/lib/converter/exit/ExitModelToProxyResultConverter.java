@@ -1,6 +1,7 @@
 package dev.vality.adapter.flow.lib.converter.exit;
 
-import dev.vality.adapter.flow.lib.model.GeneralExitStateModel;
+import dev.vality.adapter.flow.lib.converter.ExitStateModelToTemporaryContextConverter;
+import dev.vality.adapter.flow.lib.model.ExitStateModel;
 import dev.vality.adapter.flow.lib.service.ResultIntentResolver;
 import dev.vality.adapter.flow.lib.utils.AdapterSerializer;
 import dev.vality.damsel.proxy_provider.Intent;
@@ -13,21 +14,20 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import java.util.Map;
-
 import static dev.vality.java.damsel.utils.creators.ProxyProviderPackageCreators.createProxyResultFailure;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class ExitModelToProxyResultConverter implements Converter<GeneralExitStateModel, PaymentProxyResult> {
+public class ExitModelToProxyResultConverter implements Converter<ExitStateModel, PaymentProxyResult> {
 
     private final ErrorMapping errorMapping;
-    private final AdapterSerializer adapterSerializer;
+    private final AdapterSerializer serializer;
     private final ResultIntentResolver resultIntentResolver;
+    private final ExitStateModelToTemporaryContextConverter contextConverter;
 
     @Override
-    public PaymentProxyResult convert(GeneralExitStateModel exitStateModel) {
+    public PaymentProxyResult convert(ExitStateModel exitStateModel) {
         //---error---
         if (StringUtils.hasText(exitStateModel.getErrorCode())) {
             return createProxyResultFailure(
@@ -37,7 +37,7 @@ public class ExitModelToProxyResultConverter implements Converter<GeneralExitSta
         Intent intent = resultIntentResolver.initIntentByStep(exitStateModel);
 
         return new PaymentProxyResult(intent)
-                .setNextState(adapterSerializer.writeByte(exitStateModel))
+                .setNextState(serializer.writeByte(contextConverter.convert(exitStateModel)))
                 .setTrx(DomainPackageCreators.createTransactionInfo(
                         exitStateModel.getProviderTrxId(), exitStateModel.getTrxExtra())
                 );

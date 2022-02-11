@@ -32,16 +32,16 @@ import java.util.UUID;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class RecCtxToEntryModelConverter implements Converter<RecurrentTokenContext, GeneralEntryStateModel> {
+public class RecCtxToEntryModelConverter implements Converter<RecurrentTokenContext, EntryStateModel> {
 
     private final AdapterDeserializer adapterDeserializer;
     private final CdsClientStorage cdsStorage;
     private final IdGenerator idGenerator;
 
     @Override
-    public GeneralEntryStateModel convert(RecurrentTokenContext context) {
-        GeneralExitStateModel generalExitStateModel =
-                AdapterStateUtils.getGeneralExitStateModel(context, adapterDeserializer);
+    public EntryStateModel convert(RecurrentTokenContext context) {
+        TemporaryContext generalExitStateModel =
+                AdapterStateUtils.getTemporaryContext(context, adapterDeserializer);
         RecurrentTokenInfo tokenInfo = context.getTokenInfo();
         RecurrentPaymentTool recurrentPaymentTool = tokenInfo.getPaymentTool();
         DisposablePaymentResource paymentResource = recurrentPaymentTool.getPaymentResource();
@@ -50,8 +50,8 @@ public class RecCtxToEntryModelConverter implements Converter<RecurrentTokenCont
             throw new IllegalArgumentException("Wrong recurrentPaymentTool. It should be bank card");
         }
         TransactionInfo transactionInfo = tokenInfo.getTrx();
-        GeneralEntryStateModel.GeneralEntryStateModelBuilder entryStateModelBuilder =
-                GeneralEntryStateModel.builder();
+        EntryStateModel.EntryStateModelBuilder entryStateModelBuilder =
+                EntryStateModel.builder();
         String orderId = idGenerator.get(UUID.randomUUID().toString()).toString();
 
         MobilePaymentData.MobilePaymentDataBuilder mobilePaymentDataBuilder = MobilePaymentData.builder();

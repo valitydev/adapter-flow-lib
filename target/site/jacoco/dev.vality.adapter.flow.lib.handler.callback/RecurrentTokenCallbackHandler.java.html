@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RecurrentTokenCallbackHandler.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">adapter-flow-lib</a> &gt; <a href="index.source.html" class="el_package">dev.vality.adapter.flow.lib.handler.callback</a> &gt; <span class="el_source">RecurrentTokenCallbackHandler.java</span></div><h1>RecurrentTokenCallbackHandler.java</h1><pre class="source lang-java linenums">package dev.vality.adapter.flow.lib.handler.callback;
+
+import dev.vality.adapter.common.handler.callback.CallbackHandler;
+import dev.vality.adapter.flow.lib.model.GeneralExitStateModel;
+import dev.vality.adapter.flow.lib.utils.AdapterDeserializer;
+import dev.vality.adapter.flow.lib.utils.AdapterSerializer;
+import dev.vality.adapter.flow.lib.utils.AdapterStateUtils;
+import dev.vality.adapter.flow.lib.utils.ParametersDeserializer;
+import dev.vality.damsel.proxy_provider.RecurrentTokenCallbackResult;
+import dev.vality.damsel.proxy_provider.RecurrentTokenContext;
+import dev.vality.damsel.proxy_provider.RecurrentTokenIntent;
+import dev.vality.damsel.proxy_provider.RecurrentTokenProxyResult;
+import dev.vality.java.damsel.utils.creators.BasePackageCreators;
+import dev.vality.java.damsel.utils.creators.ProxyProviderPackageCreators;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+import java.nio.ByteBuffer;
+import java.util.Map;
+
+<span class="fc" id="L21">@Slf4j</span>
+<span class="fc" id="L22">@RequiredArgsConstructor</span>
+public class RecurrentTokenCallbackHandler
+        implements CallbackHandler&lt;RecurrentTokenCallbackResult, RecurrentTokenContext&gt; {
+
+    private final AdapterDeserializer adapterDeserializer;
+    private final AdapterSerializer adapterSerializer;
+    private final ParametersDeserializer parametersDeserializer;
+
+    public RecurrentTokenCallbackResult handleCallback(ByteBuffer callback, RecurrentTokenContext context) {
+<span class="fc" id="L31">        GeneralExitStateModel generalExitStateModel = initAdapterContext(callback, context);</span>
+<span class="fc" id="L32">        byte[] callbackResponse = new byte[0];</span>
+<span class="fc" id="L33">        return ProxyProviderPackageCreators.createRecurrentTokenCallbackResult(callbackResponse,</span>
+<span class="fc" id="L34">                (new RecurrentTokenProxyResult()).setIntent(RecurrentTokenIntent</span>
+<span class="fc" id="L35">                                .sleep(ProxyProviderPackageCreators.createSleepIntent(</span>
+<span class="fc" id="L36">                                        BasePackageCreators.createTimerTimeout(0))))</span>
+<span class="fc" id="L37">                        .setNextState(this.adapterSerializer.writeByte(generalExitStateModel))</span>
+        );
+    }
+
+    private GeneralExitStateModel initAdapterContext(ByteBuffer callback, RecurrentTokenContext context) {
+<span class="fc" id="L42">        GeneralExitStateModel generalExitStateModel =</span>
+<span class="fc" id="L43">                AdapterStateUtils.getGeneralExitStateModel(context, this.adapterDeserializer);</span>
+<span class="fc" id="L44">        Map&lt;String, String&gt; parameters = parametersDeserializer.read(callback.array());</span>
+<span class="pc bpc" id="L45" title="1 of 2 branches missed.">        if (generalExitStateModel != null</span>
+<span class="pc bpc" id="L46" title="1 of 2 branches missed.">                &amp;&amp; generalExitStateModel.getGeneralEntryStateModel() != null</span>
+<span class="pc bpc" id="L47" title="1 of 2 branches missed.">                &amp;&amp; generalExitStateModel.getGeneralEntryStateModel().getBaseRequestModel() != null) {</span>
+<span class="fc" id="L48">            generalExitStateModel.getGeneralEntryStateModel().getBaseRequestModel().setThreeDsData(parameters);</span>
+        } else {
+<span class="nc bnc" id="L50" title="All 4 branches missed.">            if (parameters == null || parameters.isEmpty()) {</span>
+<span class="nc" id="L51">                throw new RuntimeException(&quot;Unknown parameters or baseModel!&quot;);</span>
+            }
+        }
+<span class="fc" id="L54">        log.info(&quot;AdapterContext: {} after callback.&quot;, generalExitStateModel);</span>
+<span class="fc" id="L55">        return generalExitStateModel;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

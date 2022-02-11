@@ -4,8 +4,8 @@ import dev.vality.adapter.common.model.AdapterContext;
 import dev.vality.adapter.common.processor.Processor;
 import dev.vality.adapter.flow.lib.constant.MetaData;
 import dev.vality.adapter.flow.lib.model.BaseResponseModel;
-import dev.vality.adapter.flow.lib.model.GeneralEntryStateModel;
-import dev.vality.adapter.flow.lib.model.GeneralExitStateModel;
+import dev.vality.adapter.flow.lib.model.EntryStateModel;
+import dev.vality.adapter.flow.lib.model.ExitStateModel;
 import dev.vality.adapter.flow.lib.utils.ErrorUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,17 +17,17 @@ import java.util.Map;
 @Slf4j
 @RequiredArgsConstructor
 public class SuccessFinishProcessor
-        implements Processor<GeneralExitStateModel, BaseResponseModel, GeneralEntryStateModel> {
+        implements Processor<ExitStateModel, BaseResponseModel, EntryStateModel> {
 
-    private final Processor<GeneralExitStateModel, BaseResponseModel, GeneralEntryStateModel> nextProcessor;
+    private final Processor<ExitStateModel, BaseResponseModel, EntryStateModel> nextProcessor;
 
     @Override
-    public GeneralExitStateModel process(BaseResponseModel response, GeneralEntryStateModel entryStateModel) {
+    public ExitStateModel process(BaseResponseModel response, EntryStateModel entryStateModel) {
         if (!ErrorUtils.isError(response)) {
             log.debug("Start success process response: {} entryStateModel: {}", response, entryStateModel);
             AdapterContext adapterContext = new AdapterContext();
             adapterContext.setTrxId(response.getProviderTrxId());
-            GeneralExitStateModel exitStateModel = new GeneralExitStateModel();
+            ExitStateModel exitStateModel = new ExitStateModel();
             exitStateModel.setGeneralEntryStateModel(entryStateModel);
             exitStateModel.setProviderTrxId(response.getProviderTrxId());
             Map<String, String> saveData = response.getSaveData();
@@ -52,7 +52,7 @@ public class SuccessFinishProcessor
         throw new IllegalStateException("Processor didn't match for response " + response);
     }
 
-    private String initRecurrentToken(BaseResponseModel response, GeneralEntryStateModel entryStateModel) {
+    private String initRecurrentToken(BaseResponseModel response, EntryStateModel entryStateModel) {
         if (StringUtils.hasText(response.getRecurrentToken())) {
             return response.getRecurrentToken();
         } else if (entryStateModel.getBaseRequestModel().getRecurrentPaymentData() != null

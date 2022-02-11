@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ThreeDsAdapterService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">adapter-flow-lib</a> &gt; <a href="index.source.html" class="el_package">dev.vality.adapter.flow.lib.service</a> &gt; <span class="el_source">ThreeDsAdapterService.java</span></div><h1>ThreeDsAdapterService.java</h1><pre class="source lang-java linenums">package dev.vality.adapter.flow.lib.service;
+
+import dev.vality.adapter.flow.lib.utils.CallbackUrlExtractor;
+import dev.vality.adapter.flow.lib.utils.ParameterSerializer;
+import dev.vality.adapter.flow.lib.utils.ParametersDeserializer;
+import dev.vality.adapter.helpers.hellgate.HellgateAdapterClient;
+import dev.vality.adapter.helpers.hellgate.exception.HellgateException;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
+import java.util.Map;
+import java.util.function.BiFunction;
+
+<span class="fc" id="L20">@Slf4j</span>
+@Component
+<span class="fc" id="L22">@RequiredArgsConstructor</span>
+public class ThreeDsAdapterService {
+
+    private final HellgateAdapterClient hgClient;
+    private final ParameterSerializer parameterSerializer;
+    private final ParametersDeserializer parametersDeserializer;
+    private final TagManagementService tagManagementService;
+
+    public String receivePaymentIncomingParameters(HttpServletRequest servletRequest,
+                                                   HttpServletResponse servletResponse) {
+<span class="nc" id="L32">        return this.processCallback(servletRequest, servletResponse, hgClient::processPaymentCallback);</span>
+    }
+
+    public String receiveRecurrentIncomingParameters(HttpServletRequest servletRequest,
+                                                     HttpServletResponse servletResponse) {
+<span class="nc" id="L37">        return this.processCallback(servletRequest, servletResponse, hgClient::processRecurrentTokenCallback);</span>
+    }
+
+    private String processCallback(HttpServletRequest servletRequest,
+                                   HttpServletResponse servletResponse,
+                                   BiFunction&lt;String, ByteBuffer, ByteBuffer&gt; hgFunction) {
+<span class="nc" id="L43">        String resp = &quot;&quot;;</span>
+<span class="nc" id="L44">        Map&lt;String, String&gt; parameters = this.parametersDeserializer.read(servletRequest);</span>
+<span class="nc" id="L45">        log.info(&quot;-&gt; callback 3ds {}&quot;, parameters);</span>
+
+        try {
+<span class="nc" id="L48">            ByteBuffer callback = ByteBuffer.wrap(this.parameterSerializer.writeByte(parameters));</span>
+<span class="nc" id="L49">            ByteBuffer response = hgFunction.apply(tagManagementService.findTag(parameters), callback);</span>
+<span class="nc" id="L50">            resp = new String(response.array(), StandardCharsets.UTF_8);</span>
+<span class="nc bnc" id="L51" title="All 2 branches missed.">            if (StringUtils.hasText(parameters.get(CallbackUrlExtractor.TERMINATION_URI))) {</span>
+<span class="nc" id="L52">                servletResponse.sendRedirect(parameters.get(CallbackUrlExtractor.TERMINATION_URI));</span>
+            }
+<span class="nc" id="L54">        } catch (HellgateException var9) {</span>
+<span class="nc" id="L55">            log.warn(&quot;Failed handle callback for recurrent&quot;, var9);</span>
+<span class="nc" id="L56">        } catch (Exception var10) {</span>
+<span class="nc" id="L57">            log.error(&quot;Failed handle callback for recurrent&quot;, var10);</span>
+<span class="nc" id="L58">        }</span>
+
+<span class="nc" id="L60">        log.info(&quot;&lt;- callback 3ds {}&quot;, resp);</span>
+<span class="nc" id="L61">        return resp;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

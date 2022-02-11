@@ -23,7 +23,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.test.context.ContextConfiguration;
 
-import static dev.vality.adapter.flow.lib.flow.ForwardRecurrentPaymentNon3dsTest.RECURRENT_TOKEN;
+import static dev.vality.adapter.flow.lib.flow.full.three.ds.ForwardRecurrentPaymentNon3dsTest.RECURRENT_TOKEN;
 import static dev.vality.java.damsel.utils.creators.DomainPackageCreators.createTargetProcessed;
 import static org.junit.jupiter.api.Assertions.*;
 

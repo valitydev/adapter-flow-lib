@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Finish3dsHandler.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">adapter-flow-lib</a> &gt; <a href="index.source.html" class="el_package">dev.vality.adapter.flow.lib.handler.payment</a> &gt; <span class="el_source">Finish3dsHandler.java</span></div><h1>Finish3dsHandler.java</h1><pre class="source lang-java linenums">package dev.vality.adapter.flow.lib.handler.payment;
+
+import dev.vality.adapter.common.handler.CommonHandlerImpl;
+import dev.vality.adapter.common.processor.Processor;
+import dev.vality.adapter.flow.lib.client.RemoteClient;
+import dev.vality.adapter.flow.lib.constant.Step;
+import dev.vality.adapter.flow.lib.model.BaseRequestModel;
+import dev.vality.adapter.flow.lib.model.BaseResponseModel;
+import dev.vality.adapter.flow.lib.model.GeneralEntryStateModel;
+import dev.vality.adapter.flow.lib.model.GeneralExitStateModel;
+import org.springframework.core.convert.converter.Converter;
+
+public class Finish3dsHandler
+        extends CommonHandlerImpl&lt;BaseRequestModel, BaseResponseModel, GeneralEntryStateModel, GeneralExitStateModel&gt; {
+
+    public Finish3dsHandler(
+            RemoteClient client,
+            Converter&lt;GeneralEntryStateModel, BaseRequestModel&gt; converter,
+            Processor&lt;GeneralExitStateModel, BaseResponseModel, GeneralEntryStateModel&gt; responseProcessorChain
+    ) {
+<span class="fc" id="L21">        super(client::finish3ds, converter, responseProcessorChain);</span>
+<span class="fc" id="L22">    }</span>
+
+    @Override
+    public boolean isHandle(GeneralEntryStateModel entryStateModel) {
+<span class="fc bfc" id="L26" title="All 2 branches covered.">        return Step.FINISH_THREE_DS_V1 == entryStateModel.getCurrentStep();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

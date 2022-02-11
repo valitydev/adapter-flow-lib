@@ -2,8 +2,8 @@ package dev.vality.adapter.flow.lib.service;
 
 import dev.vality.adapter.common.properties.CommonTimerProperties;
 import dev.vality.adapter.flow.lib.constant.Step;
-import dev.vality.adapter.flow.lib.model.GeneralEntryStateModel;
-import dev.vality.adapter.flow.lib.model.GeneralExitStateModel;
+import dev.vality.adapter.flow.lib.model.EntryStateModel;
+import dev.vality.adapter.flow.lib.model.ExitStateModel;
 import dev.vality.adapter.flow.lib.model.ThreeDsData;
 import dev.vality.adapter.flow.lib.utils.CallbackUrlExtractor;
 import dev.vality.damsel.base.Timer;
@@ -24,7 +24,7 @@ public class RecurrentResultIntentResolver {
     private final CallbackUrlExtractor callbackUrlExtractor;
     private final TagManagementService tagManagementService;
 
-    public RecurrentTokenIntent initIntentByStep(GeneralExitStateModel exitStateModel) {
+    public RecurrentTokenIntent initIntentByStep(ExitStateModel exitStateModel) {
         Step nextStep = exitStateModel.getNextStep();
         return switch (nextStep) {
             case AUTH, REFUND, CAPTURE -> RecurrentTokenIntent.sleep(
@@ -38,8 +38,8 @@ public class RecurrentResultIntentResolver {
         };
     }
 
-    private RecurrentTokenIntent createIntentWithSuspendIntent(GeneralExitStateModel exitStateModel) {
-        GeneralEntryStateModel entryStateModel = exitStateModel.getGeneralEntryStateModel();
+    private RecurrentTokenIntent createIntentWithSuspendIntent(ExitStateModel exitStateModel) {
+        EntryStateModel entryStateModel = exitStateModel.getGeneralEntryStateModel();
         ThreeDsData threeDsData = exitStateModel.getThreeDsData();
         Map<String, String> params = new HashMap<>(threeDsData.getParameters());
         params.put(TERM_URL.getValue(), callbackUrlExtractor.extractCallbackUrl(
