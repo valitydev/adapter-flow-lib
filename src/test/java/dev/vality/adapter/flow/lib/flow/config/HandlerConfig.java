@@ -1,27 +1,23 @@
 package dev.vality.adapter.flow.lib.flow.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.vality.adapter.common.handler.CommonHandler;
 import dev.vality.adapter.common.handler.ServerHandlerLogDecorator;
-import dev.vality.adapter.common.processor.Processor;
-import dev.vality.adapter.flow.lib.client.RemoteClient;
 import dev.vality.adapter.flow.lib.converter.ExitStateModelToTemporaryContextConverter;
 import dev.vality.adapter.flow.lib.converter.base.EntryModelToBaseRequestModelConverter;
 import dev.vality.adapter.flow.lib.converter.entry.CtxToEntryModelConverter;
 import dev.vality.adapter.flow.lib.converter.entry.RecCtxToEntryModelConverter;
 import dev.vality.adapter.flow.lib.converter.exit.ExitModelToProxyResultConverter;
 import dev.vality.adapter.flow.lib.converter.exit.ExitModelToRecTokenProxyResultConverter;
-import dev.vality.adapter.flow.lib.flow.StepResolver;
+import dev.vality.adapter.flow.lib.flow.RecurrentResultIntentResolver;
+import dev.vality.adapter.flow.lib.flow.ResultIntentResolver;
+import dev.vality.adapter.flow.lib.flow.full.RecurrentResultIntentResolverImpl;
+import dev.vality.adapter.flow.lib.flow.full.ResultIntentResolverImpl;
 import dev.vality.adapter.flow.lib.flow.utils.PaymentContextValidator;
 import dev.vality.adapter.flow.lib.flow.utils.RecurrentTokenContextValidator;
 import dev.vality.adapter.flow.lib.handler.AdapterServerHandler;
 import dev.vality.adapter.flow.lib.handler.ServerFlowHandler;
 import dev.vality.adapter.flow.lib.handler.callback.PaymentCallbackHandler;
 import dev.vality.adapter.flow.lib.handler.callback.RecurrentTokenCallbackHandler;
-import dev.vality.adapter.flow.lib.handler.payment.*;
-import dev.vality.adapter.flow.lib.model.BaseResponseModel;
-import dev.vality.adapter.flow.lib.model.EntryStateModel;
-import dev.vality.adapter.flow.lib.model.ExitStateModel;
 import dev.vality.adapter.flow.lib.service.*;
 import dev.vality.adapter.flow.lib.utils.*;
 import dev.vality.adapter.helpers.hellgate.HellgateAdapterClient;
@@ -89,15 +85,6 @@ public class HandlerConfig {
                 idGenerator);
     }
 
-
-    @Bean
-    public RecurrentResultIntentResolver recurrentResultIntentResolver(
-            TimerProperties timerProperties,
-            CallbackUrlExtractor callbackUrlExtractor,
-            TagManagementService tagManagementService) {
-        return new RecurrentResultIntentResolver(timerProperties, callbackUrlExtractor, tagManagementService);
-    }
-
     @Bean
     public ExitStateModelToTemporaryContextConverter exitStateModelToTemporaryContextConverter() {
         return new ExitStateModelToTemporaryContextConverter();
@@ -147,14 +134,6 @@ public class HandlerConfig {
     }
 
     @Bean
-    public ResultIntentResolver resultIntentResolver(
-            TimerProperties timerProperties,
-            CallbackUrlExtractor callbackUrlExtractor,
-            TagManagementService tagManagementService) {
-        return new ResultIntentResolver(timerProperties, callbackUrlExtractor, tagManagementService);
-    }
-
-    @Bean
     public ExitModelToProxyResultConverter exitModelToProxyResultConverter(
             ErrorMapping errorMapping,
             TemporaryContextSerializer temporaryContextSerializer,
@@ -169,43 +148,6 @@ public class HandlerConfig {
     @Bean
     public EntryModelToBaseRequestModelConverter entryModelToBaseRequestModelConverter() {
         return new EntryModelToBaseRequestModelConverter();
-    }
-
-    @Bean
-    public ServerFlowHandler serverFlowHandler(
-            RemoteClient client,
-            EntryModelToBaseRequestModelConverter entryModelToBaseRequestModelConverter,
-            Processor<ExitStateModel, BaseResponseModel, EntryStateModel> baseProcessor,
-            StepResolver<EntryStateModel, ExitStateModel> stepResolverImpl) {
-        return new ServerFlowHandler(
-                getHandlers(client, entryModelToBaseRequestModelConverter, baseProcessor),
-                stepResolverImpl);
-    }
-
-    @Bean
-    public ServerFlowHandler generateTokenFlowHandler(
-            RemoteClient client,
-            EntryModelToBaseRequestModelConverter entryModelToBaseRequestModelConverter,
-            Processor<ExitStateModel, BaseResponseModel, EntryStateModel> baseProcessor,
-            StepResolver<EntryStateModel, ExitStateModel> generateTokenStepResolverImpl) {
-        return new ServerFlowHandler(
-                getHandlers(client, entryModelToBaseRequestModelConverter, baseProcessor),
-                generateTokenStepResolverImpl);
-    }
-
-    private List<CommonHandler<ExitStateModel, EntryStateModel>> getHandlers(
-            RemoteClient client,
-            EntryModelToBaseRequestModelConverter entryModelToBaseRequestModelConverter,
-            Processor<ExitStateModel, BaseResponseModel, EntryStateModel> baseProcessor) {
-        return List.of(new AuthHandler(client, entryModelToBaseRequestModelConverter, baseProcessor),
-                new CancelHandler(client, entryModelToBaseRequestModelConverter, baseProcessor),
-                new CaptureHandler(client, entryModelToBaseRequestModelConverter, baseProcessor),
-                new Check3dsV2Handler(client, entryModelToBaseRequestModelConverter, baseProcessor),
-                new DoNothingHandler(),
-                new Finish3dsHandler(client, entryModelToBaseRequestModelConverter, baseProcessor),
-                new Finish3dsV2Handler(client, entryModelToBaseRequestModelConverter, baseProcessor),
-                new PaymentHandler(client, entryModelToBaseRequestModelConverter, baseProcessor),
-                new RefundHandler(client, entryModelToBaseRequestModelConverter, baseProcessor));
     }
 
     @Bean

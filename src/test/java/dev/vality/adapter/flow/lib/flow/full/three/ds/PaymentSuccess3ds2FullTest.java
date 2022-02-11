@@ -1,8 +1,10 @@
 package dev.vality.adapter.flow.lib.flow.full.three.ds;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import dev.vality.adapter.flow.lib.constant.Status;
 import dev.vality.adapter.flow.lib.constant.Step;
 import dev.vality.adapter.flow.lib.flow.AbstractPaymentTest;
+import dev.vality.adapter.flow.lib.flow.full.three.ds.config.FullThreeDsFlowConfig;
 import dev.vality.adapter.flow.lib.flow.utils.BeanUtils;
 import dev.vality.adapter.flow.lib.flow.utils.MockUtil;
 import dev.vality.adapter.flow.lib.model.BaseResponseModel;
@@ -16,6 +18,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -29,6 +32,7 @@ import static org.mockito.ArgumentMatchers.any;
 
 @Slf4j
 @ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = FullThreeDsFlowConfig.class)
 @TestPropertySource(properties = {"error-mapping.file=classpath:fixture/errors.json",
         "adapter.callbackUrl=http://localhost:8080/test",
         "server.rest.endpoint=adapter",
@@ -45,9 +49,11 @@ public class PaymentSuccess3ds2FullTest extends AbstractPaymentTest {
 
         BaseResponseModel baseResponseModelCheck = BeanUtils.createBaseResponseModel();
         baseResponseModelCheck.setThreeDsData(BeanUtils.create3Ds2FullCheck());
+        baseResponseModelCheck.setStatus(Status.NEED_REDIRECT);
 
         BaseResponseModel baseResponseModelFinish = BeanUtils.createBaseResponseModel();
         baseResponseModelFinish.setThreeDsData(BeanUtils.create3Ds2FullFinish());
+        baseResponseModelFinish.setStatus(Status.NEED_REDIRECT);
 
         BaseResponseModel baseResponseModel = BeanUtils.createBaseResponseModel();
 

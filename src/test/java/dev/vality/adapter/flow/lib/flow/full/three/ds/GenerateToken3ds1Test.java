@@ -1,8 +1,10 @@
 package dev.vality.adapter.flow.lib.flow.full.three.ds;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import dev.vality.adapter.flow.lib.constant.Status;
 import dev.vality.adapter.flow.lib.constant.Step;
 import dev.vality.adapter.flow.lib.flow.AbstractGenerateTokenTest;
+import dev.vality.adapter.flow.lib.flow.full.three.ds.config.FullThreeDsFlowConfig;
 import dev.vality.adapter.flow.lib.flow.utils.BeanUtils;
 import dev.vality.adapter.flow.lib.flow.utils.MockUtil;
 import dev.vality.adapter.flow.lib.model.BaseResponseModel;
@@ -15,6 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -28,6 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 
 @ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = FullThreeDsFlowConfig.class)
 @TestPropertySource(properties = {"server.rest.port=8083",
         "error-mapping.file=classpath:fixture/errors.json",
         "service.secret.enabled=true"})
@@ -40,14 +44,16 @@ public class GenerateToken3ds1Test extends AbstractGenerateTokenTest {
 
         BaseResponseModel baseResponseModel = BeanUtils.createBaseResponseModel();
         baseResponseModel.setThreeDsData(BeanUtils.create3Ds1(baseResponseModel));
+        baseResponseModel.setStatus(Status.NEED_REDIRECT);
 
         BaseResponseModel baseResponseModelRec = BeanUtils.createBaseResponseModel();
         baseResponseModelRec.setRecurrentToken(RECURRENT_TOKEN);
 
         Mockito.when(client.auth(any())).thenReturn(baseResponseModel);
         Mockito.when(client.pay(any())).thenReturn(baseResponseModel);
-        Mockito.when(client.finish3ds(any())).thenReturn(BeanUtils.createBaseResponseModel());
-        Mockito.when(client.refund(any())).thenReturn(BeanUtils.createBaseResponseModel());
+
+        Mockito.when(client.finish3ds(any())).thenReturn(baseResponseModelRec);
+        Mockito.when(client.refund(any())).thenReturn(baseResponseModelRec);
         Mockito.when(client.capture(any())).thenReturn(baseResponseModelRec);
     }
 

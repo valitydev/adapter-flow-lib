@@ -1,10 +1,12 @@
-package dev.vality.adapter.flow.lib.service;
+package dev.vality.adapter.flow.lib.flow.full;
 
 import dev.vality.adapter.common.properties.CommonTimerProperties;
 import dev.vality.adapter.flow.lib.constant.Step;
+import dev.vality.adapter.flow.lib.flow.ResultIntentResolver;
 import dev.vality.adapter.flow.lib.model.EntryStateModel;
 import dev.vality.adapter.flow.lib.model.ExitStateModel;
 import dev.vality.adapter.flow.lib.model.ThreeDsData;
+import dev.vality.adapter.flow.lib.service.TagManagementService;
 import dev.vality.adapter.flow.lib.utils.CallbackUrlExtractor;
 import dev.vality.damsel.proxy_provider.Intent;
 import dev.vality.java.damsel.utils.creators.ProxyProviderPackageCreators;
@@ -18,18 +20,18 @@ import static dev.vality.java.damsel.utils.creators.ProxyProviderPackageCreators
 import static dev.vality.java.damsel.utils.extractors.OptionsExtractors.extractRedirectTimeout;
 
 @RequiredArgsConstructor
-public class ResultIntentResolver {
+public class ResultIntentResolverImpl implements ResultIntentResolver {
 
     private final CommonTimerProperties timerProperties;
     private final CallbackUrlExtractor callbackUrlExtractor;
     private final TagManagementService tagManagementService;
 
+    @Override
     public Intent initIntentByStep(ExitStateModel exitStateModel) {
         Step nextStep = exitStateModel.getNextStep();
         EntryStateModel entryStateModel = exitStateModel.getGeneralEntryStateModel();
         Step currentStep = entryStateModel.getCurrentStep();
         return switch (nextStep) {
-            case AUTH -> createIntentWithSleepIntent(0);
             case FINISH_THREE_DS_V1, CHECK_NEED_3DS_V2, FINISH_THREE_DS_V2 -> createIntentWithSuspendIntent(
                     exitStateModel);
             case DO_NOTHING -> switch (currentStep) {

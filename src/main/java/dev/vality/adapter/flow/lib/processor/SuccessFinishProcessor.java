@@ -3,6 +3,7 @@ package dev.vality.adapter.flow.lib.processor;
 import dev.vality.adapter.common.model.AdapterContext;
 import dev.vality.adapter.common.processor.Processor;
 import dev.vality.adapter.flow.lib.constant.MetaData;
+import dev.vality.adapter.flow.lib.constant.Status;
 import dev.vality.adapter.flow.lib.model.BaseResponseModel;
 import dev.vality.adapter.flow.lib.model.EntryStateModel;
 import dev.vality.adapter.flow.lib.model.ExitStateModel;
@@ -23,13 +24,15 @@ public class SuccessFinishProcessor
 
     @Override
     public ExitStateModel process(BaseResponseModel response, EntryStateModel entryStateModel) {
-        if (!ErrorUtils.isError(response)) {
+        if (response.getStatus() == Status.SUCCESS
+                && !ErrorUtils.isError(response)) {
             log.debug("Start success process response: {} entryStateModel: {}", response, entryStateModel);
             AdapterContext adapterContext = new AdapterContext();
             adapterContext.setTrxId(response.getProviderTrxId());
             ExitStateModel exitStateModel = new ExitStateModel();
             exitStateModel.setGeneralEntryStateModel(entryStateModel);
             exitStateModel.setProviderTrxId(response.getProviderTrxId());
+            exitStateModel.setLastOperationStatus(response.getStatus());
             Map<String, String> saveData = response.getSaveData();
             if (entryStateModel.getBaseRequestModel().getRecurrentPaymentData() != null
                     && entryStateModel.getBaseRequestModel().getRecurrentPaymentData().isMakeRecurrent()) {

@@ -1,8 +1,8 @@
-package dev.vality.adapter.flow.lib.flow.full.three.ds;
+package dev.vality.adapter.flow.lib.flow.simple.redirect;
 
 import dev.vality.adapter.flow.lib.constant.Step;
 import dev.vality.adapter.flow.lib.flow.AbstractPaymentTest;
-import dev.vality.adapter.flow.lib.flow.full.three.ds.config.FullThreeDsFlowConfig;
+import dev.vality.adapter.flow.lib.flow.simple.redirect.config.SimpleRedirectWithPollingDsFlowConfig;
 import dev.vality.adapter.flow.lib.flow.utils.BeanUtils;
 import dev.vality.adapter.flow.lib.flow.utils.MockUtil;
 import dev.vality.adapter.flow.lib.model.BaseResponseModel;
@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = FullThreeDsFlowConfig.class)
+@ContextConfiguration(classes = SimpleRedirectWithPollingDsFlowConfig.class)
 @TestPropertySource(properties = {"server.rest.port=8083",
         "error-mapping.file=classpath:fixture/errors.json",
         "service.secret.enabled=true"})

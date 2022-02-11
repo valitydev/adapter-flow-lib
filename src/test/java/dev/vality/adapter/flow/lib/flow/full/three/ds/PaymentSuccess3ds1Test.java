@@ -1,8 +1,10 @@
 package dev.vality.adapter.flow.lib.flow.full.three.ds;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import dev.vality.adapter.flow.lib.constant.Status;
 import dev.vality.adapter.flow.lib.constant.Step;
 import dev.vality.adapter.flow.lib.flow.AbstractPaymentTest;
+import dev.vality.adapter.flow.lib.flow.full.three.ds.config.FullThreeDsFlowConfig;
 import dev.vality.adapter.flow.lib.flow.utils.BeanUtils;
 import dev.vality.adapter.flow.lib.flow.utils.MockUtil;
 import dev.vality.adapter.flow.lib.model.BaseResponseModel;
@@ -20,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -34,6 +37,7 @@ import static org.mockito.ArgumentMatchers.any;
 
 @Slf4j
 @ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = FullThreeDsFlowConfig.class)
 @TestPropertySource(properties = {"error-mapping.file=classpath:fixture/errors.json",
         "adapter.callbackUrl=http://localhost:8080/test",
         "server.rest.endpoint=adapter",
@@ -57,11 +61,15 @@ public class PaymentSuccess3ds1Test extends AbstractPaymentTest {
 
         BaseResponseModel baseResponseModel = BeanUtils.createBaseResponseModel();
         baseResponseModel.setThreeDsData(BeanUtils.create3Ds1(baseResponseModel));
+        baseResponseModel.setStatus(Status.NEED_REDIRECT);
+
         Mockito.when(client.auth(any())).thenReturn(baseResponseModel);
         Mockito.when(client.pay(any())).thenReturn(baseResponseModel);
-        Mockito.when(client.capture(any())).thenReturn(baseResponseModel);
-        Mockito.when(client.finish3ds(any())).thenReturn(baseResponseModel);
-        Mockito.when(client.refund(any())).thenReturn(baseResponseModel);
+
+        BaseResponseModel successResponseModel = BeanUtils.createBaseResponseModel();
+        Mockito.when(client.capture(any())).thenReturn(successResponseModel);
+        Mockito.when(client.finish3ds(any())).thenReturn(successResponseModel);
+        Mockito.when(client.refund(any())).thenReturn(successResponseModel);
     }
 
     @Test

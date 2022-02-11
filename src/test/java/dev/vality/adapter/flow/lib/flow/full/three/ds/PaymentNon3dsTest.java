@@ -1,6 +1,7 @@
 package dev.vality.adapter.flow.lib.flow.full.three.ds;
 
 import dev.vality.adapter.flow.lib.flow.AbstractPaymentTest;
+import dev.vality.adapter.flow.lib.flow.full.three.ds.config.FullThreeDsFlowConfig;
 import dev.vality.adapter.flow.lib.flow.utils.BeanUtils;
 import dev.vality.adapter.flow.lib.flow.utils.MockUtil;
 import dev.vality.adapter.flow.lib.model.BaseResponseModel;
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -21,6 +23,7 @@ import java.util.Map;
 import static org.mockito.ArgumentMatchers.any;
 
 @ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = FullThreeDsFlowConfig.class)
 @TestPropertySource(properties = {"server.rest.port=8083",
         "error-mapping.file=classpath:fixture/errors.json",
         "service.secret.enabled=true"})

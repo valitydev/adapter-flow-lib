@@ -38,4 +38,8 @@ public interface RemoteClient {
         throw new UnsupportedOperationException("This method is unsupported");
     }
 
+    default BaseResponseModel status(BaseRequestModel request) {
+        throw new UnsupportedOperationException("This method is unsupported");
+    }
+
 }

@@ -6,6 +6,7 @@ import dev.vality.adapter.flow.lib.model.EntryStateModel;
 import dev.vality.adapter.flow.lib.model.ExitStateModel;
 import dev.vality.adapter.flow.lib.processor.ErrorProcessor;
 import dev.vality.adapter.flow.lib.processor.RedirectProcessor;
+import dev.vality.adapter.flow.lib.processor.RetryProcessor;
 import dev.vality.adapter.flow.lib.processor.SuccessFinishProcessor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -19,7 +20,8 @@ public class ProcessorConfig {
     public Processor<ExitStateModel, BaseResponseModel, EntryStateModel> baseProcessor() {
         ErrorProcessor errorProcessor = new ErrorProcessor();
         SuccessFinishProcessor baseProcessor = new SuccessFinishProcessor(errorProcessor);
-        return new RedirectProcessor(baseProcessor);
+        RedirectProcessor redirectProcessor = new RedirectProcessor(baseProcessor);
+        return new RetryProcessor(redirectProcessor);
     }
 
 }

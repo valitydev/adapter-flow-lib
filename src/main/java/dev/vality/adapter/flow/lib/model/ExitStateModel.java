@@ -1,5 +1,6 @@
 package dev.vality.adapter.flow.lib.model;
 
+import dev.vality.adapter.flow.lib.constant.Status;
 import dev.vality.adapter.flow.lib.constant.Step;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,6 +14,8 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ExitStateModel {
+
+    private Status lastOperationStatus;
 
     private String errorCode;
     private String errorMessage;

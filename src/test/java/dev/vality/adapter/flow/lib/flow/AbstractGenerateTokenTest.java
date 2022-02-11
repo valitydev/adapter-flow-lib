@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.vality.adapter.flow.lib.client.RemoteClient;
 import dev.vality.adapter.flow.lib.constant.Step;
 import dev.vality.adapter.flow.lib.controller.ThreeDsCallbackController;
+import dev.vality.adapter.flow.lib.flow.full.FullThreeDsAllVersionsStepResolverImpl;
+import dev.vality.adapter.flow.lib.flow.full.GenerateTokenFullThreeDsAllVersionsStepResolverImpl;
 import dev.vality.adapter.flow.lib.flow.config.AppConfig;
 import dev.vality.adapter.flow.lib.flow.config.HandlerConfig;
 import dev.vality.adapter.flow.lib.flow.config.ProcessorConfig;
@@ -31,7 +33,8 @@ import static org.junit.jupiter.api.Assertions.*;
 @PropertySource("classpath:application.yaml")
 @ContextConfiguration(classes = {HandlerConfig.class, AppConfig.class, ProcessorConfig.class,
         ThreeDsCallbackController.class, TomcatEmbeddedConfiguration.class, TagManagementService.class,
-        CallbackUrlExtractor.class, StepResolverImpl.class, GenerateTokenStepResolverImpl.class, TimerProperties.class})
+        CallbackUrlExtractor.class, FullThreeDsAllVersionsStepResolverImpl.class,
+        GenerateTokenFullThreeDsAllVersionsStepResolverImpl.class, TimerProperties.class})
 public class AbstractGenerateTokenTest {
 
     @MockBean

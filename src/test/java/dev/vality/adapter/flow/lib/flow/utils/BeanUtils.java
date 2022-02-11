@@ -1,6 +1,7 @@
 package dev.vality.adapter.flow.lib.flow.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import dev.vality.adapter.flow.lib.constant.Status;
 import dev.vality.adapter.flow.lib.constant.ThreeDsType;
 import dev.vality.adapter.flow.lib.model.BaseResponseModel;
 import dev.vality.adapter.flow.lib.model.ThreeDsData;
@@ -25,6 +26,7 @@ public class BeanUtils {
     public static BaseResponseModel createBaseResponseModel() {
         return BaseResponseModel.builder()
                 .providerTrxId(TEST_TRX_ID)
+                .status(Status.SUCCESS)
                 .build();
     }
 

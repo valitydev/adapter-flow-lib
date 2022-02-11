@@ -11,19 +11,16 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor
-public class RedirectProcessor implements Processor<ExitStateModel, BaseResponseModel, EntryStateModel> {
+public class RetryProcessor implements Processor<ExitStateModel, BaseResponseModel, EntryStateModel> {
 
     private final Processor<ExitStateModel, BaseResponseModel, EntryStateModel> nextProcessor;
 
     @Override
     public ExitStateModel process(BaseResponseModel response, EntryStateModel entryStateModel) {
-        if (response.getStatus() == Status.NEED_REDIRECT
-                && !ErrorUtils.isError(response)
-                && response.getThreeDsData() != null
-                && response.getThreeDsData().getThreeDsType() != null) {
+        if (response.getStatus() == Status.NEED_RETRY
+                && !ErrorUtils.isError(response)) {
             log.debug("Start redirect process response: {} entryStateModel: {}", response, entryStateModel);
             ExitStateModel exitStateModel = new ExitStateModel();
-            exitStateModel.setThreeDsData(response.getThreeDsData());
             exitStateModel.setGeneralEntryStateModel(entryStateModel);
             exitStateModel.setLastOperationStatus(response.getStatus());
             log.debug("Finish redirect process response: {} entryStateModel: {}", response, entryStateModel);

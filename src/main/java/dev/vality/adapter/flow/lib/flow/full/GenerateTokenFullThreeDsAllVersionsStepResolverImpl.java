@@ -1,17 +1,15 @@
-package dev.vality.adapter.flow.lib.flow;
+package dev.vality.adapter.flow.lib.flow.full;
 
-import dev.vality.adapter.flow.lib.constant.OptionFields;
-import dev.vality.adapter.flow.lib.constant.Stage;
-import dev.vality.adapter.flow.lib.constant.Step;
-import dev.vality.adapter.flow.lib.constant.ThreeDsType;
+import dev.vality.adapter.flow.lib.constant.*;
+import dev.vality.adapter.flow.lib.flow.StepResolver;
 import dev.vality.adapter.flow.lib.model.EntryStateModel;
 import dev.vality.adapter.flow.lib.model.ExitStateModel;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 
-@Component
-public class GenerateTokenStepResolverImpl implements StepResolver<EntryStateModel, ExitStateModel> {
+public class GenerateTokenFullThreeDsAllVersionsStepResolverImpl implements
+        StepResolver<EntryStateModel, ExitStateModel> {
 
     @Override
     public Step resolveEntry(EntryStateModel stateModel) {
@@ -30,20 +28,24 @@ public class GenerateTokenStepResolverImpl implements StepResolver<EntryStateMod
         Step step = entryStateModel.getCurrentStep();
         switch (step) {
             case AUTH, PAY:
-                if (exitStateModel.getThreeDsData() != null
+                if (exitStateModel.getLastOperationStatus() == Status.NEED_REDIRECT
+                        && exitStateModel.getThreeDsData() != null
                         && exitStateModel.getThreeDsData().getThreeDsType() == ThreeDsType.V1) {
                     return Step.FINISH_THREE_DS_V1;
-                } else if (exitStateModel.getThreeDsData() != null
+                } else if (exitStateModel.getLastOperationStatus() == Status.NEED_REDIRECT
+                        && exitStateModel.getThreeDsData() != null
                         && exitStateModel.getThreeDsData().getThreeDsType() == ThreeDsType.V2_SIMPLE) {
                     return Step.FINISH_THREE_DS_V2;
-                } else if (exitStateModel.getThreeDsData() != null
+                } else if (exitStateModel.getLastOperationStatus() == Status.NEED_REDIRECT
+                        && exitStateModel.getThreeDsData() != null
                         && exitStateModel.getThreeDsData().getThreeDsType() == ThreeDsType.V2_FULL) {
                     return Step.CHECK_NEED_3DS_V2;
                 } else {
                     return Step.CAPTURE;
                 }
             case CHECK_NEED_3DS_V2:
-                if (exitStateModel.getThreeDsData() != null) {
+                if (exitStateModel.getLastOperationStatus() == Status.NEED_REDIRECT
+                        && exitStateModel.getThreeDsData() != null) {
                     return Step.FINISH_THREE_DS_V2;
                 } else {
                     return Step.CAPTURE;
