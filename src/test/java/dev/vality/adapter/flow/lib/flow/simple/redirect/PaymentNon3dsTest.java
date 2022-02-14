@@ -23,9 +23,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.Date;
 import java.util.Map;
 
-import static dev.vality.adapter.flow.lib.flow.simple.redirect.ForwardRecurrentPaymentNon3dsTest.RECURRENT_TOKEN;
 import static dev.vality.adapter.flow.lib.flow.simple.redirect.ForwardRecurrentPaymentNon3dsTest.RESULT_ID;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 
 @ExtendWith(SpringExtension.class)

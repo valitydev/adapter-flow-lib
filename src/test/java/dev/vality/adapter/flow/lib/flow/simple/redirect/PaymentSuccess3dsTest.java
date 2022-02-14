@@ -1,10 +1,12 @@
-package dev.vality.adapter.flow.lib.flow.full.three.ds;
+package dev.vality.adapter.flow.lib.flow.simple.redirect;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import dev.vality.adapter.flow.lib.constant.OptionFields;
+import dev.vality.adapter.flow.lib.constant.Stage;
 import dev.vality.adapter.flow.lib.constant.Status;
 import dev.vality.adapter.flow.lib.constant.Step;
 import dev.vality.adapter.flow.lib.flow.AbstractPaymentTest;
-import dev.vality.adapter.flow.lib.flow.full.three.ds.config.FullThreeDsFlowConfig;
+import dev.vality.adapter.flow.lib.flow.simple.redirect.config.SimpleRedirectWithPollingDsFlowConfig;
 import dev.vality.adapter.flow.lib.flow.utils.BeanUtils;
 import dev.vality.adapter.flow.lib.flow.utils.MockUtil;
 import dev.vality.adapter.flow.lib.model.BaseResponseModel;
@@ -18,6 +20,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -33,12 +39,16 @@ import static org.mockito.ArgumentMatchers.any;
 
 @Slf4j
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = FullThreeDsFlowConfig.class)
+@ContextConfiguration(classes = SimpleRedirectWithPollingDsFlowConfig.class)
 @TestPropertySource(properties = {"error-mapping.file=classpath:fixture/errors.json",
         "adapter.callbackUrl=http://localhost:8080/test",
         "server.rest.endpoint=adapter",
         "server.rest.port=8083"})
-public class PaymentSuccess3ds1Test extends AbstractPaymentTest {
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+public class PaymentSuccess3dsTest extends AbstractPaymentTest {
+
+    @LocalServerPort
+    int randomServerPort;
 
     @BeforeEach
     public void setUp() throws TException {
@@ -59,6 +69,7 @@ public class PaymentSuccess3ds1Test extends AbstractPaymentTest {
         Mockito.when(client.capture(any())).thenReturn(successResponseModel);
         Mockito.when(client.finish3ds(any())).thenReturn(successResponseModel);
         Mockito.when(client.refund(any())).thenReturn(successResponseModel);
+        Mockito.when(client.status(any())).thenReturn(successResponseModel);
     }
 
     @Test
@@ -80,24 +91,23 @@ public class PaymentSuccess3ds1Test extends AbstractPaymentTest {
 
         PaymentProxyResult paymentProxyResult = serverHandlerLogDecorator.processPayment(paymentContext);
         assertTrue(paymentProxyResult.getIntent().getSuspend().getUserInteraction().isSetRedirect());
-        assertEquals(Step.FINISH_THREE_DS_V1,
+        assertEquals(Step.CHECK_STATUS,
                 temporaryContextDeserializer.read(paymentProxyResult.getNextState()).getNextStep());
 
-        ByteBuffer byteBuffer = createParesBuffer("pares", "md");
-        paymentContext.getPaymentInfo().getPayment().setTrx(paymentProxyResult.getTrx());
-        paymentContext.getSession().setState(paymentProxyResult.getNextState());
-        PaymentCallbackResult paymentCallbackResult = serverHandlerLogDecorator.handlePaymentCallback(byteBuffer,
-                paymentContext);
-
-        //finish three ds
-        paymentProxyResult = checkSuccessFinishThreeDs(paymentContext, paymentProxyResult, paymentCallbackResult);
+        //checkStatus
+        paymentProxyResult = processWithDoNothingSuccessResult(paymentContext, paymentProxyResult);
 
         //capture
-        PaymentProxyResult paymentProxyResultDeposit =
-                checkSuccessCapture(paymentContext, paymentProxyResult, new byte[] {});
+        if (Stage.ONE.equals(options.get(OptionFields.STAGE.name()))) {
+            paymentProxyResult = checkSuccessCapture(paymentContext, paymentProxyResult, new byte[] {});
+            processWithDoNothingSuccessResult(paymentContext, paymentProxyResult);
+        } else {
+            paymentProxyResult = processCaptureWithCheckStatusResult(paymentContext, paymentProxyResult, new byte[] {});
+            processWithCheckStatusResult(paymentContext, paymentProxyResult);
+        }
 
         //refund
-        checkSuccessRefund(1100L, paymentContext, paymentProxyResultDeposit);
+        checkSuccessRefund(1100L, paymentContext, paymentProxyResult);
     }
 
 }

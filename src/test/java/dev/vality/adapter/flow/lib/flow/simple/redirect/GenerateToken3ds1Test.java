@@ -1,20 +1,13 @@
 package dev.vality.adapter.flow.lib.flow.simple.redirect;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import dev.vality.adapter.flow.lib.constant.Status;
-import dev.vality.adapter.flow.lib.constant.Step;
 import dev.vality.adapter.flow.lib.flow.AbstractGenerateTokenTest;
-import dev.vality.adapter.flow.lib.flow.full.three.ds.config.FullThreeDsFlowConfig;
 import dev.vality.adapter.flow.lib.flow.simple.redirect.config.SimpleRedirectWithPollingDsFlowConfig;
 import dev.vality.adapter.flow.lib.flow.utils.BeanUtils;
 import dev.vality.adapter.flow.lib.flow.utils.MockUtil;
 import dev.vality.adapter.flow.lib.model.BaseResponseModel;
-import dev.vality.damsel.proxy_provider.RecurrentTokenCallbackResult;
-import dev.vality.damsel.proxy_provider.RecurrentTokenContext;
-import dev.vality.damsel.proxy_provider.RecurrentTokenProxyResult;
 import org.apache.thrift.TException;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -22,13 +15,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.nio.ByteBuffer;
-import java.util.Date;
-import java.util.Map;
-
 import static dev.vality.adapter.flow.lib.flow.full.three.ds.ForwardRecurrentPaymentNon3dsTest.RECURRENT_TOKEN;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 
 @ExtendWith(SpringExtension.class)

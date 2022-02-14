@@ -1,6 +1,9 @@
 package dev.vality.adapter.flow.lib.flow.simple;
 
-import dev.vality.adapter.flow.lib.constant.*;
+import dev.vality.adapter.flow.lib.constant.OptionFields;
+import dev.vality.adapter.flow.lib.constant.Stage;
+import dev.vality.adapter.flow.lib.constant.Status;
+import dev.vality.adapter.flow.lib.constant.Step;
 import dev.vality.adapter.flow.lib.flow.StepResolver;
 import dev.vality.adapter.flow.lib.model.EntryStateModel;
 import dev.vality.adapter.flow.lib.model.ExitStateModel;
@@ -28,7 +31,7 @@ public class GenerateTokenSimpleRedirectWithPollingStepResolverImpl
         Step step = entryStateModel.getCurrentStep();
         switch (step) {
             case AUTH, PAY:
-                    return Step.CHECK_STATUS;
+                return Step.CHECK_STATUS;
             case CHECK_STATUS:
                 if (exitStateModel.getLastOperationStatus() == Status.NEED_RETRY) {
                     return Step.CHECK_STATUS;

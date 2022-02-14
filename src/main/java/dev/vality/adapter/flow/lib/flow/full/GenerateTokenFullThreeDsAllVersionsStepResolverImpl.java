@@ -4,7 +4,6 @@ import dev.vality.adapter.flow.lib.constant.*;
 import dev.vality.adapter.flow.lib.flow.StepResolver;
 import dev.vality.adapter.flow.lib.model.EntryStateModel;
 import dev.vality.adapter.flow.lib.model.ExitStateModel;
-import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 

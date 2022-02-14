@@ -113,8 +113,8 @@ public class AbstractPaymentTest {
     }
 
     protected PaymentProxyResult processCaptureWithCheckStatusResult(PaymentContext paymentContext,
-                                                     PaymentProxyResult paymentProxyResult,
-                                                     byte[] state)
+                                                                     PaymentProxyResult paymentProxyResult,
+                                                                     byte[] state)
             throws TException {
         paymentContext.getSession()
                 .setTarget(TargetInvoicePaymentStatus.captured(new InvoicePaymentCaptured()))
