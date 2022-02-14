@@ -63,6 +63,19 @@ public class AbstractPaymentTest {
         return paymentProxyResult;
     }
 
+    protected PaymentProxyResult processWithDoNothingSuccessResult(PaymentContext paymentContext,
+                                                                   PaymentProxyResult paymentProxyResult)
+            throws TException {
+        paymentContext.getSession()
+                .setState(paymentProxyResult.getNextState());
+        PaymentProxyResult paymentProxyResultDeposit = serverHandlerLogDecorator.processPayment(paymentContext);
+        assertTrue(paymentProxyResultDeposit.getIntent().isSetFinish());
+        assertTrue(paymentProxyResultDeposit.getIntent().getFinish().getStatus().isSetSuccess());
+        assertEquals(Step.DO_NOTHING,
+                temporaryContextDeserializer.read(paymentProxyResultDeposit.getNextState()).getNextStep());
+        return paymentProxyResultDeposit;
+    }
+
     protected PaymentProxyResult processWithCheckStatusResult(PaymentContext paymentContext) throws TException {
         PaymentProxyResult paymentProxyResult = serverHandlerLogDecorator.processPayment(paymentContext);
         assertTrue(paymentProxyResult.getIntent().isSetSleep());
@@ -81,20 +94,6 @@ public class AbstractPaymentTest {
         assertTrue(paymentProxyResult.getIntent().isSetSleep());
         assertEquals(Step.CHECK_STATUS,
                 temporaryContextDeserializer.read(paymentProxyResult.getNextState()).getNextStep());
-        return paymentProxyResultDeposit;
-    }
-
-
-    protected PaymentProxyResult processWithDoNothingSuccessResult(PaymentContext paymentContext,
-                                                                   PaymentProxyResult paymentProxyResult)
-            throws TException {
-        paymentContext.getSession()
-                .setState(paymentProxyResult.getNextState());
-        PaymentProxyResult paymentProxyResultDeposit = serverHandlerLogDecorator.processPayment(paymentContext);
-        assertTrue(paymentProxyResultDeposit.getIntent().isSetFinish());
-        assertTrue(paymentProxyResultDeposit.getIntent().getFinish().getStatus().isSetSuccess());
-        assertEquals(Step.DO_NOTHING,
-                temporaryContextDeserializer.read(paymentProxyResultDeposit.getNextState()).getNextStep());
         return paymentProxyResultDeposit;
     }
 

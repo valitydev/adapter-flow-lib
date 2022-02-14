@@ -6,12 +6,10 @@ import dev.vality.adapter.flow.lib.client.RemoteClient;
 import dev.vality.adapter.flow.lib.converter.base.EntryModelToBaseRequestModelConverter;
 import dev.vality.adapter.flow.lib.flow.RecurrentResultIntentResolver;
 import dev.vality.adapter.flow.lib.flow.ResultIntentResolver;
-import dev.vality.adapter.flow.lib.flow.full.RecurrentResultIntentResolverImpl;
-import dev.vality.adapter.flow.lib.flow.full.ResultIntentResolverImpl;
+import dev.vality.adapter.flow.lib.flow.StepResolver;
 import dev.vality.adapter.flow.lib.flow.simple.GenerateTokenSimpleRedirectWithPollingStepResolverImpl;
 import dev.vality.adapter.flow.lib.flow.simple.SimpleRedirectRecurrentResultIntentResolver;
 import dev.vality.adapter.flow.lib.flow.simple.SimpleRedirectWIthPollingStepResolverImpl;
-import dev.vality.adapter.flow.lib.flow.StepResolver;
 import dev.vality.adapter.flow.lib.flow.simple.SimpleRedirectWithPollingResultIntentResolver;
 import dev.vality.adapter.flow.lib.handler.ServerFlowHandler;
 import dev.vality.adapter.flow.lib.handler.payment.*;
@@ -55,7 +53,9 @@ public class SimpleRedirectWithPollingDsFlowConfig {
             TimerProperties timerProperties,
             CallbackUrlExtractor callbackUrlExtractor,
             TagManagementService tagManagementService) {
-        return new SimpleRedirectRecurrentResultIntentResolver(timerProperties, callbackUrlExtractor, tagManagementService);
+        return new SimpleRedirectRecurrentResultIntentResolver(timerProperties,
+                callbackUrlExtractor,
+                tagManagementService);
     }
 
     @Bean
@@ -63,7 +63,9 @@ public class SimpleRedirectWithPollingDsFlowConfig {
             TimerProperties timerProperties,
             CallbackUrlExtractor callbackUrlExtractor,
             TagManagementService tagManagementService) {
-        return new SimpleRedirectWithPollingResultIntentResolver(timerProperties, callbackUrlExtractor, tagManagementService);
+        return new SimpleRedirectWithPollingResultIntentResolver(timerProperties,
+                callbackUrlExtractor,
+                tagManagementService);
     }
 
     @Bean

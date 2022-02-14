@@ -73,7 +73,8 @@ public class GenerateToken3ds1Test extends AbstractGenerateTokenTest {
 //    }
 //
 //    private void testPayment(Map<String, String> options) throws TException, JsonProcessingException {
-//        RecurrentTokenContext paymentContext = MockUtil.buildRecurrentTokenContext(String.valueOf(new Date().getTime()),
+//        RecurrentTokenContext paymentContext =
+//        MockUtil.buildRecurrentTokenContext(String.valueOf(new Date().getTime()),
 //                options);
 //        RecurrentTokenProxyResult paymentProxyResult = serverHandlerLogDecorator.generateToken(paymentContext);
 //        assertTrue(paymentProxyResult.getIntent().getSuspend().getUserInteraction().isSetRedirect());

@@ -22,6 +22,7 @@ public class GenerateTokenSimpleRedirectWithPollingStepResolverImpl
     }
 
     @Override
+    @SuppressWarnings(value = "indentation")
     public Step resolveExit(ExitStateModel exitStateModel) {
         EntryStateModel entryStateModel = exitStateModel.getGeneralEntryStateModel();
         Step step = entryStateModel.getCurrentStep();
