@@ -57,7 +57,7 @@ public class PaymentNon3dsTest extends AbstractPaymentTest {
     private void testPayment(Map<String, String> options) throws TException {
         PaymentContext paymentContext = MockUtil.buildPaymentContext(String.valueOf(new Date().getTime()),
                 options);
-        PaymentProxyResult paymentProxyResult = checkSuccessAuthOrPay(paymentContext);
+        PaymentProxyResult paymentProxyResult = processWithDoNothingSuccessResult(paymentContext);
 
         //capture
         checkSuccessCapture(paymentContext, paymentProxyResult, new byte[] {});

@@ -65,7 +65,7 @@ public class ForwardRecurrentPaymentNon3dsTest extends AbstractPaymentTest {
         PaymentContext paymentContext = MockUtil.buildPaymentContext(String.valueOf(new Date().getTime()), options);
         paymentContext.getPaymentInfo().getPayment().setMakeRecurrent(true);
 
-        PaymentProxyResult paymentProxyResult = checkSuccessAuthOrPay(paymentContext);
+        PaymentProxyResult paymentProxyResult = processWithDoNothingSuccessResult(paymentContext);
         String token = paymentProxyResult.getIntent().getFinish().getStatus().getSuccess().getToken();
 
         //capture

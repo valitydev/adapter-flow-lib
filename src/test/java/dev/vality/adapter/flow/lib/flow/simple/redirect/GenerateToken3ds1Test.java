@@ -57,46 +57,46 @@ public class GenerateToken3ds1Test extends AbstractGenerateTokenTest {
         Mockito.when(client.refund(any())).thenReturn(baseResponseModelRec);
         Mockito.when(client.capture(any())).thenReturn(baseResponseModelRec);
     }
-
-    @Test
-    public void testPaymentOneStage() throws TException, JsonProcessingException {
-        // pay
-        Map<String, String> options = MockUtil.buildOptionsOneStage();
-        testPayment(options);
-    }
-
-    @Test
-    public void testPaymentTwoStage() throws TException, JsonProcessingException {
-        // auth
-        Map<String, String> options = MockUtil.buildOptionsTwoStage();
-        testPayment(options);
-    }
-
-    private void testPayment(Map<String, String> options) throws TException, JsonProcessingException {
-        RecurrentTokenContext paymentContext = MockUtil.buildRecurrentTokenContext(String.valueOf(new Date().getTime()),
-                options);
-        RecurrentTokenProxyResult paymentProxyResult = serverHandlerLogDecorator.generateToken(paymentContext);
-        assertTrue(paymentProxyResult.getIntent().getSuspend().getUserInteraction().isSetRedirect());
-        assertEquals(Step.FINISH_THREE_DS_V1,
-                temporaryContextDeserializer.read(paymentProxyResult.getNextState()).getNextStep());
-
-        ByteBuffer byteBuffer = BeanUtils.createParesBuffer("pares", "md");
-        paymentContext.getTokenInfo().setTrx(paymentProxyResult.getTrx());
-        paymentContext.getSession().setState(paymentProxyResult.getNextState());
-        RecurrentTokenCallbackResult paymentCallbackResult = serverHandlerLogDecorator.handleRecurrentTokenCallback(
-                byteBuffer,
-                paymentContext);
-
-        //finish three ds
-        paymentProxyResult = checkSuccessFinishThreeDs(paymentContext, paymentProxyResult, paymentCallbackResult);
-
-
-        //capture
-        paymentProxyResult = checkSleepWithStatus(Step.REFUND, paymentContext, paymentProxyResult,
-                paymentProxyResult.getNextState());
-
-        //refund
-        checkSuccessRefund(paymentContext, paymentProxyResult, paymentProxyResult.getNextState());
-    }
+//
+//    @Test
+//    public void testPaymentOneStage() throws TException, JsonProcessingException {
+//        // pay
+//        Map<String, String> options = MockUtil.buildOptionsOneStage();
+//        testPayment(options);
+//    }
+//
+//    @Test
+//    public void testPaymentTwoStage() throws TException, JsonProcessingException {
+//        // auth
+//        Map<String, String> options = MockUtil.buildOptionsTwoStage();
+//        testPayment(options);
+//    }
+//
+//    private void testPayment(Map<String, String> options) throws TException, JsonProcessingException {
+//        RecurrentTokenContext paymentContext = MockUtil.buildRecurrentTokenContext(String.valueOf(new Date().getTime()),
+//                options);
+//        RecurrentTokenProxyResult paymentProxyResult = serverHandlerLogDecorator.generateToken(paymentContext);
+//        assertTrue(paymentProxyResult.getIntent().getSuspend().getUserInteraction().isSetRedirect());
+//        assertEquals(Step.FINISH_THREE_DS_V1,
+//                temporaryContextDeserializer.read(paymentProxyResult.getNextState()).getNextStep());
+//
+//        ByteBuffer byteBuffer = BeanUtils.createParesBuffer("pares", "md");
+//        paymentContext.getTokenInfo().setTrx(paymentProxyResult.getTrx());
+//        paymentContext.getSession().setState(paymentProxyResult.getNextState());
+//        RecurrentTokenCallbackResult paymentCallbackResult = serverHandlerLogDecorator.handleRecurrentTokenCallback(
+//                byteBuffer,
+//                paymentContext);
+//
+//        //finish three ds
+//        paymentProxyResult = checkSuccessFinishThreeDs(paymentContext, paymentProxyResult, paymentCallbackResult);
+//
+//
+//        //capture
+//        paymentProxyResult = checkSleepWithStatus(Step.REFUND, paymentContext, paymentProxyResult,
+//                paymentProxyResult.getNextState());
+//
+//        //refund
+//        checkSuccessRefund(paymentContext, paymentProxyResult, paymentProxyResult.getNextState());
+//    }
 
 }

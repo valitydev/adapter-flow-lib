@@ -4,12 +4,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.vality.adapter.flow.lib.client.RemoteClient;
 import dev.vality.adapter.flow.lib.constant.Step;
 import dev.vality.adapter.flow.lib.controller.ThreeDsCallbackController;
-import dev.vality.adapter.flow.lib.flow.full.FullThreeDsAllVersionsStepResolverImpl;
-import dev.vality.adapter.flow.lib.flow.full.GenerateTokenFullThreeDsAllVersionsStepResolverImpl;
 import dev.vality.adapter.flow.lib.flow.config.AppConfig;
 import dev.vality.adapter.flow.lib.flow.config.HandlerConfig;
 import dev.vality.adapter.flow.lib.flow.config.ProcessorConfig;
 import dev.vality.adapter.flow.lib.flow.config.TomcatEmbeddedConfiguration;
+import dev.vality.adapter.flow.lib.flow.full.FullThreeDsAllVersionsStepResolverImpl;
+import dev.vality.adapter.flow.lib.flow.full.GenerateTokenFullThreeDsAllVersionsStepResolverImpl;
 import dev.vality.adapter.flow.lib.service.TagManagementService;
 import dev.vality.adapter.flow.lib.utils.CallbackUrlExtractor;
 import dev.vality.adapter.flow.lib.utils.TemporaryContextDeserializer;
@@ -54,13 +54,48 @@ public class AbstractPaymentTest {
     protected TemporaryContextDeserializer temporaryContextDeserializer =
             new TemporaryContextDeserializer(new ObjectMapper());
 
-    protected PaymentProxyResult checkSuccessAuthOrPay(PaymentContext paymentContext) throws TException {
+    protected PaymentProxyResult processWithDoNothingSuccessResult(PaymentContext paymentContext) throws TException {
         PaymentProxyResult paymentProxyResult = serverHandlerLogDecorator.processPayment(paymentContext);
         assertNotNull(paymentProxyResult.getTrx().getId());
         assertTrue(paymentProxyResult.getIntent().isSetFinish());
         assertEquals(Step.DO_NOTHING,
                 temporaryContextDeserializer.read(paymentProxyResult.getNextState()).getNextStep());
         return paymentProxyResult;
+    }
+
+    protected PaymentProxyResult processWithCheckStatusResult(PaymentContext paymentContext) throws TException {
+        PaymentProxyResult paymentProxyResult = serverHandlerLogDecorator.processPayment(paymentContext);
+        assertTrue(paymentProxyResult.getIntent().isSetSleep());
+        assertEquals(Step.CHECK_STATUS,
+                temporaryContextDeserializer.read(paymentProxyResult.getNextState()).getNextStep());
+        return paymentProxyResult;
+    }
+
+
+    protected PaymentProxyResult processWithCheckStatusResult(PaymentContext paymentContext,
+                                                              PaymentProxyResult paymentProxyResult)
+            throws TException {
+        paymentContext.getSession()
+                .setState(paymentProxyResult.getNextState());
+        PaymentProxyResult paymentProxyResultDeposit = serverHandlerLogDecorator.processPayment(paymentContext);
+        assertTrue(paymentProxyResult.getIntent().isSetSleep());
+        assertEquals(Step.CHECK_STATUS,
+                temporaryContextDeserializer.read(paymentProxyResult.getNextState()).getNextStep());
+        return paymentProxyResultDeposit;
+    }
+
+
+    protected PaymentProxyResult processWithDoNothingSuccessResult(PaymentContext paymentContext,
+                                                                   PaymentProxyResult paymentProxyResult)
+            throws TException {
+        paymentContext.getSession()
+                .setState(paymentProxyResult.getNextState());
+        PaymentProxyResult paymentProxyResultDeposit = serverHandlerLogDecorator.processPayment(paymentContext);
+        assertTrue(paymentProxyResultDeposit.getIntent().isSetFinish());
+        assertTrue(paymentProxyResultDeposit.getIntent().getFinish().getStatus().isSetSuccess());
+        assertEquals(Step.DO_NOTHING,
+                temporaryContextDeserializer.read(paymentProxyResultDeposit.getNextState()).getNextStep());
+        return paymentProxyResultDeposit;
     }
 
     protected PaymentProxyResult checkSuccessCapture(PaymentContext paymentContext,
@@ -74,6 +109,21 @@ public class AbstractPaymentTest {
         PaymentProxyResult paymentProxyResultDeposit = serverHandlerLogDecorator.processPayment(paymentContext);
         assertTrue(paymentProxyResultDeposit.getIntent().getFinish().getStatus().isSetSuccess());
         assertEquals(Step.DO_NOTHING,
+                temporaryContextDeserializer.read(paymentProxyResultDeposit.getNextState()).getNextStep());
+        return paymentProxyResultDeposit;
+    }
+
+    protected PaymentProxyResult processCaptureWithCheckStatusResult(PaymentContext paymentContext,
+                                                     PaymentProxyResult paymentProxyResult,
+                                                     byte[] state)
+            throws TException {
+        paymentContext.getSession()
+                .setTarget(TargetInvoicePaymentStatus.captured(new InvoicePaymentCaptured()))
+                .setState(state);
+        paymentContext.getPaymentInfo().getPayment().setTrx(paymentProxyResult.getTrx());
+        PaymentProxyResult paymentProxyResultDeposit = serverHandlerLogDecorator.processPayment(paymentContext);
+        assertTrue(paymentProxyResultDeposit.getIntent().isSetSleep());
+        assertEquals(Step.CHECK_STATUS,
                 temporaryContextDeserializer.read(paymentProxyResultDeposit.getNextState()).getNextStep());
         return paymentProxyResultDeposit;
     }

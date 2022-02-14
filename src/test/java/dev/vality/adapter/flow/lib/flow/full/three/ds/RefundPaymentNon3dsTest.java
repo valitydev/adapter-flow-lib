@@ -54,7 +54,7 @@ public class RefundPaymentNon3dsTest extends AbstractPaymentTest {
 
         // auth
         PaymentContext paymentContext = MockUtil.buildPaymentContext(String.valueOf(new Date().getTime()), options);
-        PaymentProxyResult paymentProxyResult = checkSuccessAuthOrPay(paymentContext);
+        PaymentProxyResult paymentProxyResult = processWithDoNothingSuccessResult(paymentContext);
 
         //capture
         PaymentProxyResult paymentProxyResultDeposit =

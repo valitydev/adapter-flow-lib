@@ -33,7 +33,7 @@ public class SimpleRedirectWIthPollingStepResolverImpl implements StepResolver<E
                         stateModel.getBaseRequestModel().getAdapterConfigurations().get(OptionFields.STAGE.name()))) {
                     return Step.DO_NOTHING;
                 }
-                return Step.CAPTURE;
+                return Objects.requireNonNullElse(currentStep, Step.CAPTURE);
             case CANCELLED:
                 return Step.CANCEL;
             case REFUNDED:
@@ -48,7 +48,7 @@ public class SimpleRedirectWIthPollingStepResolverImpl implements StepResolver<E
         EntryStateModel entryStateModel = exitStateModel.getGeneralEntryStateModel();
         Step step = entryStateModel.getCurrentStep();
         switch (step) {
-            case AUTH, PAY:
+            case AUTH, PAY, CAPTURE:
                 return Step.CHECK_STATUS;
             case CHECK_STATUS:
                 if (exitStateModel.getLastOperationStatus() == Status.NEED_RETRY) {
@@ -56,7 +56,7 @@ public class SimpleRedirectWIthPollingStepResolverImpl implements StepResolver<E
                 } else {
                     return Step.DO_NOTHING;
                 }
-            case CANCEL, REFUND, CAPTURE:
+            case CANCEL, REFUND:
                 return Step.DO_NOTHING;
             default:
                 return step;

@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import static dev.vality.adapter.common.constants.ThreeDsFields.TERM_URL;
 import static dev.vality.java.damsel.utils.creators.ProxyProviderPackageCreators.*;
@@ -32,17 +33,17 @@ public class SimpleRedirectWithPollingResultIntentResolver implements ResultInte
         EntryStateModel entryStateModel = exitStateModel.getGeneralEntryStateModel();
         Step currentStep = entryStateModel.getCurrentStep();
         return switch (nextStep) {
-            case CHECK_STATUS -> switch (currentStep) {
-                case AUTH -> createIntentWithSuspendIntent(exitStateModel);
+            case CHECK_STATUS -> switch (exitStateModel.getLastOperationStatus()) {
+                case NEED_REDIRECT -> createIntentWithSuspendIntent(exitStateModel);
                 default -> createIntentWithSleepIntent(0);
             };
             case DO_NOTHING -> switch (currentStep) {
-                case CHECK_NEED_3DS_V2, FINISH_THREE_DS_V1, FINISH_THREE_DS_V2,
-                        DO_NOTHING, PAY, AUTH, CAPTURE -> initFinishIntent(exitStateModel, entryStateModel);
+                case CHECK_STATUS, CHECK_NEED_3DS_V2, FINISH_THREE_DS_V1, FINISH_THREE_DS_V2,
+                        DO_NOTHING, PAY, AUTH -> initFinishIntent(exitStateModel, entryStateModel);
                 case REFUND, CANCEL -> createFinishIntentSuccess();
                 default -> throw new IllegalStateException("Wrong currentStep: " + currentStep);
             };
-            case CAPTURE, REFUND, CANCEL -> createFinishIntentSuccess();
+            case REFUND, CANCEL -> createFinishIntentSuccess();
             default -> throw new IllegalStateException("Wrong nextStep: " + nextStep);
         };
     }
@@ -74,10 +75,9 @@ public class SimpleRedirectWithPollingResultIntentResolver implements ResultInte
                 entryStateModel.getBaseRequestModel().getAdapterConfigurations(),
                 timerProperties.getRedirectTimeout());
         return ProxyProviderPackageCreators.createIntentWithSuspendIntent(
-                tagManagementService.findTag(threeDsData.getParameters()),
+                UUID.randomUUID().toString(),
                 timerRedirectTimeout,
                 createPostUserInteraction(threeDsData.getAcsUrl(), params));
     }
-
 
 }
