@@ -1,25 +1,23 @@
 package dev.vality.adapter.flow.lib.utils;
 
-import dev.vality.adapter.common.properties.CommonAdapterProperties;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.validation.annotation.Validated;
 
+import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 @Data
-@Configuration
-@ConfigurationProperties("adapter")
 @Validated
-@EqualsAndHashCode(callSuper = true)
-@ToString(callSuper = true)
-public class AdapterProperties extends CommonAdapterProperties {
+public class AdapterProperties {
 
+    @NotEmpty
+    private String url;
+    private String callbackUrl;
+    private String pathCallbackUrl;
+    private String pathRecurrentCallbackUrl;
     private String defaultTermUrl;
 
+    private String tagPrefix;
     private List<String> tagGeneratorFieldNames = List.of(
             "MD",
             "threeDSMethodData",

@@ -16,8 +16,7 @@ import static dev.vality.java.damsel.utils.creators.ProxyProviderPackageCreators
 
 @Component
 @RequiredArgsConstructor
-public class ExitModelToRecTokenProxyResultConverter
-        implements Converter<ExitStateModel, RecurrentTokenProxyResult> {
+public class ExitModelToRecTokenProxyResultConverter implements Converter<ExitStateModel, RecurrentTokenProxyResult> {
 
     private final ErrorMapping errorMapping;
     private final TemporaryContextSerializer serializer;
