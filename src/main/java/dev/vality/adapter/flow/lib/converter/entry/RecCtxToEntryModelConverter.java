@@ -54,6 +54,7 @@ public class RecCtxToEntryModelConverter implements Converter<RecurrentTokenCont
         initPaymentData(context, generalExitStateModel, paymentResource, mobilePaymentDataBuilder, cardDataBuilder);
 
         TransactionInfo transactionInfo = tokenInfo.getTrx();
+        //TODO разобраться с идентификаторами
         String orderId = idGenerator.get(UUID.randomUUID().toString()).toString();
         return entryStateModelBuilder
                 .baseRequestModel(BaseRequestModel.builder()

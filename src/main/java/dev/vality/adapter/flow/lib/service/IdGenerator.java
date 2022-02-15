@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 public class IdGenerator {
 
     private static final String SEQ_ID = "orderId";
-    private static final Long INITIAL_VALUE = 1000000000000000L;
 
     private final BenderSrv.Iface benderClient;
 
@@ -26,6 +25,6 @@ public class IdGenerator {
     public Long get(String invoiceId) {
         GenerationSchema schema = GenerationSchema.sequence(new SequenceSchema().setSequenceId(SEQ_ID));
         GenerationResult result = benderClient.generateID(adapterPrefix + invoiceId, schema, Value.nl(new Nil()));
-        return INITIAL_VALUE + Long.parseLong(result.getInternalId());
+        return Long.parseLong(result.getInternalId());
     }
 }
