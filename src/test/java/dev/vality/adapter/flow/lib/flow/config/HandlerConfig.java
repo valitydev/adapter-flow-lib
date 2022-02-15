@@ -12,10 +12,14 @@ import dev.vality.adapter.flow.lib.flow.RecurrentResultIntentResolver;
 import dev.vality.adapter.flow.lib.flow.ResultIntentResolver;
 import dev.vality.adapter.flow.lib.flow.utils.PaymentContextValidator;
 import dev.vality.adapter.flow.lib.flow.utils.RecurrentTokenContextValidator;
-import dev.vality.adapter.flow.lib.handler.AdapterServerHandler;
+import dev.vality.adapter.flow.lib.handler.ProxyProviderServiceImpl;
 import dev.vality.adapter.flow.lib.handler.ServerFlowHandler;
 import dev.vality.adapter.flow.lib.handler.callback.PaymentCallbackHandler;
 import dev.vality.adapter.flow.lib.handler.callback.RecurrentTokenCallbackHandler;
+import dev.vality.adapter.flow.lib.serde.ParameterSerializer;
+import dev.vality.adapter.flow.lib.serde.ParametersDeserializer;
+import dev.vality.adapter.flow.lib.serde.TemporaryContextDeserializer;
+import dev.vality.adapter.flow.lib.serde.TemporaryContextSerializer;
 import dev.vality.adapter.flow.lib.service.IdGenerator;
 import dev.vality.adapter.flow.lib.service.TagManagementService;
 import dev.vality.adapter.flow.lib.service.TemporaryContextService;
@@ -183,7 +187,7 @@ public class HandlerConfig {
             ExitModelToProxyResultConverter exitModelToProxyResultConverter,
             ServerFlowHandler serverFlowHandler,
             ServerFlowHandler generateTokenFlowHandler) {
-        return new ServerHandlerLogDecorator(new AdapterServerHandler(paymentContextValidator,
+        return new ServerHandlerLogDecorator(new ProxyProviderServiceImpl(paymentContextValidator,
                 recurrentTokenContextValidator,
                 paymentCallbackHandler,
                 recurrentTokenCallbackHandler,

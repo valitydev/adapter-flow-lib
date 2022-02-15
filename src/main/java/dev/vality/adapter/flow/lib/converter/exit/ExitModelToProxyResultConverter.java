@@ -3,7 +3,7 @@ package dev.vality.adapter.flow.lib.converter.exit;
 import dev.vality.adapter.flow.lib.converter.ExitStateModelToTemporaryContextConverter;
 import dev.vality.adapter.flow.lib.flow.ResultIntentResolver;
 import dev.vality.adapter.flow.lib.model.ExitStateModel;
-import dev.vality.adapter.flow.lib.utils.TemporaryContextSerializer;
+import dev.vality.adapter.flow.lib.serde.TemporaryContextSerializer;
 import dev.vality.damsel.proxy_provider.Intent;
 import dev.vality.damsel.proxy_provider.PaymentProxyResult;
 import dev.vality.error.mapping.ErrorMapping;
@@ -28,7 +28,6 @@ public class ExitModelToProxyResultConverter implements Converter<ExitStateModel
 
     @Override
     public PaymentProxyResult convert(ExitStateModel exitStateModel) {
-        //---error---
         if (StringUtils.hasText(exitStateModel.getErrorCode())) {
             return createProxyResultFailure(
                     errorMapping.mapFailure(exitStateModel.getErrorCode(), exitStateModel.getErrorMessage()));

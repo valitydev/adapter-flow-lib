@@ -1,8 +1,8 @@
 package dev.vality.adapter.flow.lib.service;
 
 import dev.vality.adapter.flow.lib.utils.CallbackUrlExtractor;
-import dev.vality.adapter.flow.lib.utils.ParameterSerializer;
-import dev.vality.adapter.flow.lib.utils.ParametersDeserializer;
+import dev.vality.adapter.flow.lib.serde.ParameterSerializer;
+import dev.vality.adapter.flow.lib.serde.ParametersDeserializer;
 import dev.vality.adapter.helpers.hellgate.HellgateAdapterClient;
 import dev.vality.adapter.helpers.hellgate.exception.HellgateException;
 import lombok.RequiredArgsConstructor;

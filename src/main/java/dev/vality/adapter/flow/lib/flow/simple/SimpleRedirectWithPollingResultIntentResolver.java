@@ -1,6 +1,5 @@
 package dev.vality.adapter.flow.lib.flow.simple;
 
-import dev.vality.adapter.common.properties.CommonTimerProperties;
 import dev.vality.adapter.flow.lib.constant.Step;
 import dev.vality.adapter.flow.lib.exception.DataNotCorrespondStateException;
 import dev.vality.adapter.flow.lib.flow.ResultIntentResolver;
@@ -9,13 +8,13 @@ import dev.vality.adapter.flow.lib.model.ExitStateModel;
 import dev.vality.adapter.flow.lib.model.ThreeDsData;
 import dev.vality.adapter.flow.lib.service.TagManagementService;
 import dev.vality.adapter.flow.lib.utils.CallbackUrlExtractor;
+import dev.vality.adapter.flow.lib.utils.TimerProperties;
 import dev.vality.damsel.proxy_provider.Intent;
 import dev.vality.java.damsel.utils.creators.ProxyProviderPackageCreators;
 import lombok.RequiredArgsConstructor;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 import static dev.vality.adapter.common.constants.ThreeDsFields.TERM_URL;
 import static dev.vality.java.damsel.utils.creators.ProxyProviderPackageCreators.*;
@@ -24,7 +23,7 @@ import static dev.vality.java.damsel.utils.extractors.OptionsExtractors.extractR
 @RequiredArgsConstructor
 public class SimpleRedirectWithPollingResultIntentResolver implements ResultIntentResolver {
 
-    private final CommonTimerProperties timerProperties;
+    private final TimerProperties timerProperties;
     private final CallbackUrlExtractor callbackUrlExtractor;
     private final TagManagementService tagManagementService;
 
@@ -35,7 +34,7 @@ public class SimpleRedirectWithPollingResultIntentResolver implements ResultInte
         Step currentStep = entryStateModel.getCurrentStep();
         return switch (nextStep) {
             case CHECK_STATUS -> switch (exitStateModel.getLastOperationStatus()) {
-                case NEED_REDIRECT -> createIntentWithSuspendIntent(exitStateModel);
+                case NEED_REDIRECT -> createIntentWithSuspension(exitStateModel);
                 default -> createIntentWithSleepIntent(0);
             };
             case DO_NOTHING -> switch (currentStep) {
@@ -58,8 +57,7 @@ public class SimpleRedirectWithPollingResultIntentResolver implements ResultInte
         return createFinishIntentSuccess();
     }
 
-    //TODO разобраться с тегом при редиректе и с пустыми параметрами
-    private Intent createIntentWithSuspendIntent(ExitStateModel exitStateModel) {
+    private Intent createIntentWithSuspension(ExitStateModel exitStateModel) {
         EntryStateModel entryStateModel = exitStateModel.getGeneralEntryStateModel();
         ThreeDsData threeDsData = exitStateModel.getThreeDsData();
         if(threeDsData == null){
@@ -79,7 +77,7 @@ public class SimpleRedirectWithPollingResultIntentResolver implements ResultInte
                 entryStateModel.getBaseRequestModel().getAdapterConfigurations(),
                 timerProperties.getRedirectTimeout());
         return ProxyProviderPackageCreators.createIntentWithSuspendIntent(
-                UUID.randomUUID().toString(),
+                tagManagementService.findTag(threeDsData.getParameters()),
                 timerRedirectTimeout,
                 createPostUserInteraction(threeDsData.getAcsUrl(), params));
     }

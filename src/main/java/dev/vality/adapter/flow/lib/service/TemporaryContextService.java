@@ -2,7 +2,7 @@ package dev.vality.adapter.flow.lib.service;
 
 import dev.vality.adapter.common.state.deserializer.Deserializer;
 import dev.vality.adapter.flow.lib.model.TemporaryContext;
-import dev.vality.adapter.flow.lib.utils.ParametersDeserializer;
+import dev.vality.adapter.flow.lib.serde.ParametersDeserializer;
 import dev.vality.damsel.proxy_provider.PaymentContext;
 import dev.vality.damsel.proxy_provider.RecurrentTokenContext;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +34,7 @@ public class TemporaryContextService {
                 throw new RuntimeException("Unknown parameters or baseModel!");
             }
         }
-        log.info("AdapterContext: {} after callback.", temporaryContext);
+        log.info("TemporaryContext: {} after callback.", temporaryContext);
         return temporaryContext;
     }
 

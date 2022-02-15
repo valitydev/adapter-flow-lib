@@ -1,6 +1,5 @@
 package dev.vality.adapter.flow.lib.flow.simple;
 
-import dev.vality.adapter.common.properties.CommonTimerProperties;
 import dev.vality.adapter.flow.lib.constant.Step;
 import dev.vality.adapter.flow.lib.flow.RecurrentResultIntentResolver;
 import dev.vality.adapter.flow.lib.model.EntryStateModel;
@@ -8,6 +7,7 @@ import dev.vality.adapter.flow.lib.model.ExitStateModel;
 import dev.vality.adapter.flow.lib.model.ThreeDsData;
 import dev.vality.adapter.flow.lib.service.TagManagementService;
 import dev.vality.adapter.flow.lib.utils.CallbackUrlExtractor;
+import dev.vality.adapter.flow.lib.utils.TimerProperties;
 import dev.vality.damsel.base.Timer;
 import dev.vality.damsel.proxy_provider.RecurrentTokenIntent;
 import dev.vality.damsel.proxy_provider.SleepIntent;
@@ -24,7 +24,7 @@ import static dev.vality.java.damsel.utils.extractors.OptionsExtractors.extractR
 @RequiredArgsConstructor
 public class SimpleRedirectRecurrentResultIntentResolver implements RecurrentResultIntentResolver {
 
-    private final CommonTimerProperties timerProperties;
+    private final TimerProperties timerProperties;
     private final CallbackUrlExtractor callbackUrlExtractor;
     private final TagManagementService tagManagementService;
 
@@ -35,7 +35,7 @@ public class SimpleRedirectRecurrentResultIntentResolver implements RecurrentRes
         return switch (nextStep) {
             case REFUND, CAPTURE -> RecurrentTokenIntent.sleep(createSleepIntent(Timer.timeout(0)));
             case CHECK_STATUS -> switch (currentStep) {
-                case AUTH -> createIntentWithSuspendIntent(exitStateModel);
+                case AUTH -> createIntentWithSuspension(exitStateModel);
                 default -> RecurrentTokenIntent.sleep(new SleepIntent(
                         BasePackageCreators.createTimerTimeout(0))
                 );
@@ -47,7 +47,7 @@ public class SimpleRedirectRecurrentResultIntentResolver implements RecurrentRes
         };
     }
 
-    private RecurrentTokenIntent createIntentWithSuspendIntent(ExitStateModel exitStateModel) {
+    private RecurrentTokenIntent createIntentWithSuspension(ExitStateModel exitStateModel) {
         EntryStateModel entryStateModel = exitStateModel.getGeneralEntryStateModel();
         ThreeDsData threeDsData = exitStateModel.getThreeDsData();
         Map<String, String> params = new HashMap<>(threeDsData.getParameters());

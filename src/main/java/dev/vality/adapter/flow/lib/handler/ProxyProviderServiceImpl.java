@@ -14,14 +14,13 @@ import org.springframework.stereotype.Component;
 
 import java.nio.ByteBuffer;
 
+//TODO подумать как перенести инжект бинов ближе к использованию
 @Slf4j
-@Component
 @RequiredArgsConstructor
-public class AdapterServerHandler implements ProviderProxySrv.Iface {
+public class ProxyProviderServiceImpl implements ProviderProxySrv.Iface {
 
     private final Validator<PaymentContext> paymentContextValidator;
     private final Validator<RecurrentTokenContext> recurrentTokenContextValidator;
-
     private final CallbackHandler<PaymentCallbackResult, PaymentContext> paymentCallbackHandler;
     private final CallbackHandler<RecurrentTokenCallbackResult, RecurrentTokenContext> recurrentTokenCallbackHandler;
     private final CtxToEntryModelConverter ctxToEntryModelConverter;

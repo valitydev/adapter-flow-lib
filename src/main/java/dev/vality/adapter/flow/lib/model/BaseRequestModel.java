@@ -30,7 +30,6 @@ public class BaseRequestModel {
     //Options
     private Map<String, String> adapterConfigurations;
     private Map<String, String> savedData;
-    // All fields from callback mpi page
-    private Map<String, String> threeDsData;
+    private Map<String, String> threeDsDataFromMpiCallback;
 
 }

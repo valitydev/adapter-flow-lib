@@ -16,24 +16,17 @@ public class GenerateTokenFullThreeDsAllVersionsStepResolverImpl extends
         Step step = entryStateModel.getCurrentStep();
         switch (step) {
             case AUTH, PAY:
-                if (exitStateModel.getLastOperationStatus() == Status.NEED_REDIRECT
-                        && exitStateModel.getThreeDsData() != null
-                        && exitStateModel.getThreeDsData().getThreeDsType() == ThreeDsType.V1) {
+                if (ThreeDsBranchResolver.isRedirectForThreeDsV1(exitStateModel)) {
                     return Step.FINISH_THREE_DS_V1;
-                } else if (exitStateModel.getLastOperationStatus() == Status.NEED_REDIRECT
-                        && exitStateModel.getThreeDsData() != null
-                        && exitStateModel.getThreeDsData().getThreeDsType() == ThreeDsType.V2_SIMPLE) {
+                } else if (ThreeDsBranchResolver.isRedirectForThreeDsV2Simple(exitStateModel)) {
                     return Step.FINISH_THREE_DS_V2;
-                } else if (exitStateModel.getLastOperationStatus() == Status.NEED_REDIRECT
-                        && exitStateModel.getThreeDsData() != null
-                        && exitStateModel.getThreeDsData().getThreeDsType() == ThreeDsType.V2_FULL) {
+                } else if (ThreeDsBranchResolver.isRedirectForThreeDsV2Full(exitStateModel)) {
                     return Step.CHECK_NEED_3DS_V2;
                 } else {
                     return Step.CAPTURE;
                 }
             case CHECK_NEED_3DS_V2:
-                if (exitStateModel.getLastOperationStatus() == Status.NEED_REDIRECT
-                        && exitStateModel.getThreeDsData() != null) {
+                if (ThreeDsBranchResolver.isRedirectForThreeDsV2Full(exitStateModel)) {
                     return Step.FINISH_THREE_DS_V2;
                 } else {
                     return Step.CAPTURE;
@@ -48,4 +41,5 @@ public class GenerateTokenFullThreeDsAllVersionsStepResolverImpl extends
                 return step;
         }
     }
+
 }

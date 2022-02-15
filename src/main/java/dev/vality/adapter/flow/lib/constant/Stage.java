@@ -7,7 +7,5 @@ import lombok.NoArgsConstructor;
 public class Stage {
 
     public static final String ONE = "ONE";
-    //By default
-    public static final String TWO = "TWO";
 
 }

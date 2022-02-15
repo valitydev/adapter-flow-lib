@@ -1,6 +1,5 @@
 package dev.vality.adapter.flow.lib.flow.full;
 
-import dev.vality.adapter.common.properties.CommonTimerProperties;
 import dev.vality.adapter.flow.lib.constant.Step;
 import dev.vality.adapter.flow.lib.flow.ResultIntentResolver;
 import dev.vality.adapter.flow.lib.model.EntryStateModel;
@@ -8,6 +7,7 @@ import dev.vality.adapter.flow.lib.model.ExitStateModel;
 import dev.vality.adapter.flow.lib.model.ThreeDsData;
 import dev.vality.adapter.flow.lib.service.TagManagementService;
 import dev.vality.adapter.flow.lib.utils.CallbackUrlExtractor;
+import dev.vality.adapter.flow.lib.utils.TimerProperties;
 import dev.vality.damsel.proxy_provider.Intent;
 import dev.vality.java.damsel.utils.creators.ProxyProviderPackageCreators;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ import static dev.vality.java.damsel.utils.extractors.OptionsExtractors.extractR
 @RequiredArgsConstructor
 public class ResultIntentResolverImpl implements ResultIntentResolver {
 
-    private final CommonTimerProperties timerProperties;
+    private final TimerProperties timerProperties;
     private final CallbackUrlExtractor callbackUrlExtractor;
     private final TagManagementService tagManagementService;
 
@@ -32,7 +32,7 @@ public class ResultIntentResolverImpl implements ResultIntentResolver {
         EntryStateModel entryStateModel = exitStateModel.getGeneralEntryStateModel();
         Step currentStep = entryStateModel.getCurrentStep();
         return switch (nextStep) {
-            case FINISH_THREE_DS_V1, CHECK_NEED_3DS_V2, FINISH_THREE_DS_V2 -> createIntentWithSuspendIntent(
+            case FINISH_THREE_DS_V1, CHECK_NEED_3DS_V2, FINISH_THREE_DS_V2 -> createIntentWithSuspension(
                     exitStateModel);
             case DO_NOTHING -> switch (currentStep) {
                 case CHECK_NEED_3DS_V2, FINISH_THREE_DS_V1, FINISH_THREE_DS_V2,
@@ -54,7 +54,7 @@ public class ResultIntentResolverImpl implements ResultIntentResolver {
         return createFinishIntentSuccess();
     }
 
-    private Intent createIntentWithSuspendIntent(ExitStateModel exitStateModel) {
+    private Intent createIntentWithSuspension(ExitStateModel exitStateModel) {
         EntryStateModel entryStateModel = exitStateModel.getGeneralEntryStateModel();
         ThreeDsData threeDsData = exitStateModel.getThreeDsData();
         Map<String, String> params = new HashMap<>(threeDsData.getParameters());

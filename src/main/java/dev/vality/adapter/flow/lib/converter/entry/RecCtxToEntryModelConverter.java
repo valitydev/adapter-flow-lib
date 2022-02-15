@@ -5,7 +5,7 @@ import dev.vality.adapter.flow.lib.constant.MetaData;
 import dev.vality.adapter.flow.lib.model.*;
 import dev.vality.adapter.flow.lib.service.IdGenerator;
 import dev.vality.adapter.flow.lib.service.TemporaryContextService;
-import dev.vality.adapter.flow.lib.utils.TemporaryContextDeserializer;
+import dev.vality.adapter.flow.lib.serde.TemporaryContextDeserializer;
 import dev.vality.cds.client.storage.CdsClientStorage;
 import dev.vality.cds.client.storage.utils.BankCardExtractor;
 import dev.vality.cds.storage.Auth3DS;

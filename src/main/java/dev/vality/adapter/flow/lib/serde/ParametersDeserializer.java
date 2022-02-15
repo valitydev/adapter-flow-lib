@@ -1,4 +1,4 @@
-package dev.vality.adapter.flow.lib.utils;
+package dev.vality.adapter.flow.lib.serde;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;

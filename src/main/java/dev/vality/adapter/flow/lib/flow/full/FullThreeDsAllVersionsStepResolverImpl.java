@@ -1,8 +1,6 @@
 package dev.vality.adapter.flow.lib.flow.full;
 
-import dev.vality.adapter.flow.lib.constant.Status;
 import dev.vality.adapter.flow.lib.constant.Step;
-import dev.vality.adapter.flow.lib.constant.ThreeDsType;
 import dev.vality.adapter.flow.lib.flow.AbstractPaymentStepResolver;
 import dev.vality.adapter.flow.lib.model.EntryStateModel;
 import dev.vality.adapter.flow.lib.model.ExitStateModel;
@@ -16,24 +14,17 @@ public class FullThreeDsAllVersionsStepResolverImpl
         Step step = entryStateModel.getCurrentStep();
         switch (step) {
             case AUTH, PAY:
-                if (exitStateModel.getLastOperationStatus() == Status.NEED_REDIRECT
-                        && exitStateModel.getThreeDsData() != null
-                        && exitStateModel.getThreeDsData().getThreeDsType() == ThreeDsType.V1) {
+                if (ThreeDsBranchResolver.isRedirectForThreeDsV1(exitStateModel)) {
                     return Step.FINISH_THREE_DS_V1;
-                } else if (exitStateModel.getLastOperationStatus() == Status.NEED_REDIRECT
-                        && exitStateModel.getThreeDsData() != null
-                        && exitStateModel.getThreeDsData().getThreeDsType() == ThreeDsType.V2_SIMPLE) {
+                } else if (ThreeDsBranchResolver.isRedirectForThreeDsV2Simple(exitStateModel)) {
                     return Step.FINISH_THREE_DS_V2;
-                } else if (exitStateModel.getLastOperationStatus() == Status.NEED_REDIRECT
-                        && exitStateModel.getThreeDsData() != null
-                        && exitStateModel.getThreeDsData().getThreeDsType() == ThreeDsType.V2_FULL) {
+                } else if (ThreeDsBranchResolver.isRedirectForThreeDsV2Full(exitStateModel)) {
                     return Step.CHECK_NEED_3DS_V2;
                 } else {
                     return Step.DO_NOTHING;
                 }
             case CHECK_NEED_3DS_V2:
-                if (exitStateModel.getLastOperationStatus() == Status.NEED_REDIRECT
-                        && exitStateModel.getThreeDsData() != null) {
+                if (ThreeDsBranchResolver.isRedirectForThreeDsV2Full(exitStateModel)) {
                     return Step.FINISH_THREE_DS_V2;
                 } else {
                     return Step.DO_NOTHING;
@@ -44,4 +35,5 @@ public class FullThreeDsAllVersionsStepResolverImpl
                 return step;
         }
     }
+
 }
