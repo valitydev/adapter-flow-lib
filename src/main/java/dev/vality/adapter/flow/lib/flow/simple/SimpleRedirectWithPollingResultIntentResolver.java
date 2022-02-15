@@ -1,5 +1,6 @@
 package dev.vality.adapter.flow.lib.flow.simple;
 
+import dev.vality.adapter.flow.lib.constant.Status;
 import dev.vality.adapter.flow.lib.constant.Step;
 import dev.vality.adapter.flow.lib.exception.DataNotCorrespondStateException;
 import dev.vality.adapter.flow.lib.flow.ResultIntentResolver;
@@ -33,13 +34,12 @@ public class SimpleRedirectWithPollingResultIntentResolver implements ResultInte
         EntryStateModel entryStateModel = exitStateModel.getGeneralEntryStateModel();
         Step currentStep = entryStateModel.getCurrentStep();
         return switch (nextStep) {
-            case CHECK_STATUS -> switch (exitStateModel.getLastOperationStatus()) {
-                case NEED_REDIRECT -> createIntentWithSuspension(exitStateModel);
-                default -> createIntentWithSleepIntent(0);
-            };
+            case CHECK_STATUS -> exitStateModel.getLastOperationStatus() == Status.NEED_REDIRECT
+                    ? createIntentWithSuspension(exitStateModel)
+                    : createIntentWithSleepIntent(0);
             case DO_NOTHING -> switch (currentStep) {
-                case CHECK_STATUS, CHECK_NEED_3DS_V2, FINISH_THREE_DS_V1, FINISH_THREE_DS_V2,
-                        DO_NOTHING, PAY, AUTH -> initFinishIntent(exitStateModel, entryStateModel);
+                case CHECK_STATUS, CHECK_NEED_3DS_V2, FINISH_THREE_DS_V1, FINISH_THREE_DS_V2, DO_NOTHING,
+                        PAY, AUTH -> initFinishIntent(exitStateModel, entryStateModel);
                 case REFUND, CANCEL -> createFinishIntentSuccess();
                 default -> throw new IllegalStateException("Wrong currentStep: " + currentStep);
             };
