@@ -60,7 +60,7 @@ public class SimpleRedirectWithPollingResultIntentResolver implements ResultInte
     private Intent createIntentWithSuspension(ExitStateModel exitStateModel) {
         EntryStateModel entryStateModel = exitStateModel.getGeneralEntryStateModel();
         ThreeDsData threeDsData = exitStateModel.getThreeDsData();
-        if(threeDsData == null){
+        if (threeDsData == null) {
             throw new DataNotCorrespondStateException("ThreeDsData is null for suspend intent!");
         }
         Map<String, String> params = null;

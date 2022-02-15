@@ -10,7 +10,6 @@ import dev.vality.damsel.proxy_provider.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.thrift.TException;
-import org.springframework.stereotype.Component;
 
 import java.nio.ByteBuffer;
 

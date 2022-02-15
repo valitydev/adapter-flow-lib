@@ -1,7 +1,6 @@
 package dev.vality.adapter.flow.lib.utils;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.util.UriComponentsBuilder;
 

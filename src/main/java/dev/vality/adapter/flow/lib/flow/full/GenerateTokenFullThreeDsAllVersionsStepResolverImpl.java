@@ -1,8 +1,6 @@
 package dev.vality.adapter.flow.lib.flow.full;
 
-import dev.vality.adapter.flow.lib.constant.Status;
 import dev.vality.adapter.flow.lib.constant.Step;
-import dev.vality.adapter.flow.lib.constant.ThreeDsType;
 import dev.vality.adapter.flow.lib.flow.AbstractGenerateTokenStepResolver;
 import dev.vality.adapter.flow.lib.model.EntryStateModel;
 import dev.vality.adapter.flow.lib.model.ExitStateModel;

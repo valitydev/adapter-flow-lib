@@ -12,6 +12,6 @@ public enum Step {
     CHECK_STATUS_3DS_V2,
     CHECK_NEED_3DS_V2,
     CAPTURE,
-    DO_NOTHING;
+    DO_NOTHING
 
 }
