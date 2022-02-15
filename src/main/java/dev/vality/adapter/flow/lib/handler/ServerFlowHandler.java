@@ -14,15 +14,15 @@ import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
-public class ServerFlowHandler {
+public class ServerFlowHandler<T, R> {
 
     private final List<CommonHandler<ExitStateModel, EntryStateModel>> handlers;
     private final StepResolver<EntryStateModel, ExitStateModel> stepResolver;
+    private final Validator<T> validator;
+    private final Converter<T, EntryStateModel> entryConverter;
+    private final Converter<ExitStateModel, R> exitConverter;
 
-    public <T, R> R handle(Validator<T> validator,
-                           Converter<T, EntryStateModel> entryConverter,
-                           Converter<ExitStateModel, R> exitConverter,
-                           T context) throws TException {
+    public R handle(T context) throws TException {
         EntryStateModel entryStateModel = prepareEntryState(validator, entryConverter, context);
         log.info("EntryStateModel: {}", entryStateModel);
         ExitStateModel exitStateModel = handlers.stream()
@@ -38,9 +38,9 @@ public class ServerFlowHandler {
         return exitConverter.convert(exitStateModel);
     }
 
-    private <T> EntryStateModel prepareEntryState(Validator<T> validator,
-                                                  Converter<T, EntryStateModel> entryConverter,
-                                                  T context) {
+    private EntryStateModel prepareEntryState(Validator<T> validator,
+                                              Converter<T, EntryStateModel> entryConverter,
+                                              T context) {
         validator.validate(context);
         EntryStateModel entryStateModel = entryConverter.convert(context);
         entryStateModel.setCurrentStep(stepResolver.resolveCurrentStep(entryStateModel));

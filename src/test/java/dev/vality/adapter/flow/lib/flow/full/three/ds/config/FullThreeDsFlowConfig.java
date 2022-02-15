@@ -4,6 +4,10 @@ import dev.vality.adapter.common.handler.CommonHandler;
 import dev.vality.adapter.common.processor.Processor;
 import dev.vality.adapter.flow.lib.client.RemoteClient;
 import dev.vality.adapter.flow.lib.converter.base.EntryModelToBaseRequestModelConverter;
+import dev.vality.adapter.flow.lib.converter.entry.CtxToEntryModelConverter;
+import dev.vality.adapter.flow.lib.converter.entry.RecCtxToEntryModelConverter;
+import dev.vality.adapter.flow.lib.converter.exit.ExitModelToProxyResultConverter;
+import dev.vality.adapter.flow.lib.converter.exit.ExitModelToRecTokenProxyResultConverter;
 import dev.vality.adapter.flow.lib.flow.RecurrentResultIntentResolver;
 import dev.vality.adapter.flow.lib.flow.ResultIntentResolver;
 import dev.vality.adapter.flow.lib.flow.StepResolver;
@@ -11,6 +15,8 @@ import dev.vality.adapter.flow.lib.flow.full.FullThreeDsAllVersionsStepResolverI
 import dev.vality.adapter.flow.lib.flow.full.GenerateTokenFullThreeDsAllVersionsStepResolverImpl;
 import dev.vality.adapter.flow.lib.flow.full.RecurrentResultIntentResolverImpl;
 import dev.vality.adapter.flow.lib.flow.full.ResultIntentResolverImpl;
+import dev.vality.adapter.flow.lib.flow.utils.PaymentContextValidator;
+import dev.vality.adapter.flow.lib.flow.utils.RecurrentTokenContextValidator;
 import dev.vality.adapter.flow.lib.handler.ServerFlowHandler;
 import dev.vality.adapter.flow.lib.handler.payment.*;
 import dev.vality.adapter.flow.lib.model.BaseResponseModel;
@@ -19,6 +25,10 @@ import dev.vality.adapter.flow.lib.model.ExitStateModel;
 import dev.vality.adapter.flow.lib.service.TagManagementService;
 import dev.vality.adapter.flow.lib.utils.CallbackUrlExtractor;
 import dev.vality.adapter.flow.lib.utils.TimerProperties;
+import dev.vality.damsel.proxy_provider.PaymentContext;
+import dev.vality.damsel.proxy_provider.PaymentProxyResult;
+import dev.vality.damsel.proxy_provider.RecurrentTokenContext;
+import dev.vality.damsel.proxy_provider.RecurrentTokenProxyResult;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -39,25 +49,38 @@ public class FullThreeDsFlowConfig {
     }
 
     @Bean
-    public ServerFlowHandler serverFlowHandler(
+    public ServerFlowHandler<PaymentContext, PaymentProxyResult> serverFlowHandler(
             RemoteClient client,
             EntryModelToBaseRequestModelConverter entryModelToBaseRequestModelConverter,
             Processor<ExitStateModel, BaseResponseModel, EntryStateModel> baseProcessor,
-            StepResolver<EntryStateModel, ExitStateModel> fullThreeDsAllVersionsStepResolverImpl) {
-        return new ServerFlowHandler(
+            StepResolver<EntryStateModel, ExitStateModel> fullThreeDsAllVersionsStepResolverImpl,
+            PaymentContextValidator paymentContextValidator,
+            CtxToEntryModelConverter ctxToEntryModelConverter,
+            ExitModelToProxyResultConverter exitModelToProxyResultConverter) {
+        return new ServerFlowHandler<>(
                 getHandlers(client, entryModelToBaseRequestModelConverter, baseProcessor),
-                fullThreeDsAllVersionsStepResolverImpl);
+                fullThreeDsAllVersionsStepResolverImpl,
+                paymentContextValidator,
+                ctxToEntryModelConverter,
+                exitModelToProxyResultConverter);
     }
 
     @Bean
-    public ServerFlowHandler generateTokenFlowHandler(
+    public ServerFlowHandler<RecurrentTokenContext, RecurrentTokenProxyResult> generateTokenFlowHandler(
             RemoteClient client,
             EntryModelToBaseRequestModelConverter entryModelToBaseRequestModelConverter,
             Processor<ExitStateModel, BaseResponseModel, EntryStateModel> baseProcessor,
-            StepResolver<EntryStateModel, ExitStateModel> generateTokenFullThreeDsAllVersionsStepResolverImpl) {
-        return new ServerFlowHandler(
+            StepResolver<EntryStateModel, ExitStateModel> generateTokenFullThreeDsAllVersionsStepResolverImpl,
+            RecurrentTokenContextValidator recurrentTokenContextValidator,
+            RecCtxToEntryModelConverter recCtxToEntryStateModelConverter,
+            ExitModelToRecTokenProxyResultConverter exitModelToRecTokenProxyResultConverter
+    ) {
+        return new ServerFlowHandler<>(
                 getHandlers(client, entryModelToBaseRequestModelConverter, baseProcessor),
-                generateTokenFullThreeDsAllVersionsStepResolverImpl);
+                generateTokenFullThreeDsAllVersionsStepResolverImpl,
+                recurrentTokenContextValidator,
+                recCtxToEntryStateModelConverter,
+                exitModelToRecTokenProxyResultConverter);
     }
 
     @Bean

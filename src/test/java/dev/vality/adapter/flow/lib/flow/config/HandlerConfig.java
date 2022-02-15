@@ -24,7 +24,7 @@ import dev.vality.adapter.flow.lib.service.IdGenerator;
 import dev.vality.adapter.flow.lib.service.TagManagementService;
 import dev.vality.adapter.flow.lib.service.TemporaryContextService;
 import dev.vality.adapter.flow.lib.service.ThreeDsAdapterService;
-import dev.vality.adapter.flow.lib.utils.*;
+import dev.vality.adapter.flow.lib.utils.AdapterProperties;
 import dev.vality.adapter.helpers.hellgate.HellgateAdapterClient;
 import dev.vality.bender.BenderSrv;
 import dev.vality.cds.client.storage.CdsClientStorage;
@@ -177,24 +177,13 @@ public class HandlerConfig {
 
     @Bean
     public ProviderProxySrv.Iface serverHandlerLogDecorator(
-            PaymentContextValidator paymentContextValidator,
-            RecurrentTokenContextValidator recurrentTokenContextValidator,
             PaymentCallbackHandler paymentCallbackHandler,
             RecurrentTokenCallbackHandler recurrentTokenCallbackHandler,
-            CtxToEntryModelConverter ctxToEntryModelConverter,
-            RecCtxToEntryModelConverter recCtxToEntryStateModelConverter,
-            ExitModelToRecTokenProxyResultConverter exitModelToRecTokenProxyResultConverter,
-            ExitModelToProxyResultConverter exitModelToProxyResultConverter,
             ServerFlowHandler serverFlowHandler,
             ServerFlowHandler generateTokenFlowHandler) {
-        return new ServerHandlerLogDecorator(new ProxyProviderServiceImpl(paymentContextValidator,
-                recurrentTokenContextValidator,
+        return new ServerHandlerLogDecorator(new ProxyProviderServiceImpl(
                 paymentCallbackHandler,
                 recurrentTokenCallbackHandler,
-                ctxToEntryModelConverter,
-                recCtxToEntryStateModelConverter,
-                exitModelToRecTokenProxyResultConverter,
-                exitModelToProxyResultConverter,
                 serverFlowHandler,
                 generateTokenFlowHandler
         ));
