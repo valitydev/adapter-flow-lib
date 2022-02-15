@@ -33,8 +33,7 @@ public class SimpleRedirectRecurrentResultIntentResolver implements RecurrentRes
         Step nextStep = exitStateModel.getNextStep();
         Step currentStep = exitStateModel.getGeneralEntryStateModel().getCurrentStep();
         return switch (nextStep) {
-            case REFUND, CAPTURE -> RecurrentTokenIntent.sleep(
-                    createSleepIntent(Timer.timeout(0)));
+            case REFUND, CAPTURE -> RecurrentTokenIntent.sleep(createSleepIntent(Timer.timeout(0)));
             case CHECK_STATUS -> switch (currentStep) {
                 case AUTH -> createIntentWithSuspendIntent(exitStateModel);
                 default -> RecurrentTokenIntent.sleep(new SleepIntent(

@@ -11,11 +11,6 @@ import org.apache.thrift.TException;
 public class DoNothingHandler implements CommonHandler<ExitStateModel, EntryStateModel> {
 
     @Override
-    public boolean isHandle(EntryStateModel model) {
-        return model.getCurrentStep() == Step.DO_NOTHING;
-    }
-
-    @Override
     public ExitStateModel handle(EntryStateModel entryStateModel) throws TException {
         var exitStateModel = new ExitStateModel();
         exitStateModel.setGeneralEntryStateModel(entryStateModel);
@@ -27,6 +22,11 @@ public class DoNothingHandler implements CommonHandler<ExitStateModel, EntryStat
             exitStateModel.setRecToken(entryStateModel.getBaseRequestModel().getRecurrentPaymentData().getRecToken());
         }
         return exitStateModel;
+    }
+
+    @Override
+    public boolean isHandle(EntryStateModel model) {
+        return model.getCurrentStep() == Step.DO_NOTHING;
     }
 
 }

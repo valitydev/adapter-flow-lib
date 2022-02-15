@@ -20,7 +20,6 @@ public class ErrorProcessor implements Processor<ExitStateModel, BaseResponseMod
             ExitStateModel exitStateModel = new ExitStateModel();
             exitStateModel.setErrorCode(String.valueOf(response.getErrorCode()));
             exitStateModel.setErrorMessage(response.getErrorMessage());
-            exitStateModel.setGeneralEntryStateModel(entryStateModel);
             log.debug("Finish error process response: {} entryStateModel: {}", response, entryStateModel);
             return exitStateModel;
         }

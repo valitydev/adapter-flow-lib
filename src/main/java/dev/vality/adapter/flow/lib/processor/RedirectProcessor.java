@@ -24,7 +24,6 @@ public class RedirectProcessor implements Processor<ExitStateModel, BaseResponse
             log.debug("Start redirect process response: {} entryStateModel: {}", response, entryStateModel);
             ExitStateModel exitStateModel = new ExitStateModel();
             exitStateModel.setThreeDsData(response.getThreeDsData());
-            exitStateModel.setGeneralEntryStateModel(entryStateModel);
             exitStateModel.setLastOperationStatus(response.getStatus());
             log.debug("Finish redirect process response: {} entryStateModel: {}", response, entryStateModel);
             return exitStateModel;

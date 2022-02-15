@@ -4,9 +4,10 @@ import dev.vality.adapter.common.enums.TargetStatus;
 import dev.vality.adapter.common.utils.converter.CardDataUtils;
 import dev.vality.adapter.common.utils.converter.TargetStatusResolver;
 import dev.vality.adapter.flow.lib.constant.MetaData;
+import dev.vality.adapter.flow.lib.constant.Step;
 import dev.vality.adapter.flow.lib.model.*;
 import dev.vality.adapter.flow.lib.service.IdGenerator;
-import dev.vality.adapter.flow.lib.utils.AdapterStateUtils;
+import dev.vality.adapter.flow.lib.service.TemporaryContextService;
 import dev.vality.adapter.flow.lib.utils.TemporaryContextDeserializer;
 import dev.vality.cds.client.storage.CdsClientStorage;
 import dev.vality.cds.client.storage.utils.BankCardExtractor;
@@ -32,22 +33,52 @@ public class CtxToEntryModelConverter implements Converter<PaymentContext, Entry
     private final CdsClientStorage cdsStorage;
     private final TemporaryContextDeserializer temporaryContextDeserializer;
     private final IdGenerator idGenerator;
+    private final TemporaryContextService temporaryContextService;
 
     @Override
     public EntryStateModel convert(PaymentContext context) {
-        PaymentInfo paymentInfo = context.getPaymentInfo();
-        InvoicePayment payment = paymentInfo.getPayment();
-        TargetStatus targetStatus = TargetStatusResolver.extractTargetStatus(context.getSession().getTarget());
-        TemporaryContext temporaryContext =
-                AdapterStateUtils.getTemporaryContext(context, temporaryContextDeserializer);
-        PaymentResource paymentResource = payment.getPaymentResource();
+        var paymentInfo = context.getPaymentInfo();
+        var payment = paymentInfo.getPayment();
+        var temporaryContext = temporaryContextService.getTemporaryContext(context, temporaryContextDeserializer);
+        var paymentResource = payment.getPaymentResource();
+        var mobilePaymentDataBuilder = MobilePaymentData.builder();
+        var cardDataBuilder = dev.vality.adapter.flow.lib.model.CardData.builder();
 
-        MobilePaymentData.MobilePaymentDataBuilder<?, ?> mobilePaymentDataBuilder = MobilePaymentData.builder();
-        dev.vality.adapter.flow.lib.model.CardData.CardDataBuilder<?, ?> cardDataBuilder =
-                dev.vality.adapter.flow.lib.model.CardData.builder();
+        Step currentStep = temporaryContext.getNextStep();
+        TargetStatus targetStatus = TargetStatusResolver.extractTargetStatus(context.getSession().getTarget());
+        initPaymentData(context, paymentResource, mobilePaymentDataBuilder, cardDataBuilder, currentStep, targetStatus);
+
+        TransactionInfo trx = payment.getTrx();
+        RecurrentPaymentData recurrentPaymentData = initRecurrentPaymentData(payment, paymentResource, trx);
+        return EntryStateModel.builder()
+                .baseRequestModel(BaseRequestModel.builder().recurrentPaymentData(recurrentPaymentData)
+                        .mobilePaymentData(mobilePaymentDataBuilder.build())
+                        .cardData(cardDataBuilder.build())
+                        .refundData(initRefundData(paymentInfo))
+                        .paymentId(idGenerator.get(paymentInfo.getInvoice().getId()).toString())
+                        .currency(payment.getCost().getCurrency().getSymbolicCode())
+                        .amount(payment.getCost().getAmount())
+                        .details(paymentInfo.getInvoice().getDetails().getDescription())
+                        .payerInfo(PayerInfo.builder()
+                                .ip(ProxyProviderPackageCreators.extractIpAddress(context))
+                                .build())
+                        .adapterConfigurations(context.getOptions())
+                        .providerTrxId(trx != null ? trx.getId() : temporaryContext.getProviderTrxId())
+                        .savedData(trx != null ? trx.getExtra() : new HashMap<>())
+                        .build())
+                .targetStatus(targetStatus)
+                .currentStep(currentStep)
+                .redirectUrl(payment.isSetPayerSessionInfo() ? payment.getPayerSessionInfo().getRedirectUrl() : null)
+                .build();
+    }
+
+    private void initPaymentData(PaymentContext context, PaymentResource paymentResource,
+                                 MobilePaymentData.MobilePaymentDataBuilder<?, ?> mobilePaymentDataBuilder,
+                                 dev.vality.adapter.flow.lib.model.CardData.CardDataBuilder<?, ?> cardDataBuilder,
+                                 Step currentStep, TargetStatus targetStatus) {
         if (paymentResource.isSetDisposablePaymentResource()
-                && (context.getSession().getState() == null || context.getSession().getState().length == 0)
-                && TargetStatus.PROCESSED == targetStatus) {
+                && currentStep == null
+                && targetStatus == TargetStatus.PROCESSED) {
             SessionData sessionData = cdsStorage.getSessionData(context);
             if (sessionData.isSetAuthData() && sessionData.getAuthData().isSetAuth3ds()) {
                 Auth3DS auth3ds = sessionData.getAuthData().getAuth3ds();
@@ -62,30 +93,6 @@ public class CtxToEntryModelConverter implements Converter<PaymentContext, Entry
                         .expMonth(cardData.getExpMonth());
             }
         }
-
-        String orderId = idGenerator.get(paymentInfo.getInvoice().getId()).toString();
-        TransactionInfo trx = payment.getTrx();
-        RecurrentPaymentData recurrentPaymentData = initRecurrentPaymentData(payment, paymentResource, trx);
-        return EntryStateModel.builder()
-                .baseRequestModel(BaseRequestModel.builder().recurrentPaymentData(recurrentPaymentData)
-                        .mobilePaymentData(mobilePaymentDataBuilder.build())
-                        .cardData(cardDataBuilder.build())
-                        .refundData(initRefundData(paymentInfo))
-                        .paymentId(orderId)
-                        .currency(payment.getCost().getCurrency().getSymbolicCode())
-                        .amount(payment.getCost().getAmount())
-                        .details(paymentInfo.getInvoice().getDetails().getDescription())
-                        .payerInfo(PayerInfo.builder()
-                                .ip(ProxyProviderPackageCreators.extractIpAddress(context))
-                                .build())
-                        .adapterConfigurations(context.getOptions())
-                        .providerTrxId(trx != null ? trx.getId() : temporaryContext.getProviderTrxId())
-                        .savedData(trx != null ? trx.getExtra() : new HashMap<>())
-                        .build())
-                .targetStatus(targetStatus)
-                .currentStep(temporaryContext.getNextStep())
-                .redirectUrl(payment.isSetPayerSessionInfo() ? payment.getPayerSessionInfo().getRedirectUrl() : null)
-                .build();
     }
 
     private RefundData initRefundData(PaymentInfo paymentInfo) {
@@ -103,12 +110,10 @@ public class CtxToEntryModelConverter implements Converter<PaymentContext, Entry
     private RecurrentPaymentData initRecurrentPaymentData(InvoicePayment payment,
                                                           PaymentResource paymentResource,
                                                           TransactionInfo transactionInfo) {
-        RecurrentPaymentData.RecurrentPaymentDataBuilder<?, ?> recurrentPaymentDataBuilder = RecurrentPaymentData
-                .builder()
+        var recurrentPaymentDataBuilder = RecurrentPaymentData.builder()
                 .makeRecurrent(payment.make_recurrent);
         if (paymentResource.isSetRecurrentPaymentResource()) {
-            recurrentPaymentDataBuilder
-                    .recToken(paymentResource.getRecurrentPaymentResource().getRecToken());
+            recurrentPaymentDataBuilder.recToken(paymentResource.getRecurrentPaymentResource().getRecToken());
         } else if (transactionInfo != null && transactionInfo.getExtra() != null
                 && transactionInfo.getExtra().containsKey(MetaData.META_REC_TOKEN)) {
             recurrentPaymentDataBuilder.recToken(transactionInfo.getExtra().get(MetaData.META_REC_TOKEN));

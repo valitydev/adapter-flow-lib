@@ -30,7 +30,6 @@ public class SuccessFinishProcessor
             AdapterContext adapterContext = new AdapterContext();
             adapterContext.setTrxId(response.getProviderTrxId());
             ExitStateModel exitStateModel = new ExitStateModel();
-            exitStateModel.setGeneralEntryStateModel(entryStateModel);
             exitStateModel.setProviderTrxId(response.getProviderTrxId());
             exitStateModel.setLastOperationStatus(response.getStatus());
             Map<String, String> saveData = response.getSaveData();

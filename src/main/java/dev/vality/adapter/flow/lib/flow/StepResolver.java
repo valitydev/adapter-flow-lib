@@ -6,8 +6,8 @@ import dev.vality.adapter.flow.lib.model.ExitStateModel;
 
 public interface StepResolver<T extends EntryStateModel, R extends ExitStateModel> {
 
-    Step resolveEntry(T entryStateModel);
+    Step resolveCurrentStep(T entryStateModel);
 
-    Step resolveExit(R exitStateModel);
+    Step resolveNextStep(R exitStateModel);
 
 }

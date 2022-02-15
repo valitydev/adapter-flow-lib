@@ -1,47 +1,17 @@
 package dev.vality.adapter.flow.lib.flow.full;
 
-import dev.vality.adapter.common.enums.TargetStatus;
-import dev.vality.adapter.flow.lib.constant.*;
-import dev.vality.adapter.flow.lib.flow.StepResolver;
+import dev.vality.adapter.flow.lib.constant.Status;
+import dev.vality.adapter.flow.lib.constant.Step;
+import dev.vality.adapter.flow.lib.constant.ThreeDsType;
+import dev.vality.adapter.flow.lib.flow.AbstractPaymentStepResolver;
 import dev.vality.adapter.flow.lib.model.EntryStateModel;
 import dev.vality.adapter.flow.lib.model.ExitStateModel;
 
-import java.util.Objects;
-
-public class FullThreeDsAllVersionsStepResolverImpl implements StepResolver<EntryStateModel, ExitStateModel> {
-
-    @Override
-    public Step resolveEntry(EntryStateModel stateModel) {
-        TargetStatus targetStatus = stateModel.getTargetStatus();
-        Step currentStep = stateModel.getCurrentStep();
-        if (targetStatus == null) {
-            return Objects.requireNonNullElse(currentStep, Step.AUTH);
-        }
-        switch (targetStatus) {
-            case PROCESSED:
-                if (Stage.ONE.equals(stateModel.getBaseRequestModel().getAdapterConfigurations()
-                        .get(OptionFields.STAGE.name()))) {
-                    return Objects.requireNonNullElse(currentStep, Step.PAY);
-                } else {
-                    return Objects.requireNonNullElse(currentStep, Step.AUTH);
-                }
-            case CAPTURED:
-                if (Stage.ONE.equals(
-                        stateModel.getBaseRequestModel().getAdapterConfigurations().get(OptionFields.STAGE.name()))) {
-                    return Step.DO_NOTHING;
-                }
-                return Step.CAPTURE;
-            case CANCELLED:
-                return Step.CANCEL;
-            case REFUNDED:
-                return Step.REFUND;
-            default:
-                throw new IllegalStateException("Unknown state of entryState: " + targetStatus);
-        }
-    }
+public class FullThreeDsAllVersionsStepResolverImpl
+        extends AbstractPaymentStepResolver<EntryStateModel, ExitStateModel> {
 
     @Override
-    public Step resolveExit(ExitStateModel exitStateModel) {
+    public Step resolveNextStep(ExitStateModel exitStateModel) {
         EntryStateModel entryStateModel = exitStateModel.getGeneralEntryStateModel();
         Step step = entryStateModel.getCurrentStep();
         switch (step) {

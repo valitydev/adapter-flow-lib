@@ -4,29 +4,20 @@ import dev.vality.adapter.flow.lib.constant.OptionFields;
 import dev.vality.adapter.flow.lib.constant.Stage;
 import dev.vality.adapter.flow.lib.constant.Status;
 import dev.vality.adapter.flow.lib.constant.Step;
+import dev.vality.adapter.flow.lib.flow.AbstractGenerateTokenStepResolver;
 import dev.vality.adapter.flow.lib.flow.StepResolver;
 import dev.vality.adapter.flow.lib.model.EntryStateModel;
 import dev.vality.adapter.flow.lib.model.ExitStateModel;
+import dev.vality.adapter.flow.lib.utils.StageFlowResolver;
 
 import java.util.Objects;
 
-public class GenerateTokenSimpleRedirectWithPollingStepResolverImpl
-        implements StepResolver<EntryStateModel, ExitStateModel> {
-
-    @Override
-    public Step resolveEntry(EntryStateModel stateModel) {
-        Step currentStep = stateModel.getCurrentStep();
-        if (Stage.ONE.equals(stateModel.getBaseRequestModel().getAdapterConfigurations()
-                .get(OptionFields.STAGE.name()))) {
-            return Objects.requireNonNullElse(currentStep, Step.PAY);
-        } else {
-            return Objects.requireNonNullElse(currentStep, Step.AUTH);
-        }
-    }
+public class GenerateTokenSimpleRedirectWithPollingStepResolverImpl extends
+        AbstractGenerateTokenStepResolver<EntryStateModel, ExitStateModel> {
 
     @Override
     @SuppressWarnings(value = "indentation")
-    public Step resolveExit(ExitStateModel exitStateModel) {
+    public Step resolveNextStep(ExitStateModel exitStateModel) {
         EntryStateModel entryStateModel = exitStateModel.getGeneralEntryStateModel();
         Step step = entryStateModel.getCurrentStep();
         switch (step) {

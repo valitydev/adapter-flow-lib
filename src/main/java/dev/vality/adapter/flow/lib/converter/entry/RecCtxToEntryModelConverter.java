@@ -4,7 +4,7 @@ import dev.vality.adapter.common.utils.converter.CardDataUtils;
 import dev.vality.adapter.flow.lib.constant.MetaData;
 import dev.vality.adapter.flow.lib.model.*;
 import dev.vality.adapter.flow.lib.service.IdGenerator;
-import dev.vality.adapter.flow.lib.utils.AdapterStateUtils;
+import dev.vality.adapter.flow.lib.service.TemporaryContextService;
 import dev.vality.adapter.flow.lib.utils.TemporaryContextDeserializer;
 import dev.vality.cds.client.storage.CdsClientStorage;
 import dev.vality.cds.client.storage.utils.BankCardExtractor;
@@ -17,7 +17,6 @@ import dev.vality.damsel.domain.PaymentTool;
 import dev.vality.damsel.domain.TransactionInfo;
 import dev.vality.damsel.proxy_provider.RecurrentPaymentTool;
 import dev.vality.damsel.proxy_provider.RecurrentTokenContext;
-import dev.vality.damsel.proxy_provider.RecurrentTokenInfo;
 import dev.vality.java.cds.utils.model.CardDataProxyModel;
 import dev.vality.java.damsel.utils.creators.ProxyProviderPackageCreators;
 import dev.vality.java.damsel.utils.extractors.ProxyProviderPackageExtractors;
@@ -37,42 +36,25 @@ public class RecCtxToEntryModelConverter implements Converter<RecurrentTokenCont
     private final TemporaryContextDeserializer temporaryContextDeserializer;
     private final CdsClientStorage cdsStorage;
     private final IdGenerator idGenerator;
+    private final TemporaryContextService temporaryContextService;
 
     @Override
     public EntryStateModel convert(RecurrentTokenContext context) {
-        TemporaryContext generalExitStateModel =
-                AdapterStateUtils.getTemporaryContext(context, temporaryContextDeserializer);
-        RecurrentTokenInfo tokenInfo = context.getTokenInfo();
-        RecurrentPaymentTool recurrentPaymentTool = tokenInfo.getPaymentTool();
-        DisposablePaymentResource paymentResource = recurrentPaymentTool.getPaymentResource();
-        PaymentTool paymentTool = paymentResource.getPaymentTool();
-        if (!paymentTool.isSetBankCard()) {
-            throw new IllegalArgumentException("Wrong recurrentPaymentTool. It should be bank card");
-        }
-        TransactionInfo transactionInfo = tokenInfo.getTrx();
-        EntryStateModel.EntryStateModelBuilder entryStateModelBuilder =
+        var generalExitStateModel = temporaryContextService.getTemporaryContext(
+                context, temporaryContextDeserializer);
+        var tokenInfo = context.getTokenInfo();
+        var recurrentPaymentTool = tokenInfo.getPaymentTool();
+        var paymentResource = recurrentPaymentTool.getPaymentResource();
+        var paymentTool = paymentResource.getPaymentTool();
+        validatePaymentTool(paymentTool);
+        var entryStateModelBuilder =
                 EntryStateModel.builder();
+        var mobilePaymentDataBuilder = MobilePaymentData.builder();
+        var cardDataBuilder = dev.vality.adapter.flow.lib.model.CardData.builder();
+        initPaymentData(context, generalExitStateModel, paymentResource, mobilePaymentDataBuilder, cardDataBuilder);
+
+        TransactionInfo transactionInfo = tokenInfo.getTrx();
         String orderId = idGenerator.get(UUID.randomUUID().toString()).toString();
-
-        MobilePaymentData.MobilePaymentDataBuilder mobilePaymentDataBuilder = MobilePaymentData.builder();
-        dev.vality.adapter.flow.lib.model.CardData.CardDataBuilder cardDataBuilder =
-                dev.vality.adapter.flow.lib.model.CardData.builder();
-        if (generalExitStateModel == null) {
-            SessionData sessionData = cdsStorage.getSessionData(context);
-            if (sessionData.getAuthData().isSetAuth3ds()) {
-                Auth3DS auth3ds = sessionData.getAuthData().getAuth3ds();
-                mobilePaymentDataBuilder.cryptogram(auth3ds.getCryptogram())
-                        .eci(auth3ds.getEci());
-            } else {
-                CardDataProxyModel cardData = getCardData(context, paymentResource);
-                cardDataBuilder.cardHolder(cardData.getCardholderName())
-                        .pan(cardData.getPan())
-                        .cvv2(CardDataUtils.extractCvv2(sessionData))
-                        .expYear(cardData.getExpYear())
-                        .expMonth(cardData.getExpMonth());
-            }
-        }
-
         return entryStateModelBuilder
                 .baseRequestModel(BaseRequestModel.builder()
                         .recurrentPaymentData(RecurrentPaymentData
@@ -100,6 +82,33 @@ public class RecCtxToEntryModelConverter implements Converter<RecurrentTokenCont
                         .build())
                 .currentStep(generalExitStateModel.getNextStep())
                 .build();
+    }
+
+    private void initPaymentData(RecurrentTokenContext context, TemporaryContext generalExitStateModel,
+                                 DisposablePaymentResource paymentResource,
+                                 MobilePaymentData.MobilePaymentDataBuilder<?, ?> mobilePaymentDataBuilder,
+                                 dev.vality.adapter.flow.lib.model.CardData.CardDataBuilder<?, ?> cardDataBuilder) {
+        if (generalExitStateModel == null) {
+            SessionData sessionData = cdsStorage.getSessionData(context);
+            if (sessionData.getAuthData().isSetAuth3ds()) {
+                Auth3DS auth3ds = sessionData.getAuthData().getAuth3ds();
+                mobilePaymentDataBuilder.cryptogram(auth3ds.getCryptogram())
+                        .eci(auth3ds.getEci());
+            } else {
+                CardDataProxyModel cardData = getCardData(context, paymentResource);
+                cardDataBuilder.cardHolder(cardData.getCardholderName())
+                        .pan(cardData.getPan())
+                        .cvv2(CardDataUtils.extractCvv2(sessionData))
+                        .expYear(cardData.getExpYear())
+                        .expMonth(cardData.getExpMonth());
+            }
+        }
+    }
+
+    private void validatePaymentTool(PaymentTool paymentTool) {
+        if (!paymentTool.isSetBankCard()) {
+            throw new IllegalArgumentException("Wrong recurrentPaymentTool. It should be bank card");
+        }
     }
 
     private RefundData initRefundData(RecurrentPaymentTool recurrentPaymentTool, String orderId) {

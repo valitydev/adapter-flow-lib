@@ -18,6 +18,7 @@ import dev.vality.adapter.flow.lib.handler.callback.PaymentCallbackHandler;
 import dev.vality.adapter.flow.lib.handler.callback.RecurrentTokenCallbackHandler;
 import dev.vality.adapter.flow.lib.service.IdGenerator;
 import dev.vality.adapter.flow.lib.service.TagManagementService;
+import dev.vality.adapter.flow.lib.service.TemporaryContextService;
 import dev.vality.adapter.flow.lib.service.ThreeDsAdapterService;
 import dev.vality.adapter.flow.lib.utils.*;
 import dev.vality.adapter.helpers.hellgate.HellgateAdapterClient;
@@ -41,31 +42,39 @@ public class HandlerConfig {
     }
 
     @Bean
+    public TemporaryContextService temporaryContextService(ParametersDeserializer parametersDeserializer) {
+        return new TemporaryContextService(parametersDeserializer);
+    }
+
+    @Bean
     public PaymentCallbackHandler paymentCallbackHandler(TemporaryContextDeserializer adapterDeserializer,
                                                          TemporaryContextSerializer temporaryContextSerializer,
-                                                         ParametersDeserializer threeDsV2CallbackDeserializer) {
+                                                         TemporaryContextService temporaryContextService) {
         return new PaymentCallbackHandler(adapterDeserializer,
                 temporaryContextSerializer,
-                threeDsV2CallbackDeserializer);
+                temporaryContextService
+        );
     }
 
     @Bean
     public RecurrentTokenCallbackHandler recurrentTokenCallbackHandler(
             TemporaryContextDeserializer adapterDeserializer,
             TemporaryContextSerializer temporaryContextSerializer,
-            ParametersDeserializer parametersDeserializer) {
+            TemporaryContextService temporaryContextService) {
         return new RecurrentTokenCallbackHandler(adapterDeserializer,
                 temporaryContextSerializer,
-                parametersDeserializer);
+                temporaryContextService);
     }
 
     @Bean
     public CtxToEntryModelConverter ctxToEntryModelConverter(CdsClientStorage cdsClientStorage,
                                                              TemporaryContextDeserializer adapterDeserializer,
-                                                             IdGenerator idGenerator) {
+                                                             IdGenerator idGenerator,
+                                                             TemporaryContextService temporaryContextService) {
         return new CtxToEntryModelConverter(cdsClientStorage,
                 adapterDeserializer,
-                idGenerator);
+                idGenerator,
+                temporaryContextService);
     }
 
     @Bean
@@ -79,10 +88,12 @@ public class HandlerConfig {
     @Bean
     public RecCtxToEntryModelConverter recCtxToEntryModelConverter(CdsClientStorage cdsClientStorage,
                                                                    TemporaryContextDeserializer adapterDeserializer,
-                                                                   IdGenerator idGenerator) {
+                                                                   IdGenerator idGenerator,
+                                                                   TemporaryContextService temporaryContextService) {
         return new RecCtxToEntryModelConverter(adapterDeserializer,
                 cdsClientStorage,
-                idGenerator);
+                idGenerator,
+                temporaryContextService);
     }
 
     @Bean

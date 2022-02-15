@@ -46,30 +46,4 @@ public class AppConfig {
         return new ObjectMapper()
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
-
-    @Bean
-    public RecurrentTokenDeserializer recurrentTokenDeserializer(ObjectMapper objectMapper) {
-        return new RecurrentTokenDeserializer(objectMapper);
-    }
-
-    @Bean
-    public RecurrentTokenSerializer recurrentTokenSerializer(ObjectMapper objectMapper) {
-        return new RecurrentTokenSerializer(objectMapper);
-    }
-
-    @Bean
-    public TemporaryContextDeserializer adapterDeserializer(ObjectMapper objectMapper) {
-        return new TemporaryContextDeserializer(objectMapper);
-    }
-
-    @Bean
-    public TemporaryContextSerializer adapterSerializer(ObjectMapper objectMapper) {
-        return new TemporaryContextSerializer(objectMapper);
-    }
-
-    @Bean
-    public ParametersDeserializer parametersDeserializer(ObjectMapper objectMapper) {
-        return new ParametersDeserializer(objectMapper);
-    }
-
 }

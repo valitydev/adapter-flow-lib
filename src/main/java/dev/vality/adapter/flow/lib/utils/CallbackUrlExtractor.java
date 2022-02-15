@@ -9,7 +9,6 @@ import java.util.Map;
 
 import static dev.vality.adapter.common.constants.ThreeDsFields.TERM_URL;
 
-@Component
 @RequiredArgsConstructor
 public class CallbackUrlExtractor {
 

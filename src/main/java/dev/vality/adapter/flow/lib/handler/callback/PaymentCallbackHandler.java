@@ -4,8 +4,7 @@ import dev.vality.adapter.common.handler.callback.CallbackHandler;
 import dev.vality.adapter.common.state.deserializer.Deserializer;
 import dev.vality.adapter.common.state.serializer.StateSerializer;
 import dev.vality.adapter.flow.lib.model.TemporaryContext;
-import dev.vality.adapter.flow.lib.utils.AdapterStateUtils;
-import dev.vality.adapter.flow.lib.utils.ParametersDeserializer;
+import dev.vality.adapter.flow.lib.service.TemporaryContextService;
 import dev.vality.damsel.proxy_provider.PaymentCallbackProxyResult;
 import dev.vality.damsel.proxy_provider.PaymentCallbackResult;
 import dev.vality.damsel.proxy_provider.PaymentContext;
@@ -14,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.nio.ByteBuffer;
-import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -22,7 +20,7 @@ public class PaymentCallbackHandler implements CallbackHandler<PaymentCallbackRe
 
     private final Deserializer<TemporaryContext> adapterDeserializer;
     private final StateSerializer<TemporaryContext> adapterSerializer;
-    private final ParametersDeserializer parametersDeserializer;
+    private final TemporaryContextService temporaryContextService;
 
     public PaymentCallbackResult handleCallback(ByteBuffer callback, PaymentContext context) {
         TemporaryContext generalExitStateModel = initAdapterContext(callback, context);
@@ -33,17 +31,9 @@ public class PaymentCallbackHandler implements CallbackHandler<PaymentCallbackRe
     }
 
     private TemporaryContext initAdapterContext(ByteBuffer callback, PaymentContext context) {
-        TemporaryContext temporaryContext = AdapterStateUtils.getTemporaryContext(context, this.adapterDeserializer);
-        Map<String, String> parameters = parametersDeserializer.read(callback.array());
-        if (temporaryContext != null) {
-            temporaryContext.setThreeDsData(parameters);
-        } else {
-            if (parameters == null || parameters.isEmpty()) {
-                throw new RuntimeException("Unknown parameters or baseModel!");
-            }
-        }
-        log.info("AdapterContext: {} after callback.", temporaryContext);
-        return temporaryContext;
+        TemporaryContext temporaryContext =
+                temporaryContextService.getTemporaryContext(context, this.adapterDeserializer);
+        return temporaryContextService.appendThreeDsParametersToContext(callback, temporaryContext);
     }
 
 }

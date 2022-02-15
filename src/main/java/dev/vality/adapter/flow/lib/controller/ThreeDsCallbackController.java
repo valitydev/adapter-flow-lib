@@ -18,13 +18,13 @@ public class ThreeDsCallbackController {
 
     private final ThreeDsAdapterService threeDsAdapterService;
 
-    @PostMapping({"term_url"})
+    @PostMapping({"term-url"})
     public String receivePaymentIncomingParameters(HttpServletRequest servletRequest,
                                                    HttpServletResponse servletResponse) {
         return this.threeDsAdapterService.receivePaymentIncomingParameters(servletRequest, servletResponse);
     }
 
-    @PostMapping({"rec_term_url"})
+    @PostMapping({"recurrent-term-url"})
     public String receiveRecurrentIncomingParameters(HttpServletRequest servletRequest,
                                                      HttpServletResponse servletResponse) {
         return this.threeDsAdapterService.receiveRecurrentIncomingParameters(servletRequest, servletResponse);

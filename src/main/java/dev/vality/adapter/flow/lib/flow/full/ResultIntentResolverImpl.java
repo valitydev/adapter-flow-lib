@@ -36,7 +36,7 @@ public class ResultIntentResolverImpl implements ResultIntentResolver {
                     exitStateModel);
             case DO_NOTHING -> switch (currentStep) {
                 case CHECK_NEED_3DS_V2, FINISH_THREE_DS_V1, FINISH_THREE_DS_V2,
-                        DO_NOTHING, PAY, AUTH, CAPTURE -> initFinishIntent(exitStateModel, entryStateModel);
+                        DO_NOTHING, PAY, AUTH, CAPTURE -> initFinishIntent(exitStateModel);
                 case REFUND, CANCEL -> createFinishIntentSuccess();
                 default -> throw new IllegalStateException("Wrong currentStep: " + currentStep);
             };
@@ -45,8 +45,8 @@ public class ResultIntentResolverImpl implements ResultIntentResolver {
         };
     }
 
-    private Intent initFinishIntent(ExitStateModel exitStateModel,
-                                    EntryStateModel entryStateModel) {
+    private Intent initFinishIntent(ExitStateModel exitStateModel) {
+        EntryStateModel entryStateModel = exitStateModel.getGeneralEntryStateModel();
         if (entryStateModel.getBaseRequestModel().getRecurrentPaymentData() != null
                 && entryStateModel.getBaseRequestModel().getRecurrentPaymentData().isMakeRecurrent()) {
             return createFinishIntentSuccessWithToken(exitStateModel.getRecToken());

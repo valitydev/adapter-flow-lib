@@ -31,7 +31,8 @@ public class ServerFlowHandler {
                 .orElseThrow(() -> new RuntimeException("" + entryStateModel))
                 .handle(entryStateModel);
         log.info("ExitStateModel: {}", exitStateModel);
-        exitStateModel.setNextStep(stepResolver.resolveExit(exitStateModel));
+        exitStateModel.setGeneralEntryStateModel(entryStateModel);
+        exitStateModel.setNextStep(stepResolver.resolveNextStep(exitStateModel));
         log.info("Step changing: {} -> {}",
                 entryStateModel.getCurrentStep(), exitStateModel.getNextStep());
         return exitConverter.convert(exitStateModel);
@@ -42,7 +43,7 @@ public class ServerFlowHandler {
                                                   T context) {
         validator.validate(context);
         EntryStateModel entryStateModel = entryConverter.convert(context);
-        entryStateModel.setCurrentStep(stepResolver.resolveEntry(entryStateModel));
+        entryStateModel.setCurrentStep(stepResolver.resolveCurrentStep(entryStateModel));
         return entryStateModel;
     }
 }

@@ -2,6 +2,7 @@ package dev.vality.adapter.flow.lib.flow.simple;
 
 import dev.vality.adapter.common.properties.CommonTimerProperties;
 import dev.vality.adapter.flow.lib.constant.Step;
+import dev.vality.adapter.flow.lib.exception.DataNotCorrespondStateException;
 import dev.vality.adapter.flow.lib.flow.ResultIntentResolver;
 import dev.vality.adapter.flow.lib.model.EntryStateModel;
 import dev.vality.adapter.flow.lib.model.ExitStateModel;
@@ -61,8 +62,11 @@ public class SimpleRedirectWithPollingResultIntentResolver implements ResultInte
     private Intent createIntentWithSuspendIntent(ExitStateModel exitStateModel) {
         EntryStateModel entryStateModel = exitStateModel.getGeneralEntryStateModel();
         ThreeDsData threeDsData = exitStateModel.getThreeDsData();
+        if(threeDsData == null){
+            throw new DataNotCorrespondStateException("ThreeDsData is null for suspend intent!");
+        }
         Map<String, String> params = null;
-        if (threeDsData == null || threeDsData.getParameters() == null) {
+        if (threeDsData.getParameters() == null) {
             params = new HashMap<>();
         } else {
             params = new HashMap<>(threeDsData.getParameters());
