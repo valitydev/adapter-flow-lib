@@ -5,7 +5,7 @@
     * [Простой процесс с редиректом и поллингом статусов после всех операций](./flows/Full Three Ds V1 V2 Flow Steps.md)
 2. Если подходящий вам процесс найден, процесс продолжается по следующему пути:
     1. Подготавливается конфигурация под spring-boot [настройка конфигурации](./spring-boot-configuration.md).
-    2. Релизовать, соответствующие
-       выбранному флоу, методы
+    2. Релизовать, соответствующие выбранному флоу, методы
        из [RemoteClient](../src/main/java/dev/vality/adapter/flow/lib/client/RemoteClient.java) [инструкция](./client_implementations_manual.md)
-    3. Реализовать валидаторы для ваших входных параметров(options) 
+    3. Реализовать валидаторы для ваших входных параметров(options) [интерфейс](../src/main/java/dev/vality/adapter/flow/lib/validator/Validator.java)
+    4. Реализация тестов

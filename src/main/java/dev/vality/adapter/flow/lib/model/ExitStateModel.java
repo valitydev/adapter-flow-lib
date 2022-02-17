@@ -20,7 +20,7 @@ public class ExitStateModel {
     private String errorCode;
     private String errorMessage;
     private Step nextStep;
-    private EntryStateModel generalEntryStateModel;
+    private EntryStateModel entryStateModel;
 
     private String providerTrxId;
     private Map<String, String> trxExtra;

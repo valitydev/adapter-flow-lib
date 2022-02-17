@@ -27,9 +27,14 @@ public class RecurrentIntentResultFactory {
     private final TagManagementService tagManagementService;
 
     public RecurrentTokenIntent createIntentWithSuspension(ExitStateModel exitStateModel) {
-        EntryStateModel entryStateModel = exitStateModel.getGeneralEntryStateModel();
+        EntryStateModel entryStateModel = exitStateModel.getEntryStateModel();
         ThreeDsData threeDsData = exitStateModel.getThreeDsData();
-        Map<String, String> params = new HashMap<>(threeDsData.getParameters());
+        Map<String, String> params = new HashMap<>();
+        String tag = exitStateModel.getProviderTrxId();
+        if (threeDsData.getParameters() != null) {
+            params.putAll(threeDsData.getParameters());
+            tag = tagManagementService.findTag(threeDsData.getParameters());
+        }
         String redirectUrl = entryStateModel.getBaseRequestModel().getSuccessRedirectUrl();
         params.put(RedirectFields.TERM_URL.getValue(), callbackUrlExtractor.extractCallbackUrl(redirectUrl));
         int timerRedirectTimeout = extractRedirectTimeout(
@@ -37,7 +42,7 @@ public class RecurrentIntentResultFactory {
                 timerProperties.getRedirectTimeout());
         return RecurrentTokenIntent.suspend(
                 new SuspendIntent(
-                        tagManagementService.findTag(threeDsData.getParameters()),
+                        tag,
                         Timer.timeout(timerRedirectTimeout)
                 ).setUserInteraction(createPostUserInteraction(threeDsData.getAcsUrl(), params))
         );

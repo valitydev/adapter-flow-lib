@@ -9,8 +9,6 @@ import dev.vality.adapter.flow.lib.service.IntentResultFactory;
 import dev.vality.damsel.proxy_provider.Intent;
 import lombok.RequiredArgsConstructor;
 
-import static dev.vality.java.damsel.utils.creators.ProxyProviderPackageCreators.createFinishIntentSuccess;
-
 @RequiredArgsConstructor
 public class SimpleRedirectWithPollingResultIntentResolver implements ResultIntentResolver {
 
@@ -19,7 +17,7 @@ public class SimpleRedirectWithPollingResultIntentResolver implements ResultInte
     @Override
     public Intent initIntentByStep(ExitStateModel exitStateModel) {
         Step nextStep = exitStateModel.getNextStep();
-        EntryStateModel entryStateModel = exitStateModel.getGeneralEntryStateModel();
+        EntryStateModel entryStateModel = exitStateModel.getEntryStateModel();
         Step currentStep = entryStateModel.getCurrentStep();
         return switch (nextStep) {
             case CHECK_STATUS -> exitStateModel.getLastOperationStatus() == Status.NEED_REDIRECT

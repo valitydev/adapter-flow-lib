@@ -18,7 +18,7 @@ public class ResultIntentResolverImpl implements ResultIntentResolver {
     @Override
     public Intent initIntentByStep(ExitStateModel exitStateModel) {
         Step nextStep = exitStateModel.getNextStep();
-        EntryStateModel entryStateModel = exitStateModel.getGeneralEntryStateModel();
+        EntryStateModel entryStateModel = exitStateModel.getEntryStateModel();
         Step currentStep = entryStateModel.getCurrentStep();
         return switch (nextStep) {
             case FINISH_THREE_DS_V1, CHECK_NEED_3DS_V2, FINISH_THREE_DS_V2 -> intentResultFactory

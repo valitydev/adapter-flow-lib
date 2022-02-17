@@ -10,7 +10,7 @@ public class GenerateTokenFullThreeDsAllVersionsStepResolverImpl extends
 
     @Override
     public Step resolveNextStep(ExitStateModel exitStateModel) {
-        EntryStateModel entryStateModel = exitStateModel.getGeneralEntryStateModel();
+        EntryStateModel entryStateModel = exitStateModel.getEntryStateModel();
         Step step = entryStateModel.getCurrentStep();
         switch (step) {
             case AUTH, PAY:

@@ -7,31 +7,83 @@ import lombok.experimental.SuperBuilder;
 
 import java.util.Map;
 
+/**
+ * Base class with all needed fields for pay and other operations
+ */
 @Data
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 public class BaseRequestModel {
 
-    private String paymentId;
+    /**
+     *  Uniq Long identifier for payment.
+     */
+    private Long paymentId;
+    /**
+     * Uniq identifier from provider (if exist), not come in first methods.
+     */
     private String providerTrxId;
-
+    /**
+     * Amount in Long format and in minimum payment units (example: cents).
+     */
     private Long amount;
+    /**
+     * Currency in symbolic formats (example: "USD").
+     */
     private String currency;
+    /**
+     * Timestamp RFC 3339.
+     *
+     * The string must contain the date and time in UTC in the following format:
+     * `2016-03-22T06:12:27Z`
+     */
     private String createdAt;
+    /**
+     * Description payment from merchant.
+     */
     private String details;
-
+    /**
+     * Card data, can be empty on some steps and recurrent or mobile operations.
+     */
     private CardData cardData;
+    /**
+     * Info about payer, send from merchant and can be empty.
+     */
     private PayerInfo payerInfo;
+    /**
+     * Data for mobile pay methods.
+     */
     private MobilePaymentData mobilePaymentData;
+    /**
+     * Data for recurrent payments.
+     */
     private RecurrentPaymentData recurrentPaymentData;
+    /**
+     * Full needed for refund data.
+     */
     private RefundData refundData;
+    /**
+     * The URL to which to redirect if the 3ds stream completed successfully.
+     */
     private String successRedirectUrl;
+    /**
+     * The URL to which to redirect if the 3ds stream completed fails.
+     */
     private String failedRedirectUrl;
-
-    //Options
+    /**
+     * All static parameters from configuration by support team.
+     * (options - in old naming)
+     */
     private Map<String, String> adapterConfigurations;
+    /**
+     * Data that you send to save on previous steps.
+     */
     private Map<String, String> savedData;
+    /**
+     * Data that comes in a callback from mpi after the 3ds step.
+     * Parameter names can be unique to your implementation, only you can know.
+     */
     private Map<String, String> threeDsDataFromMpiCallback;
 
 }

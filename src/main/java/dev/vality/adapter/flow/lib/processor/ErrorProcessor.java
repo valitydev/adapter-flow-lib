@@ -26,7 +26,7 @@ public class ErrorProcessor implements Processor<ExitStateModel, BaseResponseMod
         ExitStateModel exitStateModel = new ExitStateModel();
         exitStateModel.setErrorCode("unknown_error");
         exitStateModel.setErrorMessage("Unknown error reason!");
-        exitStateModel.setGeneralEntryStateModel(entryStateModel);
+        exitStateModel.setEntryStateModel(entryStateModel);
 
         log.debug("Finish error process response: {} entryStateModel: {}", response, entryStateModel);
         return exitStateModel;

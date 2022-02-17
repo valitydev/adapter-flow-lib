@@ -30,7 +30,7 @@ public class ServerFlowHandler<T, R> {
                 .orElseThrow(() -> new RuntimeException("" + entryStateModel))
                 .handle(entryStateModel);
         log.info("ExitStateModel: {}", exitStateModel);
-        exitStateModel.setGeneralEntryStateModel(entryStateModel);
+        exitStateModel.setEntryStateModel(entryStateModel);
         exitStateModel.setNextStep(stepResolver.resolveNextStep(exitStateModel));
         log.info("Step changing: {} -> {}",
                 entryStateModel.getCurrentStep(), exitStateModel.getNextStep());

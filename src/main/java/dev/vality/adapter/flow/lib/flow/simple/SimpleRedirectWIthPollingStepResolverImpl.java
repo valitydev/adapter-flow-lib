@@ -11,7 +11,7 @@ public class SimpleRedirectWIthPollingStepResolverImpl
 
     @Override
     public Step resolveNextStep(ExitStateModel exitStateModel) {
-        EntryStateModel entryStateModel = exitStateModel.getGeneralEntryStateModel();
+        EntryStateModel entryStateModel = exitStateModel.getEntryStateModel();
         Step step = entryStateModel.getCurrentStep();
         return switch (step) {
             case AUTH, PAY, CAPTURE, REFUND, CANCEL -> Step.CHECK_STATUS;

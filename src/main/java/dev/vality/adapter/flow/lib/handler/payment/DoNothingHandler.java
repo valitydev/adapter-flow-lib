@@ -12,7 +12,7 @@ public class DoNothingHandler implements CommonHandler<ExitStateModel, EntryStat
     @Override
     public ExitStateModel handle(EntryStateModel entryStateModel) throws TException {
         var exitStateModel = new ExitStateModel();
-        exitStateModel.setGeneralEntryStateModel(entryStateModel);
+        exitStateModel.setEntryStateModel(entryStateModel);
         exitStateModel.setProviderTrxId(entryStateModel.getBaseRequestModel().getProviderTrxId());
         exitStateModel.setNextStep(Step.DO_NOTHING);
         exitStateModel.setTrxExtra(entryStateModel.getBaseRequestModel().getSavedData());
