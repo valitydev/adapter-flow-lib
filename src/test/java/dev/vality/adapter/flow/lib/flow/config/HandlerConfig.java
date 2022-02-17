@@ -9,8 +9,8 @@ import dev.vality.adapter.flow.lib.converter.exit.ExitModelToProxyResultConverte
 import dev.vality.adapter.flow.lib.converter.exit.ExitModelToRecTokenProxyResultConverter;
 import dev.vality.adapter.flow.lib.flow.RecurrentResultIntentResolver;
 import dev.vality.adapter.flow.lib.flow.ResultIntentResolver;
-import dev.vality.adapter.flow.lib.flow.utils.PaymentContextValidator;
-import dev.vality.adapter.flow.lib.flow.utils.RecurrentTokenContextValidator;
+import dev.vality.adapter.flow.lib.flow.utils.PaymentContextAdapterConfigurationValidator;
+import dev.vality.adapter.flow.lib.flow.utils.RecurrentTokenContextAdapterConfigurationValidator;
 import dev.vality.adapter.flow.lib.handler.ProxyProviderServiceImpl;
 import dev.vality.adapter.flow.lib.handler.ServerFlowHandler;
 import dev.vality.adapter.flow.lib.handler.ServerHandlerLogDecorator;
@@ -24,6 +24,7 @@ import dev.vality.adapter.flow.lib.service.*;
 import dev.vality.adapter.flow.lib.utils.AdapterProperties;
 import dev.vality.adapter.flow.lib.utils.CallbackUrlExtractor;
 import dev.vality.adapter.flow.lib.utils.TimerProperties;
+import dev.vality.adapter.flow.lib.validator.AdapterConfigurationValidator;
 import dev.vality.adapter.helpers.hellgate.HellgateAdapterClient;
 import dev.vality.bender.BenderSrv;
 import dev.vality.cds.client.storage.CdsClientStorage;
@@ -167,13 +168,13 @@ public class HandlerConfig {
     }
 
     @Bean
-    public PaymentContextValidator paymentContextValidator() {
-        return new PaymentContextValidator();
+    public PaymentContextAdapterConfigurationValidator paymentContextValidator() {
+        return new PaymentContextAdapterConfigurationValidator();
     }
 
     @Bean
-    public RecurrentTokenContextValidator recurrentTokenContextValidator() {
-        return new RecurrentTokenContextValidator();
+    public RecurrentTokenContextAdapterConfigurationValidator recurrentTokenContextValidator() {
+        return new RecurrentTokenContextAdapterConfigurationValidator();
     }
 
     @Bean
@@ -181,12 +182,14 @@ public class HandlerConfig {
             PaymentCallbackHandler paymentCallbackHandler,
             RecurrentTokenCallbackHandler recurrentTokenCallbackHandler,
             ServerFlowHandler serverFlowHandler,
-            ServerFlowHandler generateTokenFlowHandler) {
+            ServerFlowHandler generateTokenFlowHandler,
+            AdapterConfigurationValidator paymentContextValidator) {
         return new ServerHandlerLogDecorator(new ProxyProviderServiceImpl(
                 paymentCallbackHandler,
                 recurrentTokenCallbackHandler,
                 serverFlowHandler,
-                generateTokenFlowHandler
+                generateTokenFlowHandler,
+                paymentContextValidator
         ));
     }
 

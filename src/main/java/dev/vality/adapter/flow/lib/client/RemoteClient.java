@@ -4,6 +4,10 @@ package dev.vality.adapter.flow.lib.client;
 import dev.vality.adapter.flow.lib.model.BaseRequestModel;
 import dev.vality.adapter.flow.lib.model.BaseResponseModel;
 
+/**
+ * This interface is used to call an external system in order to perform some operation in the payment flow.
+ * Not all methods are required for flows.
+ */
 public interface RemoteClient {
 
     default BaseResponseModel auth(BaseRequestModel request) {

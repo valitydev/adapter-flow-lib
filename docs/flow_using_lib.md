@@ -7,5 +7,6 @@
     1. Подготавливается конфигурация под spring-boot [настройка конфигурации](./spring-boot-configuration.md).
     2. Релизовать, соответствующие выбранному флоу, методы
        из [RemoteClient](../src/main/java/dev/vality/adapter/flow/lib/client/RemoteClient.java) [инструкция](./client_implementations_manual.md)
-    3. Реализовать валидаторы для ваших входных параметров(options) [интерфейс](../src/main/java/dev/vality/adapter/flow/lib/validator/Validator.java)
+    3. Реализовать валидаторы для ваших входных параметров, уникальных для вашего адаптера и настраевымых командой
+       поддержки поддержкой(options - на уровне протокола damsel) [интерфейс](../src/main/java/dev/vality/adapter/flow/lib/validator/Validator.java)
     4. Реализация тестов

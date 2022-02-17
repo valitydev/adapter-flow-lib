@@ -53,7 +53,7 @@ public class RecCtxToEntryModelConverter implements Converter<RecurrentTokenCont
 
         TransactionInfo transactionInfo = tokenInfo.getTrx();
         //TODO разобраться с идентификаторами
-        String orderId = idGenerator.get(UUID.randomUUID().toString()).toString();
+        Long orderId = idGenerator.get(UUID.randomUUID().toString());
         return entryStateModelBuilder
                 .baseRequestModel(BaseRequestModel.builder()
                         .recurrentPaymentData(RecurrentPaymentData
@@ -110,9 +110,9 @@ public class RecCtxToEntryModelConverter implements Converter<RecurrentTokenCont
         }
     }
 
-    private RefundData initRefundData(RecurrentPaymentTool recurrentPaymentTool, String orderId) {
+    private RefundData initRefundData(RecurrentPaymentTool recurrentPaymentTool, Long orderId) {
         return RefundData.builder()
-                .id(orderId)
+                .id(String.valueOf(orderId))
                 .amount(recurrentPaymentTool.getMinimalPaymentCost().getAmount())
                 .build();
     }

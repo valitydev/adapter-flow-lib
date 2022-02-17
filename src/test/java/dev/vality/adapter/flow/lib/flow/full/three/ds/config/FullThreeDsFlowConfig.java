@@ -13,8 +13,8 @@ import dev.vality.adapter.flow.lib.flow.full.FullThreeDsAllVersionsStepResolverI
 import dev.vality.adapter.flow.lib.flow.full.GenerateTokenFullThreeDsAllVersionsStepResolverImpl;
 import dev.vality.adapter.flow.lib.flow.full.GenerateTokenResultIntentResolverImpl;
 import dev.vality.adapter.flow.lib.flow.full.ResultIntentResolverImpl;
-import dev.vality.adapter.flow.lib.flow.utils.PaymentContextValidator;
-import dev.vality.adapter.flow.lib.flow.utils.RecurrentTokenContextValidator;
+import dev.vality.adapter.flow.lib.flow.utils.PaymentContextAdapterConfigurationValidator;
+import dev.vality.adapter.flow.lib.flow.utils.RecurrentTokenContextAdapterConfigurationValidator;
 import dev.vality.adapter.flow.lib.handler.CommonHandler;
 import dev.vality.adapter.flow.lib.handler.ServerFlowHandler;
 import dev.vality.adapter.flow.lib.handler.payment.*;
@@ -53,13 +53,11 @@ public class FullThreeDsFlowConfig {
             EntryModelToBaseRequestModelConverter entryModelToBaseRequestModelConverter,
             Processor<ExitStateModel, BaseResponseModel, EntryStateModel> baseProcessor,
             StepResolver<EntryStateModel, ExitStateModel> fullThreeDsAllVersionsStepResolverImpl,
-            PaymentContextValidator paymentContextValidator,
             CtxToEntryModelConverter ctxToEntryModelConverter,
             ExitModelToProxyResultConverter exitModelToProxyResultConverter) {
         return new ServerFlowHandler<>(
                 getHandlers(client, entryModelToBaseRequestModelConverter, baseProcessor),
                 fullThreeDsAllVersionsStepResolverImpl,
-                paymentContextValidator,
                 ctxToEntryModelConverter,
                 exitModelToProxyResultConverter);
     }
@@ -70,14 +68,12 @@ public class FullThreeDsFlowConfig {
             EntryModelToBaseRequestModelConverter entryModelToBaseRequestModelConverter,
             Processor<ExitStateModel, BaseResponseModel, EntryStateModel> baseProcessor,
             StepResolver<EntryStateModel, ExitStateModel> generateTokenFullThreeDsAllVersionsStepResolverImpl,
-            RecurrentTokenContextValidator recurrentTokenContextValidator,
             RecCtxToEntryModelConverter recCtxToEntryStateModelConverter,
             ExitModelToRecTokenProxyResultConverter exitModelToRecTokenProxyResultConverter
     ) {
         return new ServerFlowHandler<>(
                 getHandlers(client, entryModelToBaseRequestModelConverter, baseProcessor),
                 generateTokenFullThreeDsAllVersionsStepResolverImpl,
-                recurrentTokenContextValidator,
                 recCtxToEntryStateModelConverter,
                 exitModelToRecTokenProxyResultConverter);
     }

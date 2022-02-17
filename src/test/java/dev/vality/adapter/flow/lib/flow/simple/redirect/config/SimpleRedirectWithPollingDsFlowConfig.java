@@ -13,8 +13,8 @@ import dev.vality.adapter.flow.lib.flow.simple.GenerateTokenSimpleRedirectWithPo
 import dev.vality.adapter.flow.lib.flow.simple.SimpleRedirectGenerateTokenResultIntentResolver;
 import dev.vality.adapter.flow.lib.flow.simple.SimpleRedirectWIthPollingStepResolverImpl;
 import dev.vality.adapter.flow.lib.flow.simple.SimpleRedirectWithPollingResultIntentResolver;
-import dev.vality.adapter.flow.lib.flow.utils.PaymentContextValidator;
-import dev.vality.adapter.flow.lib.flow.utils.RecurrentTokenContextValidator;
+import dev.vality.adapter.flow.lib.flow.utils.PaymentContextAdapterConfigurationValidator;
+import dev.vality.adapter.flow.lib.flow.utils.RecurrentTokenContextAdapterConfigurationValidator;
 import dev.vality.adapter.flow.lib.handler.CommonHandler;
 import dev.vality.adapter.flow.lib.handler.ServerFlowHandler;
 import dev.vality.adapter.flow.lib.handler.payment.*;
@@ -52,13 +52,11 @@ public class SimpleRedirectWithPollingDsFlowConfig {
             EntryModelToBaseRequestModelConverter entryModelToBaseRequestModelConverter,
             Processor<ExitStateModel, BaseResponseModel, EntryStateModel> baseProcessor,
             StepResolver<EntryStateModel, ExitStateModel> stepResolverImpl,
-            PaymentContextValidator paymentContextValidator,
             CtxToEntryModelConverter ctxToEntryModelConverter,
             ExitModelToProxyResultConverter exitModelToProxyResultConverter) {
         return new ServerFlowHandler<>(
                 getHandlers(client, entryModelToBaseRequestModelConverter, baseProcessor),
                 stepResolverImpl,
-                paymentContextValidator,
                 ctxToEntryModelConverter,
                 exitModelToProxyResultConverter);
     }
@@ -80,13 +78,11 @@ public class SimpleRedirectWithPollingDsFlowConfig {
             EntryModelToBaseRequestModelConverter entryModelToBaseRequestModelConverter,
             Processor<ExitStateModel, BaseResponseModel, EntryStateModel> baseProcessor,
             StepResolver<EntryStateModel, ExitStateModel> generateTokenStepResolverImpl,
-            RecurrentTokenContextValidator recurrentTokenContextValidator,
             RecCtxToEntryModelConverter recCtxToEntryStateModelConverter,
             ExitModelToRecTokenProxyResultConverter exitModelToRecTokenProxyResultConverter) {
         return new ServerFlowHandler<>(
                 getHandlers(client, entryModelToBaseRequestModelConverter, baseProcessor),
                 generateTokenStepResolverImpl,
-                recurrentTokenContextValidator,
                 recCtxToEntryStateModelConverter,
                 exitModelToRecTokenProxyResultConverter);
     }
