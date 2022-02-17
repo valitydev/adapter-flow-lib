@@ -1,7 +1,6 @@
 package dev.vality.adapter.flow.lib.flow.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.vality.adapter.common.handler.ServerHandlerLogDecorator;
 import dev.vality.adapter.flow.lib.converter.ExitStateModelToTemporaryContextConverter;
 import dev.vality.adapter.flow.lib.converter.base.EntryModelToBaseRequestModelConverter;
 import dev.vality.adapter.flow.lib.converter.entry.CtxToEntryModelConverter;
@@ -14,17 +13,17 @@ import dev.vality.adapter.flow.lib.flow.utils.PaymentContextValidator;
 import dev.vality.adapter.flow.lib.flow.utils.RecurrentTokenContextValidator;
 import dev.vality.adapter.flow.lib.handler.ProxyProviderServiceImpl;
 import dev.vality.adapter.flow.lib.handler.ServerFlowHandler;
+import dev.vality.adapter.flow.lib.handler.ServerHandlerLogDecorator;
 import dev.vality.adapter.flow.lib.handler.callback.PaymentCallbackHandler;
 import dev.vality.adapter.flow.lib.handler.callback.RecurrentTokenCallbackHandler;
 import dev.vality.adapter.flow.lib.serde.ParameterSerializer;
 import dev.vality.adapter.flow.lib.serde.ParametersDeserializer;
 import dev.vality.adapter.flow.lib.serde.TemporaryContextDeserializer;
 import dev.vality.adapter.flow.lib.serde.TemporaryContextSerializer;
-import dev.vality.adapter.flow.lib.service.IdGenerator;
-import dev.vality.adapter.flow.lib.service.TagManagementService;
-import dev.vality.adapter.flow.lib.service.TemporaryContextService;
-import dev.vality.adapter.flow.lib.service.ThreeDsAdapterService;
+import dev.vality.adapter.flow.lib.service.*;
 import dev.vality.adapter.flow.lib.utils.AdapterProperties;
+import dev.vality.adapter.flow.lib.utils.CallbackUrlExtractor;
+import dev.vality.adapter.flow.lib.utils.TimerProperties;
 import dev.vality.adapter.helpers.hellgate.HellgateAdapterClient;
 import dev.vality.bender.BenderSrv;
 import dev.vality.cds.client.storage.CdsClientStorage;
@@ -74,18 +73,20 @@ public class HandlerConfig {
     public CtxToEntryModelConverter ctxToEntryModelConverter(CdsClientStorage cdsClientStorage,
                                                              TemporaryContextDeserializer adapterDeserializer,
                                                              IdGenerator idGenerator,
-                                                             TemporaryContextService temporaryContextService) {
+                                                             TemporaryContextService temporaryContextService,
+                                                             CallbackUrlExtractor callbackUrlExtractor) {
         return new CtxToEntryModelConverter(cdsClientStorage,
                 adapterDeserializer,
                 idGenerator,
-                temporaryContextService);
+                temporaryContextService,
+                callbackUrlExtractor);
     }
 
     @Bean
     public AdapterProperties adapterProperties() {
         AdapterProperties adapterProperties = new AdapterProperties();
         adapterProperties.setCallbackUrl("http://localhost:8080/adapter/term_url");
-        adapterProperties.setDefaultTermUrl("http://localhost:8080/adapter/term_url");
+        adapterProperties.setSuccessRedirectUrl("http://localhost:8080/adapter/term_url");
         return adapterProperties;
     }
 
@@ -187,6 +188,21 @@ public class HandlerConfig {
                 serverFlowHandler,
                 generateTokenFlowHandler
         ));
+    }
+
+    @Bean
+    public IntentResultFactory intentResultFactory(TimerProperties timerProperties,
+                                                   CallbackUrlExtractor callbackUrlExtractor,
+                                                   TagManagementService tagManagementService) {
+        return new IntentResultFactory(timerProperties, callbackUrlExtractor, tagManagementService);
+    }
+
+
+    @Bean
+    public RecurrentIntentResultFactory recurrentIntentResultFactory(TimerProperties timerProperties,
+                                                                     CallbackUrlExtractor callbackUrlExtractor,
+                                                                     TagManagementService tagManagementService) {
+        return new RecurrentIntentResultFactory(timerProperties, callbackUrlExtractor, tagManagementService);
     }
 
 }

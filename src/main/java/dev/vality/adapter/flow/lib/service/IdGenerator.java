@@ -8,9 +8,7 @@ import dev.vality.msgpack.Nil;
 import dev.vality.msgpack.Value;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import org.springframework.stereotype.Service;
 
-@Service
 @RequiredArgsConstructor
 public class IdGenerator {
 

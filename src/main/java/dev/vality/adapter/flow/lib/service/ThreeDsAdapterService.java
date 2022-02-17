@@ -7,7 +7,6 @@ import dev.vality.adapter.helpers.hellgate.HellgateAdapterClient;
 import dev.vality.adapter.helpers.hellgate.exception.HellgateException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,7 +17,6 @@ import java.util.Map;
 import java.util.function.BiFunction;
 
 @Slf4j
-@Component
 @RequiredArgsConstructor
 public class ThreeDsAdapterService {
 

@@ -1,6 +1,6 @@
 package dev.vality.adapter.flow.lib.flow.utils;
 
-import dev.vality.adapter.common.Validator;
+import dev.vality.adapter.flow.lib.validator.Validator;
 import dev.vality.damsel.proxy_provider.RecurrentTokenContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

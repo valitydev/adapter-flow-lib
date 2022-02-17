@@ -1,10 +1,9 @@
 package dev.vality.adapter.flow.lib.handler;
 
-import dev.vality.adapter.common.Validator;
-import dev.vality.adapter.common.handler.CommonHandler;
 import dev.vality.adapter.flow.lib.flow.StepResolver;
 import dev.vality.adapter.flow.lib.model.EntryStateModel;
 import dev.vality.adapter.flow.lib.model.ExitStateModel;
+import dev.vality.adapter.flow.lib.validator.Validator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.thrift.TException;

@@ -14,11 +14,10 @@ public class SimpleRedirectWIthPollingStepResolverImpl
         EntryStateModel entryStateModel = exitStateModel.getGeneralEntryStateModel();
         Step step = entryStateModel.getCurrentStep();
         return switch (step) {
-            case AUTH, PAY, CAPTURE -> Step.CHECK_STATUS;
+            case AUTH, PAY, CAPTURE, REFUND, CANCEL -> Step.CHECK_STATUS;
             case CHECK_STATUS -> exitStateModel.getLastOperationStatus() == Status.NEED_RETRY
                     ? Step.CHECK_STATUS
                     : Step.DO_NOTHING;
-            case CANCEL, REFUND -> Step.DO_NOTHING;
             default -> step;
         };
     }

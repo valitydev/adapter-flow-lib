@@ -1,9 +1,8 @@
 package dev.vality.adapter.flow.lib.handler.callback;
 
-import dev.vality.adapter.common.handler.callback.CallbackHandler;
-import dev.vality.adapter.common.state.deserializer.Deserializer;
-import dev.vality.adapter.common.state.serializer.StateSerializer;
 import dev.vality.adapter.flow.lib.model.TemporaryContext;
+import dev.vality.adapter.flow.lib.serde.Deserializer;
+import dev.vality.adapter.flow.lib.serde.StateSerializer;
 import dev.vality.adapter.flow.lib.service.TemporaryContextService;
 import dev.vality.damsel.proxy_provider.RecurrentTokenCallbackResult;
 import dev.vality.damsel.proxy_provider.RecurrentTokenContext;

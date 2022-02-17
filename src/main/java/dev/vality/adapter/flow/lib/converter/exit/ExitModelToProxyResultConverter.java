@@ -11,13 +11,11 @@ import dev.vality.java.damsel.utils.creators.DomainPackageCreators;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import static dev.vality.java.damsel.utils.creators.ProxyProviderPackageCreators.createProxyResultFailure;
 
 @Slf4j
-@Component
 @RequiredArgsConstructor
 public class ExitModelToProxyResultConverter implements Converter<ExitStateModel, PaymentProxyResult> {
 

@@ -70,7 +70,7 @@ adapter:
   pathRecurrentCallbackUrl: /${server.rest.endpoint}/rec_term_url
   pathCallbackUrlV2: /${server.rest.endpoint}/term_url_v2
   pathRecurrentCallbackUrlV2: /${server.rest.endpoint}/rec_term_url_v2
-  defaultTermUrl: https://checkout.empayre.com/v1/finish-interaction.html
+  successRedirectUrl: https://checkout.empayre.com/v1/finish-interaction.html
 ---
 service:
   secret:

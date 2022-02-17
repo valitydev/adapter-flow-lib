@@ -1,11 +1,11 @@
 package dev.vality.adapter.flow.lib.converter.entry;
 
-import dev.vality.adapter.common.utils.converter.CardDataUtils;
 import dev.vality.adapter.flow.lib.constant.MetaData;
 import dev.vality.adapter.flow.lib.model.*;
 import dev.vality.adapter.flow.lib.serde.TemporaryContextDeserializer;
 import dev.vality.adapter.flow.lib.service.IdGenerator;
 import dev.vality.adapter.flow.lib.service.TemporaryContextService;
+import dev.vality.adapter.flow.lib.utils.CardDataUtils;
 import dev.vality.cds.client.storage.CdsClientStorage;
 import dev.vality.cds.client.storage.utils.BankCardExtractor;
 import dev.vality.cds.storage.Auth3DS;
@@ -23,13 +23,11 @@ import dev.vality.java.damsel.utils.extractors.ProxyProviderPackageExtractors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.UUID;
 
 @Slf4j
-@Component
 @RequiredArgsConstructor
 public class RecCtxToEntryModelConverter implements Converter<RecurrentTokenContext, EntryStateModel> {
 

@@ -1,6 +1,5 @@
 package dev.vality.adapter.flow.lib.processor;
 
-import dev.vality.adapter.common.processor.Processor;
 import dev.vality.adapter.flow.lib.constant.Status;
 import dev.vality.adapter.flow.lib.model.BaseResponseModel;
 import dev.vality.adapter.flow.lib.model.EntryStateModel;

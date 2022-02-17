@@ -15,7 +15,9 @@ public class AdapterProperties {
     private String callbackUrl;
     private String pathCallbackUrl;
     private String pathRecurrentCallbackUrl;
-    private String defaultTermUrl;
+
+    private String successRedirectUrl;
+    private String failedRedirectUrl;
 
     private String tagPrefix;
     private List<String> tagGeneratorFieldNames = List.of(

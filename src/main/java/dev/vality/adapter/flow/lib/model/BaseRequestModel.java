@@ -26,6 +26,8 @@ public class BaseRequestModel {
     private MobilePaymentData mobilePaymentData;
     private RecurrentPaymentData recurrentPaymentData;
     private RefundData refundData;
+    private String successRedirectUrl;
+    private String failedRedirectUrl;
 
     //Options
     private Map<String, String> adapterConfigurations;

@@ -1,6 +1,5 @@
 package dev.vality.adapter.flow.lib.processor;
 
-import dev.vality.adapter.common.processor.Processor;
 import dev.vality.adapter.flow.lib.constant.Status;
 import dev.vality.adapter.flow.lib.model.BaseResponseModel;
 import dev.vality.adapter.flow.lib.model.EntryStateModel;
@@ -25,6 +24,7 @@ public class RedirectProcessor implements Processor<ExitStateModel, BaseResponse
             ExitStateModel exitStateModel = new ExitStateModel();
             exitStateModel.setThreeDsData(response.getThreeDsData());
             exitStateModel.setLastOperationStatus(response.getStatus());
+            exitStateModel.setProviderTrxId(response.getProviderTrxId());
             log.debug("Finish redirect process response: {} entryStateModel: {}", response, entryStateModel);
             return exitStateModel;
         }

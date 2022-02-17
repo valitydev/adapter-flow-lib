@@ -1,6 +1,6 @@
 package dev.vality.adapter.flow.lib.handler;
 
-import dev.vality.adapter.common.handler.callback.CallbackHandler;
+import dev.vality.adapter.flow.lib.handler.callback.CallbackHandler;
 import dev.vality.damsel.proxy_provider.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

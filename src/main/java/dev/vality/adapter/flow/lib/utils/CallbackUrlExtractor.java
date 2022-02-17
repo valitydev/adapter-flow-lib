@@ -1,12 +1,11 @@
 package dev.vality.adapter.flow.lib.utils;
 
+import dev.vality.adapter.flow.lib.constant.RedirectFields;
 import lombok.RequiredArgsConstructor;
 import org.springframework.util.StringUtils;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Map;
-
-import static dev.vality.adapter.common.constants.ThreeDsFields.TERM_URL;
 
 @RequiredArgsConstructor
 public class CallbackUrlExtractor {
@@ -15,17 +14,18 @@ public class CallbackUrlExtractor {
 
     private final AdapterProperties adapterProperties;
 
-    public String extractCallbackUrl(Map<String, String> adapterConfigurations, String redirectUrl) {
+    public String extractCallbackUrl(String redirectUrl) {
         return UriComponentsBuilder.fromUriString(adapterProperties.getCallbackUrl())
                 .path(adapterProperties.getPathCallbackUrl())
-                .queryParam(TERMINATION_URI, getRedirectUrl(adapterConfigurations, redirectUrl)).build().toUriString();
+                .queryParam(TERMINATION_URI, redirectUrl).build().toUriString();
     }
 
-    private String getRedirectUrl(Map<String, String> adapterConfigurations, String redirectUrl) {
+    public String getSuccessRedirectUrl(Map<String, String> adapterConfigurations, String redirectUrl) {
         if (StringUtils.hasText(redirectUrl)) {
             return redirectUrl;
         }
-        return adapterConfigurations.getOrDefault(TERM_URL.getValue(), adapterProperties.getDefaultTermUrl());
+        return adapterConfigurations.getOrDefault(RedirectFields.TERM_URL.getValue(),
+                adapterProperties.getSuccessRedirectUrl());
     }
 
 }

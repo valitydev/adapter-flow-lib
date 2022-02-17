@@ -1,14 +1,15 @@
 package dev.vality.adapter.flow.lib.converter.entry;
 
-import dev.vality.adapter.common.enums.TargetStatus;
-import dev.vality.adapter.common.utils.converter.CardDataUtils;
-import dev.vality.adapter.common.utils.converter.TargetStatusResolver;
 import dev.vality.adapter.flow.lib.constant.MetaData;
 import dev.vality.adapter.flow.lib.constant.Step;
+import dev.vality.adapter.flow.lib.constant.TargetStatus;
 import dev.vality.adapter.flow.lib.model.*;
 import dev.vality.adapter.flow.lib.serde.TemporaryContextDeserializer;
 import dev.vality.adapter.flow.lib.service.IdGenerator;
 import dev.vality.adapter.flow.lib.service.TemporaryContextService;
+import dev.vality.adapter.flow.lib.utils.CallbackUrlExtractor;
+import dev.vality.adapter.flow.lib.utils.CardDataUtils;
+import dev.vality.adapter.flow.lib.utils.TargetStatusResolver;
 import dev.vality.cds.client.storage.CdsClientStorage;
 import dev.vality.cds.client.storage.utils.BankCardExtractor;
 import dev.vality.cds.storage.Auth3DS;
@@ -22,11 +23,10 @@ import dev.vality.java.damsel.utils.creators.ProxyProviderPackageCreators;
 import dev.vality.java.damsel.utils.extractors.ProxyProviderPackageExtractors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
+import java.util.Map;
 
-@Component
 @RequiredArgsConstructor
 public class CtxToEntryModelConverter implements Converter<PaymentContext, EntryStateModel> {
 
@@ -34,6 +34,7 @@ public class CtxToEntryModelConverter implements Converter<PaymentContext, Entry
     private final TemporaryContextDeserializer temporaryContextDeserializer;
     private final IdGenerator idGenerator;
     private final TemporaryContextService temporaryContextService;
+    private final CallbackUrlExtractor callbackUrlExtractor;
 
     @Override
     public EntryStateModel convert(PaymentContext context) {
@@ -50,6 +51,7 @@ public class CtxToEntryModelConverter implements Converter<PaymentContext, Entry
 
         TransactionInfo trx = payment.getTrx();
         RecurrentPaymentData recurrentPaymentData = initRecurrentPaymentData(payment, paymentResource, trx);
+        Map<String, String> adapterConfigurations = context.getOptions();
         return EntryStateModel.builder()
                 .baseRequestModel(BaseRequestModel.builder().recurrentPaymentData(recurrentPaymentData)
                         .mobilePaymentData(mobilePaymentDataBuilder.build())
@@ -62,14 +64,22 @@ public class CtxToEntryModelConverter implements Converter<PaymentContext, Entry
                         .payerInfo(PayerInfo.builder()
                                 .ip(ProxyProviderPackageCreators.extractIpAddress(context))
                                 .build())
-                        .adapterConfigurations(context.getOptions())
+                        .adapterConfigurations(adapterConfigurations)
                         .providerTrxId(trx != null ? trx.getId() : temporaryContext.getProviderTrxId())
                         .savedData(trx != null ? trx.getExtra() : new HashMap<>())
+                        .successRedirectUrl(getSuccessRedirectUrl(payment, adapterConfigurations))
                         .build())
                 .targetStatus(targetStatus)
                 .currentStep(currentStep)
-                .redirectUrl(payment.isSetPayerSessionInfo() ? payment.getPayerSessionInfo().getRedirectUrl() : null)
                 .build();
+    }
+
+    private String getSuccessRedirectUrl(InvoicePayment payment, Map<String, String> adapterConfigurations) {
+        return callbackUrlExtractor.getSuccessRedirectUrl(
+                adapterConfigurations,
+                payment.isSetPayerSessionInfo()
+                        ? payment.getPayerSessionInfo().getRedirectUrl()
+                        : null);
     }
 
     private void initPaymentData(PaymentContext context, PaymentResource paymentResource,

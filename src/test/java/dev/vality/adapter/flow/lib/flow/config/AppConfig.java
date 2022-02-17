@@ -2,7 +2,7 @@ package dev.vality.adapter.flow.lib.flow.config;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.vality.adapter.common.mapper.SimpleErrorMapping;
+import dev.vality.adapter.flow.lib.utils.SimpleErrorMapping;
 import dev.vality.error.mapping.ErrorMapping;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

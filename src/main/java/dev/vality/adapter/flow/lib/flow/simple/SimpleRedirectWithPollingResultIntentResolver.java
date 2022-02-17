@@ -2,31 +2,19 @@ package dev.vality.adapter.flow.lib.flow.simple;
 
 import dev.vality.adapter.flow.lib.constant.Status;
 import dev.vality.adapter.flow.lib.constant.Step;
-import dev.vality.adapter.flow.lib.exception.DataNotCorrespondStateException;
 import dev.vality.adapter.flow.lib.flow.ResultIntentResolver;
 import dev.vality.adapter.flow.lib.model.EntryStateModel;
 import dev.vality.adapter.flow.lib.model.ExitStateModel;
-import dev.vality.adapter.flow.lib.model.ThreeDsData;
-import dev.vality.adapter.flow.lib.service.TagManagementService;
-import dev.vality.adapter.flow.lib.utils.CallbackUrlExtractor;
-import dev.vality.adapter.flow.lib.utils.TimerProperties;
+import dev.vality.adapter.flow.lib.service.IntentResultFactory;
 import dev.vality.damsel.proxy_provider.Intent;
-import dev.vality.java.damsel.utils.creators.ProxyProviderPackageCreators;
 import lombok.RequiredArgsConstructor;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import static dev.vality.adapter.common.constants.ThreeDsFields.TERM_URL;
-import static dev.vality.java.damsel.utils.creators.ProxyProviderPackageCreators.*;
-import static dev.vality.java.damsel.utils.extractors.OptionsExtractors.extractRedirectTimeout;
+import static dev.vality.java.damsel.utils.creators.ProxyProviderPackageCreators.createFinishIntentSuccess;
 
 @RequiredArgsConstructor
 public class SimpleRedirectWithPollingResultIntentResolver implements ResultIntentResolver {
 
-    private final TimerProperties timerProperties;
-    private final CallbackUrlExtractor callbackUrlExtractor;
-    private final TagManagementService tagManagementService;
+    private final IntentResultFactory intentResultFactory;
 
     @Override
     public Intent initIntentByStep(ExitStateModel exitStateModel) {
@@ -35,51 +23,17 @@ public class SimpleRedirectWithPollingResultIntentResolver implements ResultInte
         Step currentStep = entryStateModel.getCurrentStep();
         return switch (nextStep) {
             case CHECK_STATUS -> exitStateModel.getLastOperationStatus() == Status.NEED_REDIRECT
-                    ? createIntentWithSuspension(exitStateModel)
-                    : createIntentWithSleepIntent(0);
+                    ? intentResultFactory.createIntentWithSuspension(exitStateModel)
+                    : intentResultFactory.createSleepIntent();
             case DO_NOTHING -> switch (currentStep) {
                 case CHECK_STATUS, CHECK_NEED_3DS_V2, FINISH_THREE_DS_V1, FINISH_THREE_DS_V2, DO_NOTHING,
-                        PAY, AUTH -> initFinishIntent(exitStateModel, entryStateModel);
-                case REFUND, CANCEL -> createFinishIntentSuccess();
+                        PAY, AUTH -> intentResultFactory.createFinishIntentWithCheckToken(exitStateModel);
+                case REFUND, CANCEL -> intentResultFactory.createFinishIntentSuccess();
                 default -> throw new IllegalStateException("Wrong currentStep: " + currentStep);
             };
-            case REFUND, CANCEL -> createFinishIntentSuccess();
+            case REFUND, CANCEL -> intentResultFactory.createFinishIntentSuccess();
             default -> throw new IllegalStateException("Wrong nextStep: " + nextStep);
         };
-    }
-
-    private Intent initFinishIntent(ExitStateModel exitStateModel,
-                                    EntryStateModel entryStateModel) {
-        if (entryStateModel.getBaseRequestModel().getRecurrentPaymentData() != null
-                && entryStateModel.getBaseRequestModel().getRecurrentPaymentData().isMakeRecurrent()) {
-            return createFinishIntentSuccessWithToken(exitStateModel.getRecToken());
-        }
-        return createFinishIntentSuccess();
-    }
-
-    private Intent createIntentWithSuspension(ExitStateModel exitStateModel) {
-        EntryStateModel entryStateModel = exitStateModel.getGeneralEntryStateModel();
-        ThreeDsData threeDsData = exitStateModel.getThreeDsData();
-        if (threeDsData == null) {
-            throw new DataNotCorrespondStateException("ThreeDsData is null for suspend intent!");
-        }
-        Map<String, String> params = null;
-        if (threeDsData.getParameters() == null) {
-            params = new HashMap<>();
-        } else {
-            params = new HashMap<>(threeDsData.getParameters());
-        }
-        params.put(TERM_URL.getValue(), callbackUrlExtractor.extractCallbackUrl(
-                entryStateModel.getBaseRequestModel().getAdapterConfigurations(),
-                entryStateModel.getRedirectUrl())
-        );
-        int timerRedirectTimeout = extractRedirectTimeout(
-                entryStateModel.getBaseRequestModel().getAdapterConfigurations(),
-                timerProperties.getRedirectTimeout());
-        return ProxyProviderPackageCreators.createIntentWithSuspendIntent(
-                tagManagementService.findTag(threeDsData.getParameters()),
-                timerRedirectTimeout,
-                createPostUserInteraction(threeDsData.getAcsUrl(), params));
     }
 
 }

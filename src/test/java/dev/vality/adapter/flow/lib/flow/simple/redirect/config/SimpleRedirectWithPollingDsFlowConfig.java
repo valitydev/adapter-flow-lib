@@ -1,7 +1,5 @@
 package dev.vality.adapter.flow.lib.flow.simple.redirect.config;
 
-import dev.vality.adapter.common.handler.CommonHandler;
-import dev.vality.adapter.common.processor.Processor;
 import dev.vality.adapter.flow.lib.client.RemoteClient;
 import dev.vality.adapter.flow.lib.converter.base.EntryModelToBaseRequestModelConverter;
 import dev.vality.adapter.flow.lib.converter.entry.CtxToEntryModelConverter;
@@ -12,19 +10,20 @@ import dev.vality.adapter.flow.lib.flow.RecurrentResultIntentResolver;
 import dev.vality.adapter.flow.lib.flow.ResultIntentResolver;
 import dev.vality.adapter.flow.lib.flow.StepResolver;
 import dev.vality.adapter.flow.lib.flow.simple.GenerateTokenSimpleRedirectWithPollingStepResolverImpl;
-import dev.vality.adapter.flow.lib.flow.simple.SimpleRedirectRecurrentResultIntentResolver;
+import dev.vality.adapter.flow.lib.flow.simple.SimpleRedirectGenerateTokenResultIntentResolver;
 import dev.vality.adapter.flow.lib.flow.simple.SimpleRedirectWIthPollingStepResolverImpl;
 import dev.vality.adapter.flow.lib.flow.simple.SimpleRedirectWithPollingResultIntentResolver;
 import dev.vality.adapter.flow.lib.flow.utils.PaymentContextValidator;
 import dev.vality.adapter.flow.lib.flow.utils.RecurrentTokenContextValidator;
+import dev.vality.adapter.flow.lib.handler.CommonHandler;
 import dev.vality.adapter.flow.lib.handler.ServerFlowHandler;
 import dev.vality.adapter.flow.lib.handler.payment.*;
 import dev.vality.adapter.flow.lib.model.BaseResponseModel;
 import dev.vality.adapter.flow.lib.model.EntryStateModel;
 import dev.vality.adapter.flow.lib.model.ExitStateModel;
-import dev.vality.adapter.flow.lib.service.TagManagementService;
-import dev.vality.adapter.flow.lib.utils.CallbackUrlExtractor;
-import dev.vality.adapter.flow.lib.utils.TimerProperties;
+import dev.vality.adapter.flow.lib.processor.Processor;
+import dev.vality.adapter.flow.lib.service.IntentResultFactory;
+import dev.vality.adapter.flow.lib.service.RecurrentIntentResultFactory;
 import dev.vality.damsel.proxy_provider.PaymentContext;
 import dev.vality.damsel.proxy_provider.PaymentProxyResult;
 import dev.vality.damsel.proxy_provider.RecurrentTokenContext;
@@ -66,22 +65,13 @@ public class SimpleRedirectWithPollingDsFlowConfig {
 
     @Bean
     public RecurrentResultIntentResolver recurrentResultIntentResolver(
-            TimerProperties timerProperties,
-            CallbackUrlExtractor callbackUrlExtractor,
-            TagManagementService tagManagementService) {
-        return new SimpleRedirectRecurrentResultIntentResolver(timerProperties,
-                callbackUrlExtractor,
-                tagManagementService);
+            RecurrentIntentResultFactory recurrentIntentResultFactory) {
+        return new SimpleRedirectGenerateTokenResultIntentResolver(recurrentIntentResultFactory);
     }
 
     @Bean
-    public ResultIntentResolver resultIntentResolver(
-            TimerProperties timerProperties,
-            CallbackUrlExtractor callbackUrlExtractor,
-            TagManagementService tagManagementService) {
-        return new SimpleRedirectWithPollingResultIntentResolver(timerProperties,
-                callbackUrlExtractor,
-                tagManagementService);
+    public ResultIntentResolver resultIntentResolver(IntentResultFactory intentResultFactory) {
+        return new SimpleRedirectWithPollingResultIntentResolver(intentResultFactory);
     }
 
     @Bean

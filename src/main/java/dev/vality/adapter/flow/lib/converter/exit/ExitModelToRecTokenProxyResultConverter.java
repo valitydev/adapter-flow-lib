@@ -9,12 +9,10 @@ import dev.vality.damsel.proxy_provider.RecurrentTokenProxyResult;
 import dev.vality.error.mapping.ErrorMapping;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.stereotype.Component;
 
 import static dev.vality.java.damsel.utils.creators.DomainPackageCreators.createTransactionInfo;
 import static dev.vality.java.damsel.utils.creators.ProxyProviderPackageCreators.createRecurrentTokenProxyResultFailure;
 
-@Component
 @RequiredArgsConstructor
 public class ExitModelToRecTokenProxyResultConverter implements Converter<ExitStateModel, RecurrentTokenProxyResult> {
 

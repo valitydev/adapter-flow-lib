@@ -2,8 +2,7 @@ package dev.vality.adapter.flow.lib.serde;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.vality.adapter.common.state.deserializer.DeserializationException;
-import dev.vality.adapter.common.state.deserializer.Deserializer;
+import dev.vality.adapter.flow.lib.exception.DeserializationException;
 import lombok.RequiredArgsConstructor;
 
 import javax.servlet.http.HttpServletRequest;
