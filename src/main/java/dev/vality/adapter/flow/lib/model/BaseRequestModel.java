@@ -21,7 +21,7 @@ public class BaseRequestModel {
      */
     private Long paymentId;
     /**
-     * Uniq identifier from provider (if exist), not come in first methods.
+     * Uniq identifier from provider (if exists), not come in first methods.
      */
     private String providerTrxId;
     /**

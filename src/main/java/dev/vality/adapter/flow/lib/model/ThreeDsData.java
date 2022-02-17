@@ -14,8 +14,18 @@ import java.util.Map;
 @AllArgsConstructor
 public class ThreeDsData {
 
+    /**
+     * Use type to select desired 3ds flow.
+     */
     private ThreeDsType threeDsType;
+    /**
+     * Url for redirect user.
+     */
     private String acsUrl;
+    /**
+     * Parameters that would send in redirect request.
+     * Name and value of parameters don't change and forward send in your format.
+     */
     private Map<String, String> parameters;
 
 }
