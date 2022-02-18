@@ -22,14 +22,14 @@ public class PaymentCallbackHandler implements CallbackHandler<PaymentCallbackRe
     private final TemporaryContextService temporaryContextService;
 
     public PaymentCallbackResult handleCallback(ByteBuffer callback, PaymentContext context) {
-        var generalExitStateModel = initAdapterContext(callback, context);
+        var generalExitStateModel = initTemporaryContext(callback, context);
         byte[] callbackResponse = new byte[0];
         return ProxyProviderPackageCreators.createCallbackResult(callbackResponse, (new PaymentCallbackProxyResult())
                 .setIntent(ProxyProviderPackageCreators.createIntentWithSleepIntent(0))
                 .setNextState(this.adapterSerializer.writeByte(generalExitStateModel)));
     }
 
-    private TemporaryContext initAdapterContext(ByteBuffer callback, PaymentContext context) {
+    private TemporaryContext initTemporaryContext(ByteBuffer callback, PaymentContext context) {
         var temporaryContext = temporaryContextService.getTemporaryContext(context, this.temporaryContextDeserializer);
         return temporaryContextService.appendThreeDsParametersToContext(callback, temporaryContext);
     }

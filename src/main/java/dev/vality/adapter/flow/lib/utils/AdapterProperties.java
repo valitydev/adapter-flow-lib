@@ -1,6 +1,7 @@
 package dev.vality.adapter.flow.lib.utils;
 
 import lombok.Data;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.NotEmpty;
@@ -8,6 +9,7 @@ import java.util.List;
 
 @Data
 @Validated
+@ConfigurationProperties("adapter")
 public class AdapterProperties {
 
     @NotEmpty
@@ -28,7 +30,8 @@ public class AdapterProperties {
             "threeDsMethodData",
             "md",
             "ThreeDSMethodData",
-            "ThreeDSSessionData"
+            "ThreeDSSessionData",
+            "tag"
     );
 
 }

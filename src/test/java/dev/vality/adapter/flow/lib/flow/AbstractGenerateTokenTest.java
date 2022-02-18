@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @ContextConfiguration(classes = {HandlerConfig.class, AppConfig.class, ProcessorConfig.class, SerdeConfig.class,
         ThreeDsCallbackController.class, TomcatEmbeddedConfiguration.class, TagManagementService.class,
         CallbackUrlExtractor.class, FullThreeDsAllVersionsStepResolverImpl.class,
-        GenerateTokenFullThreeDsAllVersionsStepResolverImpl.class, TimerProperties.class})
+        GenerateTokenFullThreeDsAllVersionsStepResolverImpl.class})
 public class AbstractGenerateTokenTest {
 
     @MockBean
@@ -42,11 +42,11 @@ public class AbstractGenerateTokenTest {
     protected RemoteClient client;
     @MockBean
     protected HellgateAdapterClient hellgateAdapterClient;
+    @Autowired
+    public TemporaryContextDeserializer temporaryContextDeserializer;
 
     @Autowired
     protected ProviderProxySrv.Iface serverHandlerLogDecorator;
-    protected TemporaryContextDeserializer temporaryContextDeserializer =
-            new TemporaryContextDeserializer(new ObjectMapper());
 
     protected RecurrentTokenProxyResult checkSuccessAuthOrPay(RecurrentTokenContext paymentContext) throws TException {
         RecurrentTokenProxyResult recurrentTokenProxyResult = serverHandlerLogDecorator.generateToken(paymentContext);

@@ -4,22 +4,20 @@ import dev.vality.adapter.flow.lib.converter.ExitStateModelToTemporaryContextCon
 import dev.vality.adapter.flow.lib.flow.ResultIntentResolver;
 import dev.vality.adapter.flow.lib.model.ExitStateModel;
 import dev.vality.adapter.flow.lib.serde.TemporaryContextSerializer;
+import dev.vality.adapter.flow.lib.service.IntentResultFactory;
 import dev.vality.damsel.proxy_provider.Intent;
 import dev.vality.damsel.proxy_provider.PaymentProxyResult;
-import dev.vality.error.mapping.ErrorMapping;
 import dev.vality.java.damsel.utils.creators.DomainPackageCreators;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.util.StringUtils;
 
-import static dev.vality.java.damsel.utils.creators.ProxyProviderPackageCreators.createProxyResultFailure;
-
 @Slf4j
 @RequiredArgsConstructor
 public class ExitModelToProxyResultConverter implements Converter<ExitStateModel, PaymentProxyResult> {
 
-    private final ErrorMapping errorMapping;
+    private final IntentResultFactory intentResultFactory;
     private final TemporaryContextSerializer serializer;
     private final ResultIntentResolver resultIntentResolver;
     private final ExitStateModelToTemporaryContextConverter contextConverter;
@@ -27,8 +25,7 @@ public class ExitModelToProxyResultConverter implements Converter<ExitStateModel
     @Override
     public PaymentProxyResult convert(ExitStateModel exitStateModel) {
         if (StringUtils.hasText(exitStateModel.getErrorCode())) {
-            return createProxyResultFailure(
-                    errorMapping.mapFailure(exitStateModel.getErrorCode(), exitStateModel.getErrorMessage()));
+            return new PaymentProxyResult(intentResultFactory.createFinishIntentFailed(exitStateModel));
         }
 
         Intent intent = resultIntentResolver.initIntentByStep(exitStateModel);
@@ -39,6 +36,7 @@ public class ExitModelToProxyResultConverter implements Converter<ExitStateModel
                         exitStateModel.getProviderTrxId(), exitStateModel.getTrxExtra())
                 );
     }
+
 
 }
 

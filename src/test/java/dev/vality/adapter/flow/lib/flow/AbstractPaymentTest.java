@@ -33,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @ContextConfiguration(classes = {HandlerConfig.class, AppConfig.class, ProcessorConfig.class, SerdeConfig.class,
         ThreeDsCallbackController.class, TomcatEmbeddedConfiguration.class, TagManagementService.class,
         CallbackUrlExtractor.class, FullThreeDsAllVersionsStepResolverImpl.class,
-        GenerateTokenFullThreeDsAllVersionsStepResolverImpl.class, TimerProperties.class})
+        GenerateTokenFullThreeDsAllVersionsStepResolverImpl.class})
 public class AbstractPaymentTest {
 
     @MockBean
@@ -47,9 +47,8 @@ public class AbstractPaymentTest {
 
     @Autowired
     protected ProviderProxySrv.Iface serverHandlerLogDecorator;
-
-    protected TemporaryContextDeserializer temporaryContextDeserializer =
-            new TemporaryContextDeserializer(new ObjectMapper());
+    @Autowired
+    public TemporaryContextDeserializer temporaryContextDeserializer;
 
     protected PaymentProxyResult processWithDoNothingSuccessResult(PaymentContext paymentContext) throws TException {
         PaymentProxyResult paymentProxyResult = serverHandlerLogDecorator.processPayment(paymentContext);

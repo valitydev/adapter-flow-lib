@@ -16,7 +16,7 @@ public class EntryStateModel {
     private BaseRequestModel baseRequestModel;
 
     private Step currentStep;
-    private PollingInfo pollingInfo;
+    private PollingInfo startedPollingInfo;
     private TargetStatus targetStatus;
 
 }

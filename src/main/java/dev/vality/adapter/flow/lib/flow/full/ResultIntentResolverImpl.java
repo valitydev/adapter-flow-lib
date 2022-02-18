@@ -22,11 +22,11 @@ public class ResultIntentResolverImpl implements ResultIntentResolver {
         Step currentStep = entryStateModel.getCurrentStep();
         return switch (nextStep) {
             case FINISH_THREE_DS_V1, CHECK_NEED_3DS_V2, FINISH_THREE_DS_V2 -> intentResultFactory
-                    .createIntentWithSuspension(exitStateModel);
+                    .createSuspendIntentWithFailedAfterTimeout(exitStateModel);
             case DO_NOTHING -> switch (currentStep) {
                 case CHECK_NEED_3DS_V2, FINISH_THREE_DS_V1, FINISH_THREE_DS_V2,
                         DO_NOTHING, PAY, AUTH, CAPTURE -> intentResultFactory
-                        .createFinishIntentWithCheckToken(exitStateModel);
+                        .createFinishIntentSuccessWithCheckToken(exitStateModel);
                 case REFUND, CANCEL -> createFinishIntentSuccess();
                 default -> throw new IllegalStateException("Wrong currentStep: " + currentStep);
             };

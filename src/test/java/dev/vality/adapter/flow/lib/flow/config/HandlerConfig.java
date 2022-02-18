@@ -16,8 +16,8 @@ import dev.vality.adapter.flow.lib.handler.ServerFlowHandler;
 import dev.vality.adapter.flow.lib.handler.ServerHandlerLogDecorator;
 import dev.vality.adapter.flow.lib.handler.callback.PaymentCallbackHandler;
 import dev.vality.adapter.flow.lib.handler.callback.RecurrentTokenCallbackHandler;
-import dev.vality.adapter.flow.lib.serde.ParameterSerializer;
 import dev.vality.adapter.flow.lib.serde.ParametersDeserializer;
+import dev.vality.adapter.flow.lib.serde.ParametersSerializer;
 import dev.vality.adapter.flow.lib.serde.TemporaryContextDeserializer;
 import dev.vality.adapter.flow.lib.serde.TemporaryContextSerializer;
 import dev.vality.adapter.flow.lib.service.*;
@@ -43,6 +43,20 @@ public class HandlerConfig {
     @Bean
     public IdGenerator idGenerator(BenderSrv.Iface iface) {
         return new IdGenerator(iface);
+    }
+
+    @Bean
+    public TimerProperties timerProperties() {
+        TimerProperties timerProperties = new TimerProperties();
+        timerProperties.setMaxTimePollingMin(60);
+        timerProperties.setPollingDelayMs(1000);
+        timerProperties.setRedirectTimeoutMin(15);
+        return timerProperties;
+    }
+
+    @Bean
+    public PollingInfoService pollingInfoService(TimerProperties timerProperties) {
+        return new PollingInfoService(timerProperties);
     }
 
     @Bean
@@ -137,26 +151,26 @@ public class HandlerConfig {
     }
 
     @Bean
-    public ParameterSerializer parameterSerializer(ObjectMapper objectMapper) {
-        return new ParameterSerializer(objectMapper);
+    public ParametersSerializer parameterSerializer(ObjectMapper objectMapper) {
+        return new ParametersSerializer(objectMapper);
     }
 
     @Bean
     public ThreeDsAdapterService threeDsAdapterService(HellgateAdapterClient hgClient,
-                                                       ParameterSerializer parameterSerializer,
+                                                       ParametersSerializer parametersSerializer,
                                                        ParametersDeserializer parametersDeserializer,
                                                        TagManagementService tagManagementService
     ) {
-        return new ThreeDsAdapterService(hgClient, parameterSerializer, parametersDeserializer, tagManagementService);
+        return new ThreeDsAdapterService(hgClient, parametersSerializer, parametersDeserializer, tagManagementService);
     }
 
     @Bean
     public ExitModelToProxyResultConverter exitModelToProxyResultConverter(
-            ErrorMapping errorMapping,
+            IntentResultFactory intentResultFactory,
             TemporaryContextSerializer temporaryContextSerializer,
             ResultIntentResolver resultIntentResolver,
             ExitStateModelToTemporaryContextConverter exitStateModelToTemporaryContextConverter) {
-        return new ExitModelToProxyResultConverter(errorMapping,
+        return new ExitModelToProxyResultConverter(intentResultFactory,
                 temporaryContextSerializer,
                 resultIntentResolver,
                 exitStateModelToTemporaryContextConverter);
@@ -196,10 +210,13 @@ public class HandlerConfig {
     @Bean
     public IntentResultFactory intentResultFactory(TimerProperties timerProperties,
                                                    CallbackUrlExtractor callbackUrlExtractor,
-                                                   TagManagementService tagManagementService) {
-        return new IntentResultFactory(timerProperties, callbackUrlExtractor, tagManagementService);
+                                                   TagManagementService tagManagementService,
+                                                   ParametersSerializer parametersSerializer,
+                                                   PollingInfoService pollingInfoService,
+                                                   ErrorMapping errorMapping) {
+        return new IntentResultFactory(timerProperties, callbackUrlExtractor, tagManagementService,
+                parametersSerializer, pollingInfoService, errorMapping);
     }
-
 
     @Bean
     public RecurrentIntentResultFactory recurrentIntentResultFactory(TimerProperties timerProperties,

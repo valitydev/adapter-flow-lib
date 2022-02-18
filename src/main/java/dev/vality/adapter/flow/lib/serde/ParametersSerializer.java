@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.Map;
 
-public class ParameterSerializer extends StateSerializer<Map<String, String>> {
-    public ParameterSerializer(ObjectMapper mapper) {
+public class ParametersSerializer extends StateSerializer<Map<String, String>> {
+    public ParametersSerializer(ObjectMapper mapper) {
         super(mapper);
     }
 }

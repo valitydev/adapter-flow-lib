@@ -1,6 +1,6 @@
 package dev.vality.adapter.flow.lib.service;
 
-import dev.vality.adapter.flow.lib.serde.ParameterSerializer;
+import dev.vality.adapter.flow.lib.serde.ParametersSerializer;
 import dev.vality.adapter.flow.lib.serde.ParametersDeserializer;
 import dev.vality.adapter.flow.lib.utils.CallbackUrlExtractor;
 import dev.vality.adapter.helpers.hellgate.HellgateAdapterClient;
@@ -21,7 +21,7 @@ import java.util.function.BiFunction;
 public class ThreeDsAdapterService {
 
     private final HellgateAdapterClient hgClient;
-    private final ParameterSerializer parameterSerializer;
+    private final ParametersSerializer parametersSerializer;
     private final ParametersDeserializer parametersDeserializer;
     private final TagManagementService tagManagementService;
 
@@ -43,7 +43,7 @@ public class ThreeDsAdapterService {
         log.info("-> callback 3ds {}", parameters);
 
         try {
-            ByteBuffer callback = ByteBuffer.wrap(this.parameterSerializer.writeByte(parameters));
+            ByteBuffer callback = ByteBuffer.wrap(this.parametersSerializer.writeByte(parameters));
             ByteBuffer response = hgFunction.apply(tagManagementService.findTag(parameters), callback);
             resp = new String(response.array(), StandardCharsets.UTF_8);
             if (StringUtils.hasText(parameters.get(CallbackUrlExtractor.TERMINATION_URI))) {

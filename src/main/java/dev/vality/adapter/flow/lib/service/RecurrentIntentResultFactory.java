@@ -39,7 +39,7 @@ public class RecurrentIntentResultFactory {
         params.put(RedirectFields.TERM_URL.getValue(), callbackUrlExtractor.extractCallbackUrl(redirectUrl));
         int timerRedirectTimeout = extractRedirectTimeout(
                 entryStateModel.getBaseRequestModel().getAdapterConfigurations(),
-                timerProperties.getRedirectTimeout());
+                timerProperties.getRedirectTimeoutMin());
         return RecurrentTokenIntent.suspend(
                 new SuspendIntent(
                         tag,

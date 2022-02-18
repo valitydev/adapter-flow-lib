@@ -21,11 +21,11 @@ public class SimpleRedirectWithPollingResultIntentResolver implements ResultInte
         Step currentStep = entryStateModel.getCurrentStep();
         return switch (nextStep) {
             case CHECK_STATUS -> exitStateModel.getLastOperationStatus() == Status.NEED_REDIRECT
-                    ? intentResultFactory.createIntentWithSuspension(exitStateModel)
+                    ? intentResultFactory.createSuspendIntentWithCallbackAfterTimeout(exitStateModel)
                     : intentResultFactory.createSleepIntent();
             case DO_NOTHING -> switch (currentStep) {
                 case CHECK_STATUS, CHECK_NEED_3DS_V2, FINISH_THREE_DS_V1, FINISH_THREE_DS_V2, DO_NOTHING,
-                        PAY, AUTH -> intentResultFactory.createFinishIntentWithCheckToken(exitStateModel);
+                        PAY, AUTH -> intentResultFactory.createFinishIntentSuccessWithCheckToken(exitStateModel);
                 case REFUND, CANCEL -> intentResultFactory.createFinishIntentSuccess();
                 default -> throw new IllegalStateException("Wrong currentStep: " + currentStep);
             };

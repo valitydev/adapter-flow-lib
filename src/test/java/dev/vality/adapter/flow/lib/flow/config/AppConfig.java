@@ -2,6 +2,7 @@ package dev.vality.adapter.flow.lib.flow.config;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import dev.vality.adapter.flow.lib.utils.SimpleErrorMapping;
 import dev.vality.error.mapping.ErrorMapping;
 import org.springframework.beans.factory.annotation.Value;
@@ -39,6 +40,7 @@ public class AppConfig {
     @Primary
     public ObjectMapper objectMapper() {
         return new ObjectMapper()
+                .registerModule(new JavaTimeModule())
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 }

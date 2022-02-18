@@ -16,6 +16,7 @@ public class TemporaryContext {
 
     private Step nextStep;
     private String providerTrxId;
+    private PollingInfo pollingInfo;
     private Map<String, String> threeDsData;
 
 }
