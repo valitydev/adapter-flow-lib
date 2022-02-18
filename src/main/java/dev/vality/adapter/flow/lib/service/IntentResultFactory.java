@@ -62,7 +62,6 @@ public class IntentResultFactory {
     public Intent createSuspendIntentWithCallbackAfterTimeout(ExitStateModel exitStateModel) {
         Map<String, String> params = ThreeDsDataInitializer.initThreeDsData(exitStateModel);
         EntryStateModel entryStateModel = exitStateModel.getEntryStateModel();
-        ThreeDsData threeDsData = exitStateModel.getThreeDsData();
 
         PollingInfo pollingInfo = pollingInfoService.initPollingInfo(entryStateModel);
         if (pollingInfoService.isDeadline(pollingInfo)) {
@@ -72,6 +71,7 @@ public class IntentResultFactory {
 
         String redirectUrl = entryStateModel.getBaseRequestModel().getSuccessRedirectUrl();
         params.put(RedirectFields.TERM_URL.getValue(), callbackUrlExtractor.extractCallbackUrl(redirectUrl));
+        ThreeDsData threeDsData = exitStateModel.getThreeDsData();
         int timerRedirectTimeout = extractRedirectTimeout(
                 entryStateModel.getBaseRequestModel().getAdapterConfigurations(),
                 timerProperties.getRedirectTimeoutMin());

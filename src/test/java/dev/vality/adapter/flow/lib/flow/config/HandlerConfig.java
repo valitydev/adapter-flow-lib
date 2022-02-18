@@ -123,11 +123,11 @@ public class HandlerConfig {
 
     @Bean
     public ExitModelToRecTokenProxyResultConverter exitModelToRecTokenProxyResultConverter(
-            ErrorMapping errorMapping,
+            RecurrentIntentResultFactory recurrentIntentResultFactory,
             TemporaryContextSerializer temporaryContextSerializer,
             RecurrentResultIntentResolver recurrentResultIntentResolver,
             ExitStateModelToTemporaryContextConverter exitStateModelToTemporaryContextConverter) {
-        return new ExitModelToRecTokenProxyResultConverter(errorMapping,
+        return new ExitModelToRecTokenProxyResultConverter(recurrentIntentResultFactory,
                 temporaryContextSerializer,
                 recurrentResultIntentResolver,
                 exitStateModelToTemporaryContextConverter

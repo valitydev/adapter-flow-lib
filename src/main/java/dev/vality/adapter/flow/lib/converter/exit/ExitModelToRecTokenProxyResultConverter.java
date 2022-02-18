@@ -4,19 +4,18 @@ import dev.vality.adapter.flow.lib.converter.ExitStateModelToTemporaryContextCon
 import dev.vality.adapter.flow.lib.flow.RecurrentResultIntentResolver;
 import dev.vality.adapter.flow.lib.model.ExitStateModel;
 import dev.vality.adapter.flow.lib.serde.TemporaryContextSerializer;
+import dev.vality.adapter.flow.lib.service.RecurrentIntentResultFactory;
 import dev.vality.damsel.proxy_provider.RecurrentTokenIntent;
 import dev.vality.damsel.proxy_provider.RecurrentTokenProxyResult;
-import dev.vality.error.mapping.ErrorMapping;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.converter.Converter;
 
 import static dev.vality.java.damsel.utils.creators.DomainPackageCreators.createTransactionInfo;
-import static dev.vality.java.damsel.utils.creators.ProxyProviderPackageCreators.createRecurrentTokenProxyResultFailure;
 
 @RequiredArgsConstructor
 public class ExitModelToRecTokenProxyResultConverter implements Converter<ExitStateModel, RecurrentTokenProxyResult> {
 
-    private final ErrorMapping errorMapping;
+    private final RecurrentIntentResultFactory recurrentIntentResultFactory;
     private final TemporaryContextSerializer serializer;
     private final RecurrentResultIntentResolver recurrentResultIntentResolver;
     private final ExitStateModelToTemporaryContextConverter contextConverter;
@@ -24,8 +23,11 @@ public class ExitModelToRecTokenProxyResultConverter implements Converter<ExitSt
     @Override
     public RecurrentTokenProxyResult convert(ExitStateModel exitStateModel) {
         if (exitStateModel.getErrorCode() != null) {
-            return createRecurrentTokenProxyResultFailure(
-                    errorMapping.mapFailure(exitStateModel.getErrorCode(), exitStateModel.getErrorMessage()));
+            return new RecurrentTokenProxyResult(
+                    recurrentIntentResultFactory.createFinishIntentFailed(
+                            exitStateModel.getErrorCode(),
+                            exitStateModel.getErrorMessage())
+            );
         }
 
         RecurrentTokenIntent intent = recurrentResultIntentResolver.initIntentByStep(exitStateModel);
