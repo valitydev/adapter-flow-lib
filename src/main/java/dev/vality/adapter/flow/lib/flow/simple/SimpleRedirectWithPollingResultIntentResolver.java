@@ -22,7 +22,7 @@ public class SimpleRedirectWithPollingResultIntentResolver implements ResultInte
         return switch (nextStep) {
             case CHECK_STATUS -> exitStateModel.getLastOperationStatus() == Status.NEED_REDIRECT
                     ? intentResultFactory.createSuspendIntentWithCallbackAfterTimeout(exitStateModel)
-                    : intentResultFactory.createSleepIntent();
+                    : intentResultFactory.createSleepIntentWithExponentialPolling(exitStateModel);
             case DO_NOTHING -> switch (currentStep) {
                 case CHECK_STATUS, CHECK_NEED_3DS_V2, FINISH_THREE_DS_V1, FINISH_THREE_DS_V2, DO_NOTHING,
                         PAY, AUTH -> intentResultFactory.createFinishIntentSuccessWithCheckToken(exitStateModel);

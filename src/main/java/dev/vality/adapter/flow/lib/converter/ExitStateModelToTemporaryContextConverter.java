@@ -11,7 +11,7 @@ public class ExitStateModelToTemporaryContextConverter implements Converter<Exit
         return TemporaryContext.builder()
                 .providerTrxId(source.getProviderTrxId())
                 .nextStep(source.getNextStep())
-                .pollingInfo(source.getNewPollingInfo())
+                .pollingInfo(source.getPollingInfo())
                 .build();
     }
 

@@ -24,7 +24,7 @@ public class ExitStateModel {
 
     private String providerTrxId;
     private Map<String, String> trxExtra;
-    private PollingInfo newPollingInfo;
+    private PollingInfo pollingInfo;
     private ThreeDsData threeDsData;
 
     private String recToken;

@@ -7,6 +7,7 @@ import dev.vality.adapter.flow.lib.model.PollingInfo;
 import dev.vality.adapter.flow.lib.model.ThreeDsData;
 import dev.vality.adapter.flow.lib.serde.ParametersSerializer;
 import dev.vality.adapter.flow.lib.utils.CallbackUrlExtractor;
+import dev.vality.adapter.flow.lib.utils.ThreeDsDataInitializer;
 import dev.vality.adapter.flow.lib.utils.TimerProperties;
 import dev.vality.damsel.base.Timer;
 import dev.vality.damsel.proxy_provider.*;
@@ -15,7 +16,6 @@ import dev.vality.error.mapping.ErrorMapping;
 import lombok.RequiredArgsConstructor;
 
 import java.nio.ByteBuffer;
-import java.util.HashMap;
 import java.util.Map;
 
 import static dev.vality.java.damsel.utils.creators.ProxyProviderPackageCreators.createFinishIntentSuccessWithToken;
@@ -25,13 +25,13 @@ import static dev.vality.java.damsel.utils.extractors.OptionsExtractors.extractR
 @RequiredArgsConstructor
 public class IntentResultFactory {
 
-    public static final String TAG = "tag";
     private final TimerProperties timerProperties;
     private final CallbackUrlExtractor callbackUrlExtractor;
     private final TagManagementService tagManagementService;
     private final ParametersSerializer parametersSerializer;
     private final PollingInfoService pollingInfoService;
     private final ErrorMapping errorMapping;
+    private final ExponentialBackOffPollingService exponentialBackOffPollingService;
 
     public Intent createFinishIntentSuccessWithCheckToken(ExitStateModel exitStateModel) {
         EntryStateModel entryStateModel = exitStateModel.getEntryStateModel();
@@ -45,7 +45,7 @@ public class IntentResultFactory {
     public Intent createSuspendIntentWithFailedAfterTimeout(ExitStateModel exitStateModel) {
         EntryStateModel entryStateModel = exitStateModel.getEntryStateModel();
         ThreeDsData threeDsData = exitStateModel.getThreeDsData();
-        Map<String, String> params = initThreeDsData(exitStateModel);
+        Map<String, String> params = ThreeDsDataInitializer.initThreeDsData(exitStateModel);
         String redirectUrl = entryStateModel.getBaseRequestModel().getSuccessRedirectUrl();
         params.put(RedirectFields.TERM_URL.getValue(), callbackUrlExtractor.extractCallbackUrl(redirectUrl));
         int timerRedirectTimeout = extractRedirectTimeout(
@@ -60,7 +60,7 @@ public class IntentResultFactory {
     }
 
     public Intent createSuspendIntentWithCallbackAfterTimeout(ExitStateModel exitStateModel) {
-        Map<String, String> params = initThreeDsData(exitStateModel);
+        Map<String, String> params = ThreeDsDataInitializer.initThreeDsData(exitStateModel);
         EntryStateModel entryStateModel = exitStateModel.getEntryStateModel();
         ThreeDsData threeDsData = exitStateModel.getThreeDsData();
 
@@ -68,7 +68,7 @@ public class IntentResultFactory {
         if (pollingInfoService.isDeadline(pollingInfo)) {
             return createFinishIntentFailed("Sleep timeout", "Max time pool limit reached");
         }
-        exitStateModel.setNewPollingInfo(pollingInfo);
+        exitStateModel.setPollingInfo(pollingInfo);
 
         String redirectUrl = entryStateModel.getBaseRequestModel().getSuccessRedirectUrl();
         params.put(RedirectFields.TERM_URL.getValue(), callbackUrlExtractor.extractCallbackUrl(redirectUrl));
@@ -85,23 +85,28 @@ public class IntentResultFactory {
         );
     }
 
-    private Map<String, String> initThreeDsData(ExitStateModel exitStateModel) {
-        Map<String, String> params = new HashMap<>();
-        ThreeDsData threeDsData = exitStateModel.getThreeDsData();
-        if (threeDsData.getParameters() != null) {
-            params.putAll(threeDsData.getParameters());
-        } else {
-            params.put(TAG, exitStateModel.getProviderTrxId());
-        }
-        return params;
-    }
-
     public Intent createFinishIntentSuccess() {
         return Intent.finish(new FinishIntent(FinishStatus.success(new Success())));
     }
 
-    public Intent createSleepIntent() {
+    public Intent createSleepIntentForReinvocation() {
         return Intent.sleep(new SleepIntent(Timer.timeout(0)));
+    }
+
+    public Intent createSleepIntentWithExponentialPolling(ExitStateModel exitStateModel) {
+        EntryStateModel entryStateModel = exitStateModel.getEntryStateModel();
+        PollingInfo pollingInfo = pollingInfoService.initPollingInfo(entryStateModel);
+        if (pollingInfoService.isDeadline(pollingInfo)) {
+            return createFinishIntentFailed("Sleep timeout", "Max time pool limit reached");
+        }
+        exitStateModel.setPollingInfo(pollingInfo);
+
+        Map<String, String> adapterConfigurations = entryStateModel.getBaseRequestModel().getAdapterConfigurations();
+        int nextTimeout =
+                exponentialBackOffPollingService.prepareNextPollingInterval(pollingInfo, adapterConfigurations);
+        return Intent.sleep(
+                new SleepIntent(Timer.timeout(nextTimeout))
+        );
     }
 
     public Intent createFinishIntentFailed(ExitStateModel exitStateModel) {
@@ -114,4 +119,5 @@ public class IntentResultFactory {
         return Intent.finish(new FinishIntent(FinishStatus.failure(
                 errorMapping.mapFailure(errorCode, errorMessage))));
     }
+
 }

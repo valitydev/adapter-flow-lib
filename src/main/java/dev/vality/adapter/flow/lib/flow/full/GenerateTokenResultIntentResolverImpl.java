@@ -16,7 +16,7 @@ public class GenerateTokenResultIntentResolverImpl implements RecurrentResultInt
     public RecurrentTokenIntent initIntentByStep(ExitStateModel exitStateModel) {
         Step nextStep = exitStateModel.getNextStep();
         return switch (nextStep) {
-            case REFUND, CAPTURE -> recurrentIntentResultFactory.createSleepIntent();
+            case REFUND, CAPTURE -> recurrentIntentResultFactory.createSleepIntentForReinvocation();
             case FINISH_THREE_DS_V1, FINISH_THREE_DS_V2 -> recurrentIntentResultFactory.createIntentWithSuspension(
                     exitStateModel);
             case DO_NOTHING -> recurrentIntentResultFactory.createFinishIntent(exitStateModel.getRecToken());

@@ -208,21 +208,33 @@ public class HandlerConfig {
     }
 
     @Bean
-    public IntentResultFactory intentResultFactory(TimerProperties timerProperties,
-                                                   CallbackUrlExtractor callbackUrlExtractor,
-                                                   TagManagementService tagManagementService,
-                                                   ParametersSerializer parametersSerializer,
-                                                   PollingInfoService pollingInfoService,
-                                                   ErrorMapping errorMapping) {
-        return new IntentResultFactory(timerProperties, callbackUrlExtractor, tagManagementService,
-                parametersSerializer, pollingInfoService, errorMapping);
+    public ExponentialBackOffPollingService exponentialBackOffPollingService() {
+        return new ExponentialBackOffPollingService();
     }
 
     @Bean
-    public RecurrentIntentResultFactory recurrentIntentResultFactory(TimerProperties timerProperties,
-                                                                     CallbackUrlExtractor callbackUrlExtractor,
-                                                                     TagManagementService tagManagementService) {
-        return new RecurrentIntentResultFactory(timerProperties, callbackUrlExtractor, tagManagementService);
+    public IntentResultFactory intentResultFactory(
+            TimerProperties timerProperties,
+            CallbackUrlExtractor callbackUrlExtractor,
+            TagManagementService tagManagementService,
+            ParametersSerializer parametersSerializer,
+            PollingInfoService pollingInfoService,
+            ErrorMapping errorMapping,
+            ExponentialBackOffPollingService exponentialBackOffPollingService) {
+        return new IntentResultFactory(timerProperties, callbackUrlExtractor, tagManagementService,
+                parametersSerializer, pollingInfoService, errorMapping, exponentialBackOffPollingService);
+    }
+
+    @Bean
+    public RecurrentIntentResultFactory recurrentIntentResultFactory(
+            TimerProperties timerProperties,
+            CallbackUrlExtractor callbackUrlExtractor,
+            TagManagementService tagManagementService,
+            PollingInfoService pollingInfoService,
+            ErrorMapping errorMapping,
+            ExponentialBackOffPollingService exponentialBackOffPollingService) {
+        return new RecurrentIntentResultFactory(timerProperties, callbackUrlExtractor, tagManagementService,
+                pollingInfoService, errorMapping, exponentialBackOffPollingService);
     }
 
 }
