@@ -17,8 +17,7 @@ public class SimpleRedirectGenerateTokenResultIntentResolver implements Recurren
         Step nextStep = exitStateModel.getNextStep();
         Step currentStep = exitStateModel.getEntryStateModel().getCurrentStep();
         return switch (nextStep) {
-            case REFUND, CAPTURE -> recurrentIntentResultFactory.createSleepIntentForReinvocation();
-            case CHECK_STATUS -> currentStep == Step.AUTH
+            case CHECK_STATUS -> currentStep == Step.GENERATE_TOKEN
                     ? recurrentIntentResultFactory.createIntentWithSuspension(exitStateModel)
                     : recurrentIntentResultFactory.createSleepIntentWithExponentialPolling(exitStateModel);
             case DO_NOTHING -> recurrentIntentResultFactory.createFinishIntent(exitStateModel.getRecToken());

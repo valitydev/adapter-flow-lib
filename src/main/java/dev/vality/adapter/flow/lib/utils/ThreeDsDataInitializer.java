@@ -10,7 +10,7 @@ public class ThreeDsDataInitializer {
 
     public static final String TAG = "tag";
 
-    public static Map<String, String> initThreeDsData(ExitStateModel exitStateModel) {
+    public static Map<String, String> initThreeDsParameters(ExitStateModel exitStateModel) {
         Map<String, String> params = new HashMap<>();
         ThreeDsData threeDsData = exitStateModel.getThreeDsData();
         if (threeDsData.getParameters() != null) {

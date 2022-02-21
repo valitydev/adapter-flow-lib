@@ -14,6 +14,10 @@ public interface RemoteClient {
         throw new UnsupportedOperationException("This method is unsupported");
     }
 
+    default BaseResponseModel generateToken(BaseRequestModel request) {
+        throw new UnsupportedOperationException("This method is unsupported");
+    }
+
     default BaseResponseModel pay(BaseRequestModel request) {
         throw new UnsupportedOperationException("This method is unsupported");
     }

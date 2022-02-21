@@ -45,7 +45,7 @@ public class IntentResultFactory {
     public Intent createSuspendIntentWithFailedAfterTimeout(ExitStateModel exitStateModel) {
         EntryStateModel entryStateModel = exitStateModel.getEntryStateModel();
         ThreeDsData threeDsData = exitStateModel.getThreeDsData();
-        Map<String, String> params = ThreeDsDataInitializer.initThreeDsData(exitStateModel);
+        Map<String, String> params = ThreeDsDataInitializer.initThreeDsParameters(exitStateModel);
         String redirectUrl = entryStateModel.getBaseRequestModel().getSuccessRedirectUrl();
         params.put(RedirectFields.TERM_URL.getValue(), callbackUrlExtractor.extractCallbackUrl(redirectUrl));
         int timerRedirectTimeout = extractRedirectTimeout(
@@ -53,14 +53,14 @@ public class IntentResultFactory {
                 timerProperties.getRedirectTimeoutMin());
         return Intent.suspend(
                 new SuspendIntent(
-                        tagManagementService.findTag(threeDsData.getParameters()),
+                        tagManagementService.findTag(params),
                         Timer.timeout(timerRedirectTimeout)
                 ).setUserInteraction(createPostUserInteraction(threeDsData.getAcsUrl(), params))
         );
     }
 
     public Intent createSuspendIntentWithCallbackAfterTimeout(ExitStateModel exitStateModel) {
-        Map<String, String> params = ThreeDsDataInitializer.initThreeDsData(exitStateModel);
+        Map<String, String> params = ThreeDsDataInitializer.initThreeDsParameters(exitStateModel);
         EntryStateModel entryStateModel = exitStateModel.getEntryStateModel();
 
         PollingInfo pollingInfo = pollingInfoService.initPollingInfo(entryStateModel);
@@ -77,7 +77,7 @@ public class IntentResultFactory {
                 timerProperties.getRedirectTimeoutMin());
         return Intent.suspend(
                 new SuspendIntent(
-                        tagManagementService.findTag(threeDsData.getParameters()),
+                        tagManagementService.findTag(params),
                         Timer.timeout(timerRedirectTimeout))
                         .setTimeoutBehaviour(TimeoutBehaviour.callback(
                                 ByteBuffer.wrap(parametersSerializer.writeByte(params)))

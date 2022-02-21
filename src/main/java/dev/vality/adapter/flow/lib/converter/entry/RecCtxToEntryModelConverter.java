@@ -87,7 +87,7 @@ public class RecCtxToEntryModelConverter implements Converter<RecurrentTokenCont
                                  DisposablePaymentResource paymentResource,
                                  MobilePaymentData.MobilePaymentDataBuilder<?, ?> mobilePaymentDataBuilder,
                                  dev.vality.adapter.flow.lib.model.CardData.CardDataBuilder<?, ?> cardDataBuilder) {
-        if (generalExitStateModel == null) {
+        if (generalExitStateModel == null || generalExitStateModel.getNextStep() == null) {
             SessionData sessionData = cdsStorage.getSessionData(context);
             if (sessionData.getAuthData().isSetAuth3ds()) {
                 Auth3DS auth3ds = sessionData.getAuthData().getAuth3ds();

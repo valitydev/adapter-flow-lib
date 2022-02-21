@@ -97,6 +97,7 @@ public class SimpleRedirectWithPollingDsFlowConfig {
                 new StatusHandler(client, entryModelToBaseRequestModelConverter, baseProcessor),
                 new DoNothingHandler(),
                 new PaymentHandler(client, entryModelToBaseRequestModelConverter, baseProcessor),
+                new GenerateTokenHandler(client, entryModelToBaseRequestModelConverter, baseProcessor),
                 new RefundHandler(client, entryModelToBaseRequestModelConverter, baseProcessor));
     }
 }

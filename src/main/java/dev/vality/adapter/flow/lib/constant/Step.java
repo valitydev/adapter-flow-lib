@@ -4,6 +4,7 @@ public enum Step {
 
     AUTH,
     PAY,
+    GENERATE_TOKEN,
     FINISH_THREE_DS_V1,
     FINISH_THREE_DS_V2,
     CANCEL,

@@ -1,16 +1,14 @@
 package dev.vality.adapter.flow.lib.flow;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.vality.adapter.flow.lib.client.RemoteClient;
 import dev.vality.adapter.flow.lib.constant.Step;
 import dev.vality.adapter.flow.lib.controller.ThreeDsCallbackController;
 import dev.vality.adapter.flow.lib.flow.config.*;
 import dev.vality.adapter.flow.lib.flow.full.FullThreeDsAllVersionsStepResolverImpl;
 import dev.vality.adapter.flow.lib.flow.full.GenerateTokenFullThreeDsAllVersionsStepResolverImpl;
+import dev.vality.adapter.flow.lib.serde.TemporaryContextDeserializer;
 import dev.vality.adapter.flow.lib.service.TagManagementService;
 import dev.vality.adapter.flow.lib.utils.CallbackUrlExtractor;
-import dev.vality.adapter.flow.lib.serde.TemporaryContextDeserializer;
-import dev.vality.adapter.flow.lib.utils.TimerProperties;
 import dev.vality.adapter.helpers.hellgate.HellgateAdapterClient;
 import dev.vality.bender.BenderSrv;
 import dev.vality.cds.client.storage.CdsClientStorage;
@@ -113,5 +111,17 @@ public class AbstractGenerateTokenTest {
         assertTrue(paymentProxyResult.getIntent().getSuspend().getUserInteraction().isSetRedirect());
         assertEquals(step, temporaryContextDeserializer.read(paymentProxyResult.getNextState()).getNextStep());
         return paymentProxyResult;
+    }
+
+    protected RecurrentTokenProxyResult processWithDoNothingSuccessResult(RecurrentTokenContext paymentContext,
+                                                                          RecurrentTokenProxyResult paymentProxyResult)
+            throws TException {
+        paymentContext.getSession().setState(paymentProxyResult.getNextState());
+        RecurrentTokenProxyResult recurrentTokenProxyResult = serverHandlerLogDecorator.generateToken(paymentContext);
+        assertTrue(recurrentTokenProxyResult.getIntent().isSetFinish());
+        assertTrue(recurrentTokenProxyResult.getIntent().getFinish().getStatus().isSetSuccess());
+        assertEquals(Step.DO_NOTHING,
+                temporaryContextDeserializer.read(recurrentTokenProxyResult.getNextState()).getNextStep());
+        return recurrentTokenProxyResult;
     }
 }
