@@ -10,21 +10,21 @@ import lombok.NoArgsConstructor;
 public class ThreeDsBranchResolver {
 
     public static boolean isRedirectForThreeDsV2Full(ExitStateModel exitStateModel) {
+        return isRedirectForThreeDsType(exitStateModel, ThreeDsType.V2_FULL);
+    }
+
+    private static boolean isRedirectForThreeDsType(ExitStateModel exitStateModel, ThreeDsType threeDsType) {
         return exitStateModel.getLastOperationStatus() == Status.NEED_REDIRECT
                 && exitStateModel.getThreeDsData() != null
-                && exitStateModel.getThreeDsData().getThreeDsType() == ThreeDsType.V2_FULL;
+                && exitStateModel.getThreeDsData().getThreeDsType() == threeDsType;
     }
 
     public static boolean isRedirectForThreeDsV2Simple(ExitStateModel exitStateModel) {
-        return exitStateModel.getLastOperationStatus() == Status.NEED_REDIRECT
-                && exitStateModel.getThreeDsData() != null
-                && exitStateModel.getThreeDsData().getThreeDsType() == ThreeDsType.V2_SIMPLE;
+        return isRedirectForThreeDsType(exitStateModel, ThreeDsType.V2_SIMPLE);
     }
 
     public static boolean isRedirectForThreeDsV1(ExitStateModel exitStateModel) {
-        return exitStateModel.getLastOperationStatus() == Status.NEED_REDIRECT
-                && exitStateModel.getThreeDsData() != null
-                && exitStateModel.getThreeDsData().getThreeDsType() == ThreeDsType.V1;
+        return isRedirectForThreeDsType(exitStateModel, ThreeDsType.V1);
     }
 
 }

@@ -11,43 +11,43 @@ import dev.vality.adapter.flow.lib.model.BaseResponseModel;
 public interface RemoteClient {
 
     default BaseResponseModel auth(BaseRequestModel request) {
-        throw new UnsupportedOperationException("This method is unsupported");
+        throw new UnsupportedOperationException();
     }
 
     default BaseResponseModel generateToken(BaseRequestModel request) {
-        throw new UnsupportedOperationException("This method is unsupported");
+        throw new UnsupportedOperationException();
     }
 
     default BaseResponseModel pay(BaseRequestModel request) {
-        throw new UnsupportedOperationException("This method is unsupported");
+        throw new UnsupportedOperationException();
     }
 
     default BaseResponseModel capture(BaseRequestModel request) {
-        throw new UnsupportedOperationException("This method is unsupported");
+        throw new UnsupportedOperationException();
     }
 
     default BaseResponseModel cancel(BaseRequestModel request) {
-        throw new UnsupportedOperationException("This method is unsupported");
+        throw new UnsupportedOperationException();
     }
 
     default BaseResponseModel refund(BaseRequestModel request) {
-        throw new UnsupportedOperationException("This method is unsupported");
+        throw new UnsupportedOperationException();
     }
 
     default BaseResponseModel finish3ds(BaseRequestModel request) {
-        throw new UnsupportedOperationException("This method is unsupported");
+        throw new UnsupportedOperationException();
     }
 
     default BaseResponseModel check3dsV2(BaseRequestModel request) {
-        throw new UnsupportedOperationException("This method is unsupported");
+        throw new UnsupportedOperationException();
     }
 
     default BaseResponseModel finish3dsV2(BaseRequestModel request) {
-        throw new UnsupportedOperationException("This method is unsupported");
+        throw new UnsupportedOperationException();
     }
 
     default BaseResponseModel status(BaseRequestModel request) {
-        throw new UnsupportedOperationException("This method is unsupported");
+        throw new UnsupportedOperationException();
     }
 
 }
