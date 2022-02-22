@@ -1,0 +1,228 @@
+package dev.vality.adapter.flow.lib.flow.config;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import dev.vality.adapter.flow.lib.converter.ExitStateModelToTemporaryContextConverter;
+import dev.vality.adapter.flow.lib.converter.base.EntryModelToBaseRequestModelConverter;
+import dev.vality.adapter.flow.lib.converter.entry.CtxToEntryModelConverter;
+import dev.vality.adapter.flow.lib.converter.entry.RecCtxToEntryModelConverter;
+import dev.vality.adapter.flow.lib.converter.exit.ExitModelToProxyResultConverter;
+import dev.vality.adapter.flow.lib.converter.exit.ExitModelToRecTokenProxyResultConverter;
+import dev.vality.adapter.flow.lib.flow.RecurrentResultIntentResolver;
+import dev.vality.adapter.flow.lib.flow.ResultIntentResolver;
+import dev.vality.adapter.flow.lib.handler.ProxyProviderServiceImpl;
+import dev.vality.adapter.flow.lib.handler.ServerFlowHandler;
+import dev.vality.adapter.flow.lib.handler.ServerHandlerLogDecorator;
+import dev.vality.adapter.flow.lib.handler.callback.PaymentCallbackHandler;
+import dev.vality.adapter.flow.lib.handler.callback.RecurrentTokenCallbackHandler;
+import dev.vality.adapter.flow.lib.serde.ParametersDeserializer;
+import dev.vality.adapter.flow.lib.serde.ParametersSerializer;
+import dev.vality.adapter.flow.lib.serde.TemporaryContextDeserializer;
+import dev.vality.adapter.flow.lib.serde.TemporaryContextSerializer;
+import dev.vality.adapter.flow.lib.service.*;
+import dev.vality.adapter.flow.lib.utils.AdapterProperties;
+import dev.vality.adapter.flow.lib.utils.CallbackUrlExtractor;
+import dev.vality.adapter.flow.lib.utils.TimerProperties;
+import dev.vality.adapter.flow.lib.validator.AdapterConfigurationValidator;
+import dev.vality.adapter.helpers.hellgate.HellgateAdapterClient;
+import dev.vality.bender.BenderSrv;
+import dev.vality.cds.client.storage.CdsClientStorage;
+import dev.vality.damsel.proxy_provider.ProviderProxySrv;
+import dev.vality.error.mapping.ErrorMapping;
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import java.util.List;
+
+@Configuration
+@RequiredArgsConstructor
+public class HandlerConfig {
+
+    @Bean
+    public IdGenerator idGenerator(BenderSrv.Iface iface) {
+        return new IdGenerator(iface);
+    }
+
+    @Bean
+    public TimerProperties timerProperties() {
+        TimerProperties timerProperties = new TimerProperties();
+        timerProperties.setMaxTimePollingMin(60);
+        timerProperties.setPollingDelayMs(1000);
+        timerProperties.setRedirectTimeoutMin(15);
+        return timerProperties;
+    }
+
+    @Bean
+    public PollingInfoService pollingInfoService(TimerProperties timerProperties) {
+        return new PollingInfoService(timerProperties);
+    }
+
+    @Bean
+    public TemporaryContextService temporaryContextService(ParametersDeserializer parametersDeserializer) {
+        return new TemporaryContextService(parametersDeserializer);
+    }
+
+    @Bean
+    public PaymentCallbackHandler paymentCallbackHandler(TemporaryContextDeserializer adapterDeserializer,
+                                                         TemporaryContextSerializer temporaryContextSerializer,
+                                                         TemporaryContextService temporaryContextService) {
+        return new PaymentCallbackHandler(adapterDeserializer,
+                temporaryContextSerializer,
+                temporaryContextService
+        );
+    }
+
+    @Bean
+    public RecurrentTokenCallbackHandler recurrentTokenCallbackHandler(
+            TemporaryContextDeserializer adapterDeserializer,
+            TemporaryContextSerializer temporaryContextSerializer,
+            TemporaryContextService temporaryContextService) {
+        return new RecurrentTokenCallbackHandler(adapterDeserializer,
+                temporaryContextSerializer,
+                temporaryContextService);
+    }
+
+    @Bean
+    public CtxToEntryModelConverter ctxToEntryModelConverter(CdsClientStorage cdsClientStorage,
+                                                             TemporaryContextDeserializer adapterDeserializer,
+                                                             IdGenerator idGenerator,
+                                                             TemporaryContextService temporaryContextService,
+                                                             CallbackUrlExtractor callbackUrlExtractor) {
+        return new CtxToEntryModelConverter(cdsClientStorage,
+                adapterDeserializer,
+                idGenerator,
+                temporaryContextService,
+                callbackUrlExtractor);
+    }
+
+    @Bean
+    public AdapterProperties adapterProperties() {
+        AdapterProperties adapterProperties = new AdapterProperties();
+        adapterProperties.setCallbackUrl("http://localhost:8080/adapter/term_url");
+        adapterProperties.setSuccessRedirectUrl("http://localhost:8080/adapter/term_url");
+        return adapterProperties;
+    }
+
+    @Bean
+    public RecCtxToEntryModelConverter recCtxToEntryModelConverter(CdsClientStorage cdsClientStorage,
+                                                                   TemporaryContextDeserializer adapterDeserializer,
+                                                                   IdGenerator idGenerator,
+                                                                   TemporaryContextService temporaryContextService) {
+        return new RecCtxToEntryModelConverter(adapterDeserializer,
+                cdsClientStorage,
+                idGenerator,
+                temporaryContextService);
+    }
+
+    @Bean
+    public ExitStateModelToTemporaryContextConverter exitStateModelToTemporaryContextConverter() {
+        return new ExitStateModelToTemporaryContextConverter();
+    }
+
+    @Bean
+    public ExitModelToRecTokenProxyResultConverter exitModelToRecTokenProxyResultConverter(
+            RecurrentIntentResultFactory recurrentIntentResultFactory,
+            TemporaryContextSerializer temporaryContextSerializer,
+            RecurrentResultIntentResolver recurrentResultIntentResolver,
+            ExitStateModelToTemporaryContextConverter exitStateModelToTemporaryContextConverter) {
+        return new ExitModelToRecTokenProxyResultConverter(recurrentIntentResultFactory,
+                temporaryContextSerializer,
+                recurrentResultIntentResolver,
+                exitStateModelToTemporaryContextConverter
+        );
+    }
+
+    @Bean
+    public ErrorMapping errorMapping() {
+        return new ErrorMapping("", List.of());
+    }
+
+
+    @Bean
+    public TagManagementService tagManagementService(AdapterProperties adapterProperties) {
+        return new TagManagementService(adapterProperties);
+    }
+
+    @Bean
+    public ParametersDeserializer parametersDeserializer(ObjectMapper objectMapper) {
+        return new ParametersDeserializer(objectMapper);
+    }
+
+    @Bean
+    public ParametersSerializer parameterSerializer(ObjectMapper objectMapper) {
+        return new ParametersSerializer(objectMapper);
+    }
+
+    @Bean
+    public ThreeDsAdapterService threeDsAdapterService(HellgateAdapterClient hgClient,
+                                                       ParametersSerializer parametersSerializer,
+                                                       ParametersDeserializer parametersDeserializer,
+                                                       TagManagementService tagManagementService
+    ) {
+        return new ThreeDsAdapterService(hgClient, parametersSerializer, parametersDeserializer, tagManagementService);
+    }
+
+    @Bean
+    public ExitModelToProxyResultConverter exitModelToProxyResultConverter(
+            IntentResultFactory intentResultFactory,
+            TemporaryContextSerializer temporaryContextSerializer,
+            ResultIntentResolver resultIntentResolver,
+            ExitStateModelToTemporaryContextConverter exitStateModelToTemporaryContextConverter) {
+        return new ExitModelToProxyResultConverter(intentResultFactory,
+                temporaryContextSerializer,
+                resultIntentResolver,
+                exitStateModelToTemporaryContextConverter);
+    }
+
+    @Bean
+    public EntryModelToBaseRequestModelConverter entryModelToBaseRequestModelConverter() {
+        return new EntryModelToBaseRequestModelConverter();
+    }
+
+    @Bean
+    public ProviderProxySrv.Iface serverHandlerLogDecorator(
+            PaymentCallbackHandler paymentCallbackHandler,
+            RecurrentTokenCallbackHandler recurrentTokenCallbackHandler,
+            ServerFlowHandler serverFlowHandler,
+            ServerFlowHandler generateTokenFlowHandler,
+            AdapterConfigurationValidator paymentContextValidator) {
+        return new ServerHandlerLogDecorator(new ProxyProviderServiceImpl(
+                paymentCallbackHandler,
+                recurrentTokenCallbackHandler,
+                serverFlowHandler,
+                generateTokenFlowHandler,
+                paymentContextValidator
+        ));
+    }
+
+    @Bean
+    public ExponentialBackOffPollingService exponentialBackOffPollingService() {
+        return new ExponentialBackOffPollingService();
+    }
+
+    @Bean
+    public IntentResultFactory intentResultFactory(
+            TimerProperties timerProperties,
+            CallbackUrlExtractor callbackUrlExtractor,
+            TagManagementService tagManagementService,
+            ParametersSerializer parametersSerializer,
+            PollingInfoService pollingInfoService,
+            ErrorMapping errorMapping,
+            ExponentialBackOffPollingService exponentialBackOffPollingService) {
+        return new IntentResultFactory(timerProperties, callbackUrlExtractor, tagManagementService,
+                parametersSerializer, pollingInfoService, errorMapping, exponentialBackOffPollingService);
+    }
+
+    @Bean
+    public RecurrentIntentResultFactory recurrentIntentResultFactory(
+            TimerProperties timerProperties,
+            CallbackUrlExtractor callbackUrlExtractor,
+            TagManagementService tagManagementService,
+            PollingInfoService pollingInfoService,
+            ErrorMapping errorMapping,
+            ExponentialBackOffPollingService exponentialBackOffPollingService) {
+        return new RecurrentIntentResultFactory(timerProperties, callbackUrlExtractor, tagManagementService,
+                pollingInfoService, errorMapping, exponentialBackOffPollingService);
+    }
+
+}
