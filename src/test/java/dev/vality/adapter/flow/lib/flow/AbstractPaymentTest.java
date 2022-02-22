@@ -1,6 +1,5 @@
 package dev.vality.adapter.flow.lib.flow;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.vality.adapter.flow.lib.client.RemoteClient;
 import dev.vality.adapter.flow.lib.constant.Step;
 import dev.vality.adapter.flow.lib.controller.ThreeDsCallbackController;
@@ -10,7 +9,7 @@ import dev.vality.adapter.flow.lib.flow.full.GenerateTokenFullThreeDsAllVersions
 import dev.vality.adapter.flow.lib.service.TagManagementService;
 import dev.vality.adapter.flow.lib.utils.CallbackUrlExtractor;
 import dev.vality.adapter.flow.lib.serde.TemporaryContextDeserializer;
-import dev.vality.adapter.flow.lib.utils.TimerProperties;
+import dev.vality.adapter.flow.lib.validator.AdapterConfigurationValidator;
 import dev.vality.adapter.helpers.hellgate.HellgateAdapterClient;
 import dev.vality.bender.BenderSrv;
 import dev.vality.cds.client.storage.CdsClientStorage;
@@ -44,6 +43,8 @@ public class AbstractPaymentTest {
     protected RemoteClient client;
     @MockBean
     protected HellgateAdapterClient hellgateAdapterClient;
+    @MockBean
+    protected AdapterConfigurationValidator paymentContextValidator;
 
     @Autowired
     protected ProviderProxySrv.Iface serverHandlerLogDecorator;

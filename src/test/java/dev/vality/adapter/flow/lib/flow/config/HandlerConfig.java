@@ -9,8 +9,6 @@ import dev.vality.adapter.flow.lib.converter.exit.ExitModelToProxyResultConverte
 import dev.vality.adapter.flow.lib.converter.exit.ExitModelToRecTokenProxyResultConverter;
 import dev.vality.adapter.flow.lib.flow.RecurrentResultIntentResolver;
 import dev.vality.adapter.flow.lib.flow.ResultIntentResolver;
-import dev.vality.adapter.flow.lib.flow.utils.PaymentContextAdapterConfigurationValidator;
-import dev.vality.adapter.flow.lib.flow.utils.RecurrentTokenContextAdapterConfigurationValidator;
 import dev.vality.adapter.flow.lib.handler.ProxyProviderServiceImpl;
 import dev.vality.adapter.flow.lib.handler.ServerFlowHandler;
 import dev.vality.adapter.flow.lib.handler.ServerHandlerLogDecorator;
@@ -179,16 +177,6 @@ public class HandlerConfig {
     @Bean
     public EntryModelToBaseRequestModelConverter entryModelToBaseRequestModelConverter() {
         return new EntryModelToBaseRequestModelConverter();
-    }
-
-    @Bean
-    public PaymentContextAdapterConfigurationValidator paymentContextValidator() {
-        return new PaymentContextAdapterConfigurationValidator();
-    }
-
-    @Bean
-    public RecurrentTokenContextAdapterConfigurationValidator recurrentTokenContextValidator() {
-        return new RecurrentTokenContextAdapterConfigurationValidator();
     }
 
     @Bean

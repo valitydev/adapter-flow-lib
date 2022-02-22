@@ -25,7 +25,7 @@ public class RecurrentTokenCallbackHandler
     private final TemporaryContextService temporaryContextService;
 
     public RecurrentTokenCallbackResult handleCallback(ByteBuffer callback, RecurrentTokenContext context) {
-        var generalExitStateModel = initAdapterContext(callback, context);
+        var generalExitStateModel = initTemporaryContext(callback, context);
         byte[] callbackResponse = new byte[0];
         return ProxyProviderPackageCreators.createRecurrentTokenCallbackResult(callbackResponse,
                 (new RecurrentTokenProxyResult()).setIntent(RecurrentTokenIntent
@@ -35,7 +35,7 @@ public class RecurrentTokenCallbackHandler
         );
     }
 
-    private TemporaryContext initAdapterContext(ByteBuffer callback, RecurrentTokenContext context) {
+    private TemporaryContext initTemporaryContext(ByteBuffer callback, RecurrentTokenContext context) {
         var temporaryContext = temporaryContextService.getTemporaryContext(context, this.adapterDeserializer);
         return temporaryContextService.appendThreeDsParametersToContext(callback, temporaryContext);
     }

@@ -13,8 +13,6 @@ import dev.vality.adapter.flow.lib.flow.full.FullThreeDsAllVersionsStepResolverI
 import dev.vality.adapter.flow.lib.flow.full.GenerateTokenFullThreeDsAllVersionsStepResolverImpl;
 import dev.vality.adapter.flow.lib.flow.full.GenerateTokenResultIntentResolverImpl;
 import dev.vality.adapter.flow.lib.flow.full.ResultIntentResolverImpl;
-import dev.vality.adapter.flow.lib.flow.utils.PaymentContextAdapterConfigurationValidator;
-import dev.vality.adapter.flow.lib.flow.utils.RecurrentTokenContextAdapterConfigurationValidator;
 import dev.vality.adapter.flow.lib.handler.CommonHandler;
 import dev.vality.adapter.flow.lib.handler.ServerFlowHandler;
 import dev.vality.adapter.flow.lib.handler.payment.*;

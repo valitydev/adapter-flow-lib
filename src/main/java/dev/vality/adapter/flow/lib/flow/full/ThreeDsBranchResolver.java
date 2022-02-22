@@ -13,18 +13,18 @@ public class ThreeDsBranchResolver {
         return isRedirectForThreeDsType(exitStateModel, ThreeDsType.V2_FULL);
     }
 
-    private static boolean isRedirectForThreeDsType(ExitStateModel exitStateModel, ThreeDsType threeDsType) {
-        return exitStateModel.getLastOperationStatus() == Status.NEED_REDIRECT
-                && exitStateModel.getThreeDsData() != null
-                && exitStateModel.getThreeDsData().getThreeDsType() == threeDsType;
-    }
-
     public static boolean isRedirectForThreeDsV2Simple(ExitStateModel exitStateModel) {
         return isRedirectForThreeDsType(exitStateModel, ThreeDsType.V2_SIMPLE);
     }
 
     public static boolean isRedirectForThreeDsV1(ExitStateModel exitStateModel) {
         return isRedirectForThreeDsType(exitStateModel, ThreeDsType.V1);
+    }
+
+    private static boolean isRedirectForThreeDsType(ExitStateModel exitStateModel, ThreeDsType threeDsType) {
+        return exitStateModel.getLastOperationStatus() == Status.NEED_REDIRECT
+                && exitStateModel.getThreeDsData() != null
+                && exitStateModel.getThreeDsData().getThreeDsType() == threeDsType;
     }
 
 }

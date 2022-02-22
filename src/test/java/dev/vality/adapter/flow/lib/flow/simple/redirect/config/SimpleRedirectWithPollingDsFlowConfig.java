@@ -13,8 +13,6 @@ import dev.vality.adapter.flow.lib.flow.simple.GenerateTokenSimpleRedirectWithPo
 import dev.vality.adapter.flow.lib.flow.simple.SimpleRedirectGenerateTokenResultIntentResolver;
 import dev.vality.adapter.flow.lib.flow.simple.SimpleRedirectWIthPollingStepResolverImpl;
 import dev.vality.adapter.flow.lib.flow.simple.SimpleRedirectWithPollingResultIntentResolver;
-import dev.vality.adapter.flow.lib.flow.utils.PaymentContextAdapterConfigurationValidator;
-import dev.vality.adapter.flow.lib.flow.utils.RecurrentTokenContextAdapterConfigurationValidator;
 import dev.vality.adapter.flow.lib.handler.CommonHandler;
 import dev.vality.adapter.flow.lib.handler.ServerFlowHandler;
 import dev.vality.adapter.flow.lib.handler.payment.*;
