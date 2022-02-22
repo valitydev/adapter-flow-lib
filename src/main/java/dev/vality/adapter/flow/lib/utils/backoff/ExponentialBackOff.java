@@ -8,12 +8,12 @@ import lombok.NoArgsConstructor;
 public class ExponentialBackOff implements BackOff {
 
     public static final Integer DEFAULT_MUTIPLIER = 2;
-    public static final Integer DEFAULT_INITIAL_INTERVAL = 2;
-    public static final Integer DEFAULT_MAX_INTERVAL = 300;
+    public static final Integer DEFAULT_INITIAL_INTERVAL_SEC = 2;
+    public static final Integer DEFAULT_MAX_INTERVAL_SEC = 300;
 
     private Integer multiplier = DEFAULT_MUTIPLIER;
-    private Integer initialInterval = DEFAULT_INITIAL_INTERVAL;
-    private Integer maxInterval = DEFAULT_MAX_INTERVAL;
+    private Integer initialInterval = DEFAULT_INITIAL_INTERVAL_SEC;
+    private Integer maxInterval = DEFAULT_MAX_INTERVAL_SEC;
 
     private Long startTime;
     private Long currentTime;

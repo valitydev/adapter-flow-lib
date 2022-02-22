@@ -3,6 +3,7 @@ package dev.vality.adapter.flow.lib.flow.service;
 import dev.vality.adapter.flow.lib.model.PollingInfo;
 import dev.vality.adapter.flow.lib.service.ExponentialBackOffPollingService;
 import dev.vality.adapter.flow.lib.utils.backoff.BackOffExecution;
+import dev.vality.adapter.flow.lib.utils.backoff.TimeOptionsExtractors;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
@@ -52,7 +53,7 @@ public class ExponentialBackOffPollingServiceTest {
         Instant now = Instant.now();
         pollingInfo.setStartDateTimePolling(now);
         HashMap<String, String> options = new HashMap<>();
-        options.put("default_initial_exponential", "1");
+        options.put(TimeOptionsExtractors.DEFAULT_INITIAL_EXPONENTIAL_SEC, "1");
         BackOffExecution backOffExecution =
                 exponentialBackOffPollingService.prepareBackOffExecution(pollingInfo, options);
         Long result = backOffExecution.nextBackOff();

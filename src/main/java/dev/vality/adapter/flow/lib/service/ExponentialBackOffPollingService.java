@@ -33,8 +33,8 @@ public class ExponentialBackOffPollingService {
                 : currentLocalTime;
         Integer exponential = TimeOptionsExtractors.extractExponent(options, DEFAULT_MUTIPLIER);
         Integer defaultInitialExponential =
-                TimeOptionsExtractors.extractDefaultInitialExponential(options, DEFAULT_INITIAL_INTERVAL);
-        Integer maxTimeBackOff = TimeOptionsExtractors.extractMaxTimeBackOff(options, DEFAULT_MAX_INTERVAL);
+                TimeOptionsExtractors.extractDefaultInitialExponential(options, DEFAULT_INITIAL_INTERVAL_SEC);
+        Integer maxTimeBackOff = TimeOptionsExtractors.extractMaxTimeBackOff(options, DEFAULT_MAX_INTERVAL_SEC);
 
         return new ExponentialBackOff(
                 startTime,
