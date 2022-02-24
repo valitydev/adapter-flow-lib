@@ -25,7 +25,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.convert.converter.Converter;
 
 import java.util.HashMap;
-import java.util.UUID;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -45,11 +44,9 @@ public class RecCtxToEntryModelConverter implements Converter<RecurrentTokenCont
         var paymentResource = recurrentPaymentTool.getPaymentResource();
         var paymentTool = paymentResource.getPaymentTool();
         validatePaymentTool(paymentTool);
-        var entryStateModelBuilder =
-                EntryStateModel.builder();
-        var mobilePaymentDataBuilder = MobilePaymentData.builder();
-        var cardDataBuilder = dev.vality.adapter.flow.lib.model.CardData.builder();
-        initPaymentData(context, generalExitStateModel, paymentResource, mobilePaymentDataBuilder, cardDataBuilder);
+        var entryStateModelBuilder = EntryStateModel.builder();
+        var cardData = initCardData(context, generalExitStateModel, paymentResource);
+        var mobilePaymentData = initMobilePaymentData(context, generalExitStateModel);
 
         TransactionInfo transactionInfo = tokenInfo.getTrx();
         Long orderId = idGenerator.get(tokenInfo.getPaymentTool().getId());
@@ -62,8 +59,8 @@ public class RecCtxToEntryModelConverter implements Converter<RecurrentTokenCont
                                         ? transactionInfo.getExtra().get(MetaData.META_REC_TOKEN)
                                         : null)
                                 .build())
-                        .mobilePaymentData(mobilePaymentDataBuilder.build())
-                        .cardData(cardDataBuilder.build())
+                        .mobilePaymentData(mobilePaymentData)
+                        .cardData(cardData)
                         .refundData(initRefundData(recurrentPaymentTool, orderId))
                         .paymentId(orderId)
                         .currency(recurrentPaymentTool.getMinimalPaymentCost().getCurrency().getSymbolicCode())
@@ -82,17 +79,13 @@ public class RecCtxToEntryModelConverter implements Converter<RecurrentTokenCont
                 .build();
     }
 
-    private void initPaymentData(RecurrentTokenContext context, TemporaryContext generalExitStateModel,
-                                 DisposablePaymentResource paymentResource,
-                                 MobilePaymentData.MobilePaymentDataBuilder<?, ?> mobilePaymentDataBuilder,
-                                 dev.vality.adapter.flow.lib.model.CardData.CardDataBuilder<?, ?> cardDataBuilder) {
+    private dev.vality.adapter.flow.lib.model.CardData initCardData(RecurrentTokenContext context,
+                                                                    TemporaryContext generalExitStateModel,
+                                                                    DisposablePaymentResource paymentResource) {
+        var cardDataBuilder = dev.vality.adapter.flow.lib.model.CardData.builder();
         if (generalExitStateModel == null || generalExitStateModel.getNextStep() == null) {
             SessionData sessionData = cdsStorage.getSessionData(context);
-            if (sessionData.getAuthData().isSetAuth3ds()) {
-                Auth3DS auth3ds = sessionData.getAuthData().getAuth3ds();
-                mobilePaymentDataBuilder.cryptogram(auth3ds.getCryptogram())
-                        .eci(auth3ds.getEci());
-            } else {
+            if (!sessionData.getAuthData().isSetAuth3ds()) {
                 CardDataProxyModel cardData = getCardData(context, paymentResource);
                 cardDataBuilder.cardHolder(cardData.getCardholderName())
                         .pan(cardData.getPan())
@@ -101,6 +94,21 @@ public class RecCtxToEntryModelConverter implements Converter<RecurrentTokenCont
                         .expMonth(cardData.getExpMonth());
             }
         }
+        return cardDataBuilder.build();
+    }
+
+    private MobilePaymentData initMobilePaymentData(RecurrentTokenContext context,
+                                                    TemporaryContext generalExitStateModel) {
+        MobilePaymentData.MobilePaymentDataBuilder<?, ?> mobilePaymentDataBuilder = MobilePaymentData.builder();
+        if (generalExitStateModel == null || generalExitStateModel.getNextStep() == null) {
+            SessionData sessionData = cdsStorage.getSessionData(context);
+            if (sessionData.getAuthData().isSetAuth3ds()) {
+                Auth3DS auth3ds = sessionData.getAuthData().getAuth3ds();
+                mobilePaymentDataBuilder.cryptogram(auth3ds.getCryptogram())
+                        .eci(auth3ds.getEci());
+            }
+        }
+        return mobilePaymentDataBuilder.build();
     }
 
     private void validatePaymentTool(PaymentTool paymentTool) {

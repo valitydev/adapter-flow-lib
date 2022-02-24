@@ -42,20 +42,19 @@ public class CtxToEntryModelConverter implements Converter<PaymentContext, Entry
         var payment = paymentInfo.getPayment();
         var temporaryContext = temporaryContextService.getTemporaryContext(context, temporaryContextDeserializer);
         var paymentResource = payment.getPaymentResource();
-        var mobilePaymentDataBuilder = MobilePaymentData.builder();
-        var cardDataBuilder = dev.vality.adapter.flow.lib.model.CardData.builder();
 
         Step currentStep = temporaryContext.getNextStep();
         TargetStatus targetStatus = TargetStatusResolver.extractTargetStatus(context.getSession().getTarget());
-        initPaymentData(context, paymentResource, mobilePaymentDataBuilder, cardDataBuilder, currentStep, targetStatus);
+        var cardData = initCardData(context, paymentResource, currentStep, targetStatus);
+        var mobilePaymentData = initMobilePaymentData(context, paymentResource, currentStep, targetStatus);
 
         TransactionInfo trx = payment.getTrx();
         RecurrentPaymentData recurrentPaymentData = initRecurrentPaymentData(payment, paymentResource, trx);
         Map<String, String> adapterConfigurations = context.getOptions();
         return EntryStateModel.builder()
                 .baseRequestModel(BaseRequestModel.builder().recurrentPaymentData(recurrentPaymentData)
-                        .mobilePaymentData(mobilePaymentDataBuilder.build())
-                        .cardData(cardDataBuilder.build())
+                        .mobilePaymentData(mobilePaymentData)
+                        .cardData(cardData)
                         .refundData(initRefundData(paymentInfo))
                         .paymentId(idGenerator.get(paymentInfo.getInvoice().getId()))
                         .createdAt(paymentInfo.getPayment().getCreatedAt())
@@ -83,19 +82,16 @@ public class CtxToEntryModelConverter implements Converter<PaymentContext, Entry
                         : null);
     }
 
-    private void initPaymentData(PaymentContext context, PaymentResource paymentResource,
-                                 MobilePaymentData.MobilePaymentDataBuilder<?, ?> mobilePaymentDataBuilder,
-                                 dev.vality.adapter.flow.lib.model.CardData.CardDataBuilder<?, ?> cardDataBuilder,
-                                 Step currentStep, TargetStatus targetStatus) {
+    private dev.vality.adapter.flow.lib.model.CardData initCardData(PaymentContext context,
+                                                                    PaymentResource paymentResource,
+                                                                    Step currentStep,
+                                                                    TargetStatus targetStatus) {
+        var cardDataBuilder = dev.vality.adapter.flow.lib.model.CardData.builder();
         if (paymentResource.isSetDisposablePaymentResource()
                 && currentStep == null
                 && targetStatus == TargetStatus.PROCESSED) {
             SessionData sessionData = cdsStorage.getSessionData(context);
-            if (sessionData.isSetAuthData() && sessionData.getAuthData().isSetAuth3ds()) {
-                Auth3DS auth3ds = sessionData.getAuthData().getAuth3ds();
-                mobilePaymentDataBuilder.cryptogram(auth3ds.getCryptogram())
-                        .eci(auth3ds.getEci());
-            } else {
+            if (!sessionData.isSetAuthData()) {
                 CardDataProxyModel cardData = getCardData(context, paymentResource);
                 cardDataBuilder.cardHolder(cardData.getCardholderName())
                         .pan(cardData.getPan())
@@ -104,6 +100,24 @@ public class CtxToEntryModelConverter implements Converter<PaymentContext, Entry
                         .expMonth(cardData.getExpMonth());
             }
         }
+        return cardDataBuilder.build();
+    }
+
+    private MobilePaymentData initMobilePaymentData(PaymentContext context,
+                                                    PaymentResource paymentResource,
+                                                    Step currentStep, TargetStatus targetStatus) {
+        var mobilePaymentDataBuilder = MobilePaymentData.builder();
+        if (paymentResource.isSetDisposablePaymentResource()
+                && currentStep == null
+                && targetStatus == TargetStatus.PROCESSED) {
+            SessionData sessionData = cdsStorage.getSessionData(context);
+            if (sessionData.isSetAuthData() && sessionData.getAuthData().isSetAuth3ds()) {
+                Auth3DS auth3ds = sessionData.getAuthData().getAuth3ds();
+                mobilePaymentDataBuilder.cryptogram(auth3ds.getCryptogram())
+                        .eci(auth3ds.getEci());
+            }
+        }
+        return mobilePaymentDataBuilder.build();
     }
 
     private RefundData initRefundData(PaymentInfo paymentInfo) {
