@@ -94,7 +94,7 @@ public class CtxToEntryModelConverter implements Converter<PaymentContext, Entry
                                                                     PaymentResource paymentResource,
                                                                     SessionData sessionData) {
         var cardDataBuilder = dev.vality.adapter.flow.lib.model.CardData.builder();
-        if (!sessionData.isSetAuthData() || !sessionData.getAuthData().isSetAuth3ds()) {
+        if (!isMobilePay(sessionData)) {
             CardDataProxyModel cardData = getCardData(context, paymentResource);
             cardDataBuilder.cardHolder(cardData.getCardholderName())
                     .pan(cardData.getPan())
@@ -107,12 +107,16 @@ public class CtxToEntryModelConverter implements Converter<PaymentContext, Entry
 
     private MobilePaymentData initMobilePaymentData(SessionData sessionData) {
         var mobilePaymentDataBuilder = MobilePaymentData.builder();
-        if (sessionData.isSetAuthData() && sessionData.getAuthData().isSetAuth3ds()) {
+        if (isMobilePay(sessionData)) {
             Auth3DS auth3ds = sessionData.getAuthData().getAuth3ds();
             mobilePaymentDataBuilder.cryptogram(auth3ds.getCryptogram())
                     .eci(auth3ds.getEci());
         }
         return mobilePaymentDataBuilder.build();
+    }
+
+    private boolean isMobilePay(SessionData sessionData) {
+        return sessionData.isSetAuthData() && sessionData.getAuthData().isSetAuth3ds();
     }
 
     private RefundData initRefundData(PaymentInfo paymentInfo) {
