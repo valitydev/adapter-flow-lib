@@ -13,6 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.util.StringUtils;
 
+import java.util.HashMap;
+
 @Slf4j
 @RequiredArgsConstructor
 public class ExitModelToProxyResultConverter implements Converter<ExitStateModel, PaymentProxyResult> {
@@ -33,7 +35,10 @@ public class ExitModelToProxyResultConverter implements Converter<ExitStateModel
         return new PaymentProxyResult(intent)
                 .setNextState(serializer.writeByte(contextConverter.convert(exitStateModel)))
                 .setTrx(DomainPackageCreators.createTransactionInfo(
-                        exitStateModel.getProviderTrxId(), exitStateModel.getTrxExtra())
+                        exitStateModel.getProviderTrxId(),
+                        exitStateModel.getTrxExtra() != null
+                                ? exitStateModel.getTrxExtra()
+                                : new HashMap<>())
                 );
     }
 

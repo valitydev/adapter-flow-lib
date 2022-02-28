@@ -10,6 +10,8 @@ import dev.vality.damsel.proxy_provider.RecurrentTokenProxyResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.converter.Converter;
 
+import java.util.HashMap;
+
 import static dev.vality.java.damsel.utils.creators.DomainPackageCreators.createTransactionInfo;
 
 @RequiredArgsConstructor
@@ -35,7 +37,10 @@ public class ExitModelToRecTokenProxyResultConverter implements Converter<ExitSt
         return new RecurrentTokenProxyResult(intent)
                 .setNextState(serializer.writeByte(contextConverter.convert(exitStateModel)))
                 .setTrx(createTransactionInfo(
-                        exitStateModel.getProviderTrxId(), exitStateModel.getTrxExtra())
+                        exitStateModel.getProviderTrxId(),
+                        exitStateModel.getTrxExtra() != null
+                                ? exitStateModel.getTrxExtra()
+                                : new HashMap<>())
                 );
     }
 
