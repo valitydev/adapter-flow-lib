@@ -8,6 +8,7 @@ import dev.vality.adapter.flow.lib.model.ThreeDsData;
 import dev.vality.adapter.flow.lib.serde.ParametersSerializer;
 import dev.vality.adapter.flow.lib.utils.CallbackUrlExtractor;
 import dev.vality.adapter.flow.lib.utils.ThreeDsDataInitializer;
+import dev.vality.adapter.flow.lib.utils.TimeoutUtils;
 import dev.vality.adapter.flow.lib.utils.TimerProperties;
 import dev.vality.damsel.base.Timer;
 import dev.vality.damsel.proxy_provider.*;
@@ -72,13 +73,13 @@ public class IntentResultFactory {
         String redirectUrl = entryStateModel.getBaseRequestModel().getSuccessRedirectUrl();
         params.put(RedirectFields.TERM_URL.getValue(), callbackUrlExtractor.extractCallbackUrl(redirectUrl));
         ThreeDsData threeDsData = exitStateModel.getThreeDsData();
-        int timerRedirectTimeout = extractRedirectTimeout(
+        int timerRedirectTimeoutMin = extractRedirectTimeout(
                 entryStateModel.getBaseRequestModel().getAdapterConfigurations(),
                 timerProperties.getRedirectTimeoutMin());
         return Intent.suspend(
                 new SuspendIntent(
                         tagManagementService.findTag(params),
-                        Timer.timeout(timerRedirectTimeout))
+                        Timer.timeout(TimeoutUtils.toSeconds(timerRedirectTimeoutMin)))
                         .setTimeoutBehaviour(TimeoutBehaviour.callback(
                                 ByteBuffer.wrap(parametersSerializer.writeByte(params)))
                         ).setUserInteraction(createPostUserInteraction(threeDsData.getAcsUrl(), params))
@@ -102,11 +103,9 @@ public class IntentResultFactory {
         exitStateModel.setPollingInfo(pollingInfo);
 
         Map<String, String> adapterConfigurations = entryStateModel.getBaseRequestModel().getAdapterConfigurations();
-        int nextTimeout =
+        int nextTimeoutSec =
                 exponentialBackOffPollingService.prepareNextPollingInterval(pollingInfo, adapterConfigurations);
-        return Intent.sleep(
-                new SleepIntent(Timer.timeout(nextTimeout))
-        );
+        return Intent.sleep(new SleepIntent(Timer.timeout(nextTimeoutSec)));
     }
 
     public Intent createFinishIntentFailed(ExitStateModel exitStateModel) {

@@ -76,9 +76,11 @@ public class CtxToEntryModelConverter implements Converter<PaymentContext, Entry
                         .providerTrxId(trx != null ? trx.getId() : temporaryContext.getProviderTrxId())
                         .savedData(trx != null ? trx.getExtra() : new HashMap<>())
                         .successRedirectUrl(getSuccessRedirectUrl(payment, adapterConfigurations))
+                        .threeDsDataFromMpiCallback(temporaryContext.getThreeDsData())
                         .build())
                 .targetStatus(targetStatus)
                 .currentStep(currentStep)
+                .startedPollingInfo(temporaryContext.getPollingInfo())
                 .build();
     }
 
