@@ -18,16 +18,7 @@ public class TagManagementService {
         Optional<String> first = adapterProperties.getTagGeneratorFieldNames().stream()
                 .filter(s -> StringUtils.hasText(parameters.get(s)))
                 .findFirst();
-        return first.get();
+        return adapterProperties.getTagPrefix() + parameters.get(first.get());
     }
-
-    @SneakyThrows
-    public String get(Map<String, String> parameters) {
-        Optional<String> first = adapterProperties.getTagGeneratorFieldNames().stream()
-                .filter(s -> StringUtils.hasText(parameters.get(s)))
-                .findFirst();
-        return first.get();
-    }
-
 
 }
