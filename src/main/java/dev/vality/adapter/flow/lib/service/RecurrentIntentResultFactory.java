@@ -7,6 +7,7 @@ import dev.vality.adapter.flow.lib.model.PollingInfo;
 import dev.vality.adapter.flow.lib.model.ThreeDsData;
 import dev.vality.adapter.flow.lib.utils.CallbackUrlExtractor;
 import dev.vality.adapter.flow.lib.utils.ThreeDsDataInitializer;
+import dev.vality.adapter.flow.lib.utils.TimeoutUtils;
 import dev.vality.adapter.flow.lib.utils.TimerProperties;
 import dev.vality.damsel.base.Timer;
 import dev.vality.damsel.proxy_provider.*;
@@ -35,13 +36,13 @@ public class RecurrentIntentResultFactory {
         Map<String, String> params = ThreeDsDataInitializer.initThreeDsParameters(exitStateModel);
         String redirectUrl = entryStateModel.getBaseRequestModel().getSuccessRedirectUrl();
         params.put(RedirectFields.TERM_URL.getValue(), callbackUrlExtractor.extractCallbackUrl(redirectUrl));
-        int timerRedirectTimeout = extractRedirectTimeout(
+        int timerRedirectTimeoutMin = extractRedirectTimeout(
                 entryStateModel.getBaseRequestModel().getAdapterConfigurations(),
                 timerProperties.getRedirectTimeoutMin());
         return RecurrentTokenIntent.suspend(
                 new SuspendIntent(
                         tagManagementService.findTag(params),
-                        Timer.timeout(timerRedirectTimeout)
+                        Timer.timeout(TimeoutUtils.toSeconds(timerRedirectTimeoutMin))
                 ).setUserInteraction(createPostUserInteraction(threeDsData.getAcsUrl(), params))
         );
     }
@@ -59,10 +60,10 @@ public class RecurrentIntentResultFactory {
         exitStateModel.setPollingInfo(pollingInfo);
 
         Map<String, String> adapterConfigurations = entryStateModel.getBaseRequestModel().getAdapterConfigurations();
-        int nextTimeout =
+        int nextTimeoutSec =
                 exponentialBackOffPollingService.prepareNextPollingInterval(pollingInfo, adapterConfigurations);
         return RecurrentTokenIntent.sleep(
-                new SleepIntent(Timer.timeout(nextTimeout))
+                new SleepIntent(Timer.timeout(nextTimeoutSec))
         );
     }
 

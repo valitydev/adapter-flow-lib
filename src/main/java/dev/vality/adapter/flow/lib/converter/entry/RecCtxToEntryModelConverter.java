@@ -50,6 +50,8 @@ public class RecCtxToEntryModelConverter implements Converter<RecurrentTokenCont
 
         TransactionInfo transactionInfo = tokenInfo.getTrx();
         Long orderId = idGenerator.get(tokenInfo.getPaymentTool().getId());
+        var temporaryContext = temporaryContextService.getTemporaryContext(context, temporaryContextDeserializer);
+
         return entryStateModelBuilder
                 .baseRequestModel(BaseRequestModel.builder()
                         .recurrentPaymentData(RecurrentPaymentData
@@ -74,8 +76,10 @@ public class RecCtxToEntryModelConverter implements Converter<RecurrentTokenCont
                         .savedData(transactionInfo == null || transactionInfo.getExtra() == null
                                 ? new HashMap<>()
                                 : transactionInfo.getExtra())
+                        .threeDsDataFromMpiCallback(temporaryContext.getThreeDsData())
                         .build())
                 .currentStep(generalExitStateModel.getNextStep())
+                .startedPollingInfo(temporaryContext.getPollingInfo())
                 .build();
     }
 
