@@ -13,7 +13,7 @@
     </parent>
 
     <artifactId>adapter-flow-lib</artifactId>
-    <version>0.0.4-test</version>
+    <version>0.0.5</version>
     <packaging>jar</packaging>
 
     <name>adapter-flow-lib</name>
