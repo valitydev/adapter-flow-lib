@@ -44,11 +44,7 @@ import static org.mockito.ArgumentMatchers.any;
         "adapter.callbackUrl=http://localhost:8080/test",
         "server.rest.endpoint=adapter",
         "server.rest.port=8083"})
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class PaymentSuccess3dsTest extends AbstractPaymentTest {
-
-    @LocalServerPort
-    int randomServerPort;
 
     @BeforeEach
     public void setUp() throws TException {

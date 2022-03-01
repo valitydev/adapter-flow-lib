@@ -21,6 +21,8 @@ public class RetryProcessor implements Processor<ExitStateModel, BaseResponseMod
             log.debug("Start redirect process response: {} entryStateModel: {}", response, entryStateModel);
             ExitStateModel exitStateModel = new ExitStateModel();
             exitStateModel.setLastOperationStatus(response.getStatus());
+            exitStateModel.setProviderTrxId(entryStateModel.getBaseRequestModel().getProviderTrxId());
+            exitStateModel.setTrxExtra(response.getSaveData());
             log.debug("Finish redirect process response: {} entryStateModel: {}", response, entryStateModel);
             return exitStateModel;
         }
