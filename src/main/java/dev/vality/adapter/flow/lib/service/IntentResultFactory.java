@@ -19,8 +19,7 @@ import lombok.RequiredArgsConstructor;
 import java.nio.ByteBuffer;
 import java.util.Map;
 
-import static dev.vality.java.damsel.utils.creators.ProxyProviderPackageCreators.createFinishIntentSuccessWithToken;
-import static dev.vality.java.damsel.utils.creators.ProxyProviderPackageCreators.createPostUserInteraction;
+import static dev.vality.java.damsel.utils.creators.ProxyProviderPackageCreators.*;
 import static dev.vality.java.damsel.utils.extractors.OptionsExtractors.extractRedirectTimeout;
 
 @RequiredArgsConstructor
@@ -82,7 +81,7 @@ public class IntentResultFactory {
                         Timer.timeout(TimeoutUtils.toSeconds(timerRedirectTimeoutMin)))
                         .setTimeoutBehaviour(TimeoutBehaviour.callback(
                                 ByteBuffer.wrap(parametersSerializer.writeByte(params)))
-                        ).setUserInteraction(createPostUserInteraction(threeDsData.getAcsUrl(), params))
+                        ).setUserInteraction(createGetUserInteraction(threeDsData.getAcsUrl()))
         );
     }
 
