@@ -26,7 +26,9 @@ public class SuccessFinishProcessor
                 && !ErrorUtils.isError(response)) {
             log.debug("Start success process response: {} entryStateModel: {}", response, entryStateModel);
             ExitStateModel exitStateModel = new ExitStateModel();
-            exitStateModel.setProviderTrxId(response.getProviderTrxId());
+            exitStateModel.setProviderTrxId(StringUtils.hasText(response.getProviderTrxId())
+                    ? response.getProviderTrxId()
+                    : entryStateModel.getBaseRequestModel().getProviderTrxId());
             exitStateModel.setLastOperationStatus(response.getStatus());
             Map<String, String> saveData = response.getSaveData();
             if (entryStateModel.getBaseRequestModel().getRecurrentPaymentData() != null
