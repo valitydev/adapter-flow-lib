@@ -5,6 +5,8 @@ import dev.vality.adapter.flow.lib.flow.RecurrentResultIntentResolver;
 import dev.vality.adapter.flow.lib.model.ExitStateModel;
 import dev.vality.adapter.flow.lib.serde.TemporaryContextSerializer;
 import dev.vality.adapter.flow.lib.service.RecurrentIntentResultFactory;
+import dev.vality.damsel.domain.AdditionalTransactionInfo;
+import dev.vality.damsel.domain.TransactionInfo;
 import dev.vality.damsel.proxy_provider.RecurrentTokenIntent;
 import dev.vality.damsel.proxy_provider.RecurrentTokenProxyResult;
 import lombok.RequiredArgsConstructor;
@@ -36,11 +38,15 @@ public class ExitModelToRecTokenProxyResultConverter implements Converter<ExitSt
 
         return new RecurrentTokenProxyResult(intent)
                 .setNextState(serializer.writeByte(contextConverter.convert(exitStateModel)))
-                .setTrx(createTransactionInfo(
-                        exitStateModel.getProviderTrxId(),
-                        exitStateModel.getTrxExtra() != null
-                                ? exitStateModel.getTrxExtra()
-                                : new HashMap<>())
+                .setTrx(
+                        new TransactionInfo()
+                                .setId(String.valueOf(
+                                        exitStateModel.getEntryStateModel().getBaseRequestModel().getPaymentId()))
+                                .setExtra(exitStateModel.getTrxExtra() != null
+                                        ? exitStateModel.getTrxExtra()
+                                        : new HashMap<>())
+                                .setAdditionalInfo(new AdditionalTransactionInfo()
+                                        .setRrn(exitStateModel.getProviderTrxId()))
                 );
     }
 

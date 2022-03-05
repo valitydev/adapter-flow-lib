@@ -5,9 +5,10 @@ import dev.vality.adapter.flow.lib.flow.ResultIntentResolver;
 import dev.vality.adapter.flow.lib.model.ExitStateModel;
 import dev.vality.adapter.flow.lib.serde.TemporaryContextSerializer;
 import dev.vality.adapter.flow.lib.service.IntentResultFactory;
+import dev.vality.damsel.domain.AdditionalTransactionInfo;
+import dev.vality.damsel.domain.TransactionInfo;
 import dev.vality.damsel.proxy_provider.Intent;
 import dev.vality.damsel.proxy_provider.PaymentProxyResult;
-import dev.vality.java.damsel.utils.creators.DomainPackageCreators;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.convert.converter.Converter;
@@ -34,11 +35,15 @@ public class ExitModelToProxyResultConverter implements Converter<ExitStateModel
 
         return new PaymentProxyResult(intent)
                 .setNextState(serializer.writeByte(contextConverter.convert(exitStateModel)))
-                .setTrx(DomainPackageCreators.createTransactionInfo(
-                        exitStateModel.getProviderTrxId(),
-                        exitStateModel.getTrxExtra() != null
-                                ? exitStateModel.getTrxExtra()
-                                : new HashMap<>())
+                .setTrx(
+                        new TransactionInfo()
+                                .setId(String.valueOf(
+                                        exitStateModel.getEntryStateModel().getBaseRequestModel().getPaymentId()))
+                                .setExtra(exitStateModel.getTrxExtra() != null
+                                        ? exitStateModel.getTrxExtra()
+                                        : new HashMap<>())
+                                .setAdditionalInfo(new AdditionalTransactionInfo()
+                                        .setRrn(exitStateModel.getProviderTrxId()))
                 );
     }
 
