@@ -6,7 +6,6 @@ import dev.vality.adapter.flow.lib.utils.TimerProperties;
 import dev.vality.java.damsel.utils.extractors.OptionsExtractors;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
