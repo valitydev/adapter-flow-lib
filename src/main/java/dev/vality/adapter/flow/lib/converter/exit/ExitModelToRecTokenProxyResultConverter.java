@@ -5,7 +5,7 @@ import dev.vality.adapter.flow.lib.flow.RecurrentResultIntentResolver;
 import dev.vality.adapter.flow.lib.model.ExitStateModel;
 import dev.vality.adapter.flow.lib.serde.TemporaryContextSerializer;
 import dev.vality.adapter.flow.lib.service.RecurrentIntentResultFactory;
-import dev.vality.damsel.domain.AdditionalTransactionInfo;
+import dev.vality.adapter.flow.lib.utils.AdditionalInfoUtils;
 import dev.vality.damsel.domain.TransactionInfo;
 import dev.vality.damsel.proxy_provider.RecurrentTokenIntent;
 import dev.vality.damsel.proxy_provider.RecurrentTokenProxyResult;
@@ -13,8 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.converter.Converter;
 
 import java.util.HashMap;
-
-import static dev.vality.java.damsel.utils.creators.DomainPackageCreators.createTransactionInfo;
 
 @RequiredArgsConstructor
 public class ExitModelToRecTokenProxyResultConverter implements Converter<ExitStateModel, RecurrentTokenProxyResult> {
@@ -45,8 +43,7 @@ public class ExitModelToRecTokenProxyResultConverter implements Converter<ExitSt
                                 .setExtra(exitStateModel.getTrxExtra() != null
                                         ? exitStateModel.getTrxExtra()
                                         : new HashMap<>())
-                                .setAdditionalInfo(new AdditionalTransactionInfo()
-                                        .setRrn(exitStateModel.getProviderTrxId()))
+                                .setAdditionalInfo(AdditionalInfoUtils.initAdditionalTrxInfo(exitStateModel))
                 );
     }
 

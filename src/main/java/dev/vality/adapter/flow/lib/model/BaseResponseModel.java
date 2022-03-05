@@ -38,5 +38,9 @@ public class BaseResponseModel {
      * Data for choose 3ds flow and parameters for redirects.
      */
     private ThreeDsData threeDsData;
+    /**
+     * Data for support about transactions.
+     */
+    private AdditionalTrxInfo additionalTrxInfo;
 
 }

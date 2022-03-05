@@ -5,7 +5,7 @@ import dev.vality.adapter.flow.lib.flow.ResultIntentResolver;
 import dev.vality.adapter.flow.lib.model.ExitStateModel;
 import dev.vality.adapter.flow.lib.serde.TemporaryContextSerializer;
 import dev.vality.adapter.flow.lib.service.IntentResultFactory;
-import dev.vality.damsel.domain.AdditionalTransactionInfo;
+import dev.vality.adapter.flow.lib.utils.AdditionalInfoUtils;
 import dev.vality.damsel.domain.TransactionInfo;
 import dev.vality.damsel.proxy_provider.Intent;
 import dev.vality.damsel.proxy_provider.PaymentProxyResult;
@@ -42,8 +42,7 @@ public class ExitModelToProxyResultConverter implements Converter<ExitStateModel
                                 .setExtra(exitStateModel.getTrxExtra() != null
                                         ? exitStateModel.getTrxExtra()
                                         : new HashMap<>())
-                                .setAdditionalInfo(new AdditionalTransactionInfo()
-                                        .setRrn(exitStateModel.getProviderTrxId()))
+                                .setAdditionalInfo(AdditionalInfoUtils.initAdditionalTrxInfo(exitStateModel))
                 );
     }
 
