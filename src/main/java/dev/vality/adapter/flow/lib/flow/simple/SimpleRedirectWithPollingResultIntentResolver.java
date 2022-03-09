@@ -24,13 +24,13 @@ public class SimpleRedirectWithPollingResultIntentResolver implements ResultInte
             case CHECK_STATUS -> exitStateModel.getLastOperationStatus() == Status.NEED_REDIRECT
                     ? intentResultFactory.createSuspendIntentWithCallbackAfterTimeout(exitStateModel)
                     : intentResultFactory.createSleepIntentWithExponentialPolling(exitStateModel);
-            case DO_NOTHING -> createIntentByCurrentStep(exitStateModel);
+            case DO_NOTHING -> createIntentByTargetStatus(exitStateModel);
             case REFUND, CANCEL -> intentResultFactory.createFinishIntentSuccess();
             default -> throw new IllegalStateException("Wrong nextStep: " + nextStep);
         };
     }
 
-    private Intent createIntentByCurrentStep(ExitStateModel exitStateModel) {
+    private Intent createIntentByTargetStatus(ExitStateModel exitStateModel) {
         if (exitStateModel.getEntryStateModel().getTargetStatus() == TargetStatus.CANCELLED
                 || exitStateModel.getEntryStateModel().getTargetStatus() == TargetStatus.REFUNDED) {
             return intentResultFactory.createFinishIntentSuccess();
