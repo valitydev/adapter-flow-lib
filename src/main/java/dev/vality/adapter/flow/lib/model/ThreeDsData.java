@@ -1,5 +1,6 @@
 package dev.vality.adapter.flow.lib.model;
 
+import dev.vality.adapter.flow.lib.constant.HttpMethod;
 import dev.vality.adapter.flow.lib.constant.ThreeDsType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,6 +15,10 @@ import java.util.Map;
 @AllArgsConstructor
 public class ThreeDsData {
 
+    /**
+     * Http method type.
+     */
+    private HttpMethod httpMethod = HttpMethod.GET;
     /**
      * Use type to select desired 3ds flow.
      */

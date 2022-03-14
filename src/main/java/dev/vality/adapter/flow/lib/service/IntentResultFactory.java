@@ -1,5 +1,6 @@
 package dev.vality.adapter.flow.lib.service;
 
+import dev.vality.adapter.flow.lib.constant.HttpMethod;
 import dev.vality.adapter.flow.lib.constant.RedirectFields;
 import dev.vality.adapter.flow.lib.model.EntryStateModel;
 import dev.vality.adapter.flow.lib.model.ExitStateModel;
@@ -13,6 +14,7 @@ import dev.vality.adapter.flow.lib.utils.TimerProperties;
 import dev.vality.damsel.base.Timer;
 import dev.vality.damsel.proxy_provider.*;
 import dev.vality.damsel.timeout_behaviour.TimeoutBehaviour;
+import dev.vality.damsel.user_interaction.UserInteraction;
 import dev.vality.error.mapping.ErrorMapping;
 import lombok.RequiredArgsConstructor;
 
@@ -81,16 +83,20 @@ public class IntentResultFactory {
                         Timer.timeout(TimeoutUtils.toSeconds(timerRedirectTimeoutMin)))
                         .setTimeoutBehaviour(TimeoutBehaviour.callback(
                                 ByteBuffer.wrap(parametersSerializer.writeByte(params)))
-                        ).setUserInteraction(createGetUserInteraction(threeDsData.getAcsUrl()))
+                        ).setUserInteraction(createUserInteraction(threeDsData))
         );
+    }
+
+    private UserInteraction createUserInteraction(ThreeDsData threeDsData) {
+        if (threeDsData.getHttpMethod() == HttpMethod.GET) {
+            return createGetUserInteraction(threeDsData.getAcsUrl());
+        } else {
+            return createPostUserInteraction(threeDsData.getAcsUrl(), threeDsData.getParameters());
+        }
     }
 
     public Intent createFinishIntentSuccess() {
         return Intent.finish(new FinishIntent(FinishStatus.success(new Success())));
-    }
-
-    public Intent createSleepIntentForReinvocation() {
-        return Intent.sleep(new SleepIntent(Timer.timeout(0)));
     }
 
     public Intent createSleepIntentWithExponentialPolling(ExitStateModel exitStateModel) {
