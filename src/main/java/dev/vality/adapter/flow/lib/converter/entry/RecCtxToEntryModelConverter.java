@@ -65,7 +65,13 @@ public class RecCtxToEntryModelConverter implements Converter<RecurrentTokenCont
                         .cardData(cardData)
                         .refundData(initRefundData(recurrentPaymentTool, orderId))
                         .paymentId(orderId)
-                        .currency(recurrentPaymentTool.getMinimalPaymentCost().getCurrency().getSymbolicCode())
+                        .currency(Currency.builder()
+                                .symbolicCode(
+                                        recurrentPaymentTool.getMinimalPaymentCost().getCurrency().getSymbolicCode())
+                                .numericCode(
+                                        recurrentPaymentTool.getMinimalPaymentCost().getCurrency().getNumericCode())
+                                .build()
+                        )
                         .amount(recurrentPaymentTool.getMinimalPaymentCost().getAmount())
                         .details(recurrentPaymentTool.getId())
                         .payerInfo(PayerInfo.builder()
