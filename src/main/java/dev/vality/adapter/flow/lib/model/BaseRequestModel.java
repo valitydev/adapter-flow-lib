@@ -17,7 +17,7 @@ import java.util.Map;
 public class BaseRequestModel {
 
     /**
-     *  Uniq Long identifier for payment.
+     * Uniq Long identifier for payment.
      */
     private Long paymentId;
     /**
@@ -29,12 +29,12 @@ public class BaseRequestModel {
      */
     private Long amount;
     /**
-     * Currency in symbolic formats (example: "USD").
+     * Code and symbolic code of currency.
      */
-    private String currency;
+    private Currency currency;
     /**
      * Timestamp RFC 3339.
-     *
+     * <p>
      * The string must contain the date and time in UTC in the following format:
      * `2016-03-22T06:12:27Z`
      */
