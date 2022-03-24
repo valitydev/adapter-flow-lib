@@ -38,8 +38,10 @@ public class SuccessFinishProcessor
                     saveData = new HashMap<>();
                 }
                 String recToken = initRecurrentToken(response, entryStateModel);
-                saveData.put(MetaData.META_REC_TOKEN, recToken);
-                exitStateModel.setRecToken(recToken);
+                if (StringUtils.hasText(recToken)) {
+                    saveData.put(MetaData.META_REC_TOKEN, recToken);
+                    exitStateModel.setRecToken(recToken);
+                }
             }
             exitStateModel.setTrxExtra(saveData);
             log.debug("Finish success process response: {} entryStateModel: {}", response, entryStateModel);
