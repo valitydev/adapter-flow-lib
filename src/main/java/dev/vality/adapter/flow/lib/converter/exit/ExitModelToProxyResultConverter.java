@@ -37,7 +37,7 @@ public class ExitModelToProxyResultConverter implements Converter<ExitStateModel
                 .setNextState(serializer.writeByte(contextConverter.convert(exitStateModel)))
                 .setTrx(
                         new TransactionInfo()
-                                .setId(String.valueOf(exitStateModel.getProviderTrxId()))
+                                .setId(exitStateModel.getProviderTrxId())
                                 .setExtra(exitStateModel.getTrxExtra() != null
                                         ? exitStateModel.getTrxExtra()
                                         : new HashMap<>())
