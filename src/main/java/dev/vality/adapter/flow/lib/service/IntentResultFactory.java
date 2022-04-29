@@ -57,7 +57,7 @@ public class IntentResultFactory {
                 new SuspendIntent(
                         tagManagementService.findTag(params),
                         Timer.timeout(timerRedirectTimeout)
-                ).setUserInteraction(createPostUserInteraction(threeDsData.getAcsUrl(), params))
+                ).setUserInteraction(createUserInteraction(threeDsData))
         );
     }
 
