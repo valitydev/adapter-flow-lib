@@ -76,7 +76,7 @@
         <error-mapping-java.version>1.0.0</error-mapping-java.version>
         <jackson.version>2.11.2</jackson.version>
 
-        <spring-boot-starter.version>2.6.3</spring-boot-starter.version>
+        <spring-boot-starter.version>2.6.6</spring-boot-starter.version>
     </properties>
 
     <dependencies>
