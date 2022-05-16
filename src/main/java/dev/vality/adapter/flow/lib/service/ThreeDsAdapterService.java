@@ -1,10 +1,10 @@
 package dev.vality.adapter.flow.lib.service;
 
+import dev.vality.adapter.common.exception.HellgateException;
+import dev.vality.adapter.common.hellgate.HellgateClient;
 import dev.vality.adapter.flow.lib.serde.ParametersDeserializer;
 import dev.vality.adapter.flow.lib.serde.ParametersSerializer;
 import dev.vality.adapter.flow.lib.utils.CallbackUrlExtractor;
-import dev.vality.adapter.helpers.hellgate.HellgateAdapterClient;
-import dev.vality.adapter.helpers.hellgate.exception.HellgateException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
@@ -20,19 +20,19 @@ import java.util.function.BiFunction;
 @RequiredArgsConstructor
 public class ThreeDsAdapterService {
 
-    private final HellgateAdapterClient hgClient;
+    private final HellgateClient hellgateClient;
     private final ParametersSerializer parametersSerializer;
     private final ParametersDeserializer parametersDeserializer;
     private final TagManagementService tagManagementService;
 
     public String receivePaymentIncomingParameters(HttpServletRequest servletRequest,
                                                    HttpServletResponse servletResponse) {
-        return this.processCallback(servletRequest, servletResponse, hgClient::processPaymentCallback);
+        return this.processCallback(servletRequest, servletResponse, hellgateClient::processPaymentCallback);
     }
 
     public String receiveRecurrentIncomingParameters(HttpServletRequest servletRequest,
                                                      HttpServletResponse servletResponse) {
-        return this.processCallback(servletRequest, servletResponse, hgClient::processRecurrentTokenCallback);
+        return this.processCallback(servletRequest, servletResponse, hellgateClient::processRecurrentTokenCallback);
     }
 
     private String processCallback(HttpServletRequest servletRequest,

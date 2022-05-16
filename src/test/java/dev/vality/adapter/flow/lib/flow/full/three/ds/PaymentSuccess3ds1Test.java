@@ -44,8 +44,8 @@ public class PaymentSuccess3ds1Test extends AbstractPaymentTest {
     public void setUp() throws TException {
         MockitoAnnotations.openMocks(this);
 
-        MockUtil.mock3ds1CardData(cdsClientStorage);
-        MockUtil.mock3ds1SessionData(cdsClientStorage);
+        MockUtil.mock3ds1CardData(cdsStorageClient);
+        MockUtil.mock3ds1SessionData(cdsStorageClient);
         MockUtil.mockIdGenerator(benderClient);
 
         BaseResponseModel baseResponseModel = BeanUtils.createBaseResponseModel();

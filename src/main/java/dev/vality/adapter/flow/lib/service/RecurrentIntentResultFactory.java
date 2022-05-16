@@ -1,5 +1,6 @@
 package dev.vality.adapter.flow.lib.service;
 
+import dev.vality.adapter.common.mapper.ErrorMapping;
 import dev.vality.adapter.flow.lib.constant.RedirectFields;
 import dev.vality.adapter.flow.lib.model.EntryStateModel;
 import dev.vality.adapter.flow.lib.model.ExitStateModel;
@@ -11,14 +12,13 @@ import dev.vality.adapter.flow.lib.utils.TimeoutUtils;
 import dev.vality.adapter.flow.lib.utils.TimerProperties;
 import dev.vality.damsel.base.Timer;
 import dev.vality.damsel.proxy_provider.*;
-import dev.vality.error.mapping.ErrorMapping;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Map;
 
-import static dev.vality.java.damsel.utils.creators.ProxyProviderPackageCreators.createPostUserInteraction;
-import static dev.vality.java.damsel.utils.creators.ProxyProviderPackageCreators.createRecurrentTokenStatusSuccess;
-import static dev.vality.java.damsel.utils.extractors.OptionsExtractors.extractRedirectTimeout;
+import static dev.vality.adapter.common.damsel.OptionsExtractors.extractRedirectTimeout;
+import static dev.vality.adapter.common.damsel.ProxyProviderPackageCreators.createPostUserInteraction;
+import static dev.vality.adapter.common.damsel.ProxyProviderPackageCreators.createRecurrentTokenStatusSuccess;
 
 @RequiredArgsConstructor
 public class RecurrentIntentResultFactory {

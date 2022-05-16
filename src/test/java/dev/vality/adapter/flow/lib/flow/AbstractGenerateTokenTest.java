@@ -1,5 +1,8 @@
 package dev.vality.adapter.flow.lib.flow;
 
+import dev.vality.adapter.common.cds.CdsStorageClient;
+import dev.vality.adapter.common.damsel.ProxyProviderVerification;
+import dev.vality.adapter.common.hellgate.HellgateClient;
 import dev.vality.adapter.flow.lib.client.RemoteClient;
 import dev.vality.adapter.flow.lib.constant.Step;
 import dev.vality.adapter.flow.lib.controller.ThreeDsCallbackController;
@@ -10,19 +13,16 @@ import dev.vality.adapter.flow.lib.serde.TemporaryContextDeserializer;
 import dev.vality.adapter.flow.lib.service.TagManagementService;
 import dev.vality.adapter.flow.lib.utils.CallbackUrlExtractor;
 import dev.vality.adapter.flow.lib.validator.AdapterConfigurationValidator;
-import dev.vality.adapter.helpers.hellgate.HellgateAdapterClient;
 import dev.vality.bender.BenderSrv;
-import dev.vality.cds.client.storage.CdsClientStorage;
 import dev.vality.damsel.proxy_provider.*;
-import dev.vality.java.damsel.utils.verification.ProxyProviderVerification;
 import org.apache.thrift.TException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.test.context.ContextConfiguration;
 
+import static dev.vality.adapter.common.damsel.DomainPackageCreators.createTargetProcessed;
 import static dev.vality.adapter.flow.lib.flow.full.three.ds.ForwardRecurrentPaymentNon3dsTest.RECURRENT_TOKEN;
-import static dev.vality.java.damsel.utils.creators.DomainPackageCreators.createTargetProcessed;
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -34,7 +34,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class AbstractGenerateTokenTest {
 
     @MockBean
-    protected CdsClientStorage cdsClientStorage;
+    protected CdsStorageClient cdsStorageClient;
     @MockBean
     protected AdapterConfigurationValidator paymentContextValidator;
     @MockBean
@@ -42,7 +42,7 @@ public class AbstractGenerateTokenTest {
     @MockBean
     protected RemoteClient client;
     @MockBean
-    protected HellgateAdapterClient hellgateAdapterClient;
+    protected HellgateClient hellgateClient;
     @Autowired
     public TemporaryContextDeserializer temporaryContextDeserializer;
 

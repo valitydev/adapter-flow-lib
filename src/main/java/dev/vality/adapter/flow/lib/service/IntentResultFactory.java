@@ -1,5 +1,6 @@
 package dev.vality.adapter.flow.lib.service;
 
+import dev.vality.adapter.common.mapper.ErrorMapping;
 import dev.vality.adapter.flow.lib.constant.HttpMethod;
 import dev.vality.adapter.flow.lib.constant.RedirectFields;
 import dev.vality.adapter.flow.lib.model.EntryStateModel;
@@ -15,14 +16,13 @@ import dev.vality.damsel.base.Timer;
 import dev.vality.damsel.proxy_provider.*;
 import dev.vality.damsel.timeout_behaviour.TimeoutBehaviour;
 import dev.vality.damsel.user_interaction.UserInteraction;
-import dev.vality.error.mapping.ErrorMapping;
 import lombok.RequiredArgsConstructor;
 
 import java.nio.ByteBuffer;
 import java.util.Map;
 
-import static dev.vality.java.damsel.utils.creators.ProxyProviderPackageCreators.*;
-import static dev.vality.java.damsel.utils.extractors.OptionsExtractors.extractRedirectTimeout;
+import static dev.vality.adapter.common.damsel.OptionsExtractors.extractRedirectTimeout;
+import static dev.vality.adapter.common.damsel.ProxyProviderPackageCreators.*;
 
 @RequiredArgsConstructor
 public class IntentResultFactory {

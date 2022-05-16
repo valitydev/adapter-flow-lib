@@ -41,7 +41,7 @@ public class ForwardRecurrentPaymentNon3dsTest extends AbstractPaymentTest {
     @BeforeEach
     public void setUp() throws TException {
         MockitoAnnotations.openMocks(this);
-        MockUtil.mockAllWithout3Ds(cdsClientStorage, benderClient);
+        MockUtil.mockAllWithout3Ds(cdsStorageClient, benderClient);
 
         BaseResponseModel baseResponseModel = BeanUtils.createBaseResponseModel();
         baseResponseModel.setRecurrentToken(RECURRENT_TOKEN);

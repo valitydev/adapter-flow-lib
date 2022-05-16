@@ -38,7 +38,7 @@ public class GenerateToken3ds1Test extends AbstractGenerateTokenTest {
     @BeforeEach
     public void setUp() throws TException {
         MockitoAnnotations.openMocks(this);
-        MockUtil.mockAllWithout3Ds(cdsClientStorage, benderClient);
+        MockUtil.mockAllWithout3Ds(cdsStorageClient, benderClient);
 
         BaseResponseModel baseResponseModel = BeanUtils.createBaseResponseModel();
         baseResponseModel.setThreeDsData(BeanUtils.create3Ds1(baseResponseModel));

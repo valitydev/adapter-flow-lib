@@ -8,7 +8,7 @@ import dev.vality.adapter.flow.lib.service.IntentResultFactory;
 import dev.vality.damsel.proxy_provider.Intent;
 import lombok.RequiredArgsConstructor;
 
-import static dev.vality.java.damsel.utils.creators.ProxyProviderPackageCreators.createFinishIntentSuccess;
+import static dev.vality.adapter.common.damsel.ProxyProviderPackageCreators.createFinishIntentSuccess;
 
 @RequiredArgsConstructor
 public class ResultIntentResolverImpl implements ResultIntentResolver {

@@ -1,13 +1,16 @@
 package dev.vality.adapter.flow.lib.converter.entry;
 
+import dev.vality.adapter.common.cds.BankCardExtractor;
+import dev.vality.adapter.common.cds.CdsStorageClient;
+import dev.vality.adapter.common.cds.model.CardDataProxyModel;
+import dev.vality.adapter.common.damsel.ProxyProviderPackageCreators;
+import dev.vality.adapter.common.damsel.ProxyProviderPackageExtractors;
 import dev.vality.adapter.flow.lib.constant.MetaData;
 import dev.vality.adapter.flow.lib.model.*;
 import dev.vality.adapter.flow.lib.serde.TemporaryContextDeserializer;
 import dev.vality.adapter.flow.lib.service.IdGenerator;
 import dev.vality.adapter.flow.lib.service.TemporaryContextService;
 import dev.vality.adapter.flow.lib.utils.CardDataUtils;
-import dev.vality.cds.client.storage.CdsClientStorage;
-import dev.vality.cds.client.storage.utils.BankCardExtractor;
 import dev.vality.cds.storage.Auth3DS;
 import dev.vality.cds.storage.CardData;
 import dev.vality.cds.storage.SessionData;
@@ -17,9 +20,6 @@ import dev.vality.damsel.domain.PaymentTool;
 import dev.vality.damsel.domain.TransactionInfo;
 import dev.vality.damsel.proxy_provider.RecurrentPaymentTool;
 import dev.vality.damsel.proxy_provider.RecurrentTokenContext;
-import dev.vality.java.cds.utils.model.CardDataProxyModel;
-import dev.vality.java.damsel.utils.creators.ProxyProviderPackageCreators;
-import dev.vality.java.damsel.utils.extractors.ProxyProviderPackageExtractors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.convert.converter.Converter;
@@ -31,7 +31,7 @@ import java.util.HashMap;
 public class RecCtxToEntryModelConverter implements Converter<RecurrentTokenContext, EntryStateModel> {
 
     private final TemporaryContextDeserializer temporaryContextDeserializer;
-    private final CdsClientStorage cdsStorage;
+    private final CdsStorageClient cdsStorageClient;
     private final IdGenerator idGenerator;
     private final TemporaryContextService temporaryContextService;
 
@@ -94,7 +94,7 @@ public class RecCtxToEntryModelConverter implements Converter<RecurrentTokenCont
                                                                     DisposablePaymentResource paymentResource) {
         var cardDataBuilder = dev.vality.adapter.flow.lib.model.CardData.builder();
         if (generalExitStateModel == null || generalExitStateModel.getNextStep() == null) {
-            SessionData sessionData = cdsStorage.getSessionData(context);
+            SessionData sessionData = cdsStorageClient.getSessionData(context);
             if (!sessionData.getAuthData().isSetAuth3ds()) {
                 CardDataProxyModel cardData = getCardData(context, paymentResource);
                 cardDataBuilder.cardHolder(cardData.getCardholderName())
@@ -111,7 +111,7 @@ public class RecCtxToEntryModelConverter implements Converter<RecurrentTokenCont
                                                     TemporaryContext generalExitStateModel) {
         MobilePaymentData.MobilePaymentDataBuilder<?, ?> mobilePaymentDataBuilder = MobilePaymentData.builder();
         if (generalExitStateModel == null || generalExitStateModel.getNextStep() == null) {
-            SessionData sessionData = cdsStorage.getSessionData(context);
+            SessionData sessionData = cdsStorageClient.getSessionData(context);
             if (sessionData.getAuthData().isSetAuth3ds()) {
                 Auth3DS auth3ds = sessionData.getAuthData().getAuth3ds();
                 mobilePaymentDataBuilder.cryptogram(auth3ds.getCryptogram())
@@ -136,7 +136,7 @@ public class RecCtxToEntryModelConverter implements Converter<RecurrentTokenCont
 
     private CardDataProxyModel getCardData(RecurrentTokenContext context, DisposablePaymentResource paymentResource) {
         String cardToken = ProxyProviderPackageExtractors.extractBankCardToken(paymentResource);
-        CardData cardData = cdsStorage.getCardData(cardToken);
+        CardData cardData = cdsStorageClient.getCardData(cardToken);
         BankCard bankCard = ProxyProviderPackageExtractors.extractBankCard(context);
         return BankCardExtractor.initCardDataProxyModel(bankCard, cardData);
     }

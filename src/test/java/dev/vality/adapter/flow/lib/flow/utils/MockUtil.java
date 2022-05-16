@@ -1,17 +1,17 @@
 package dev.vality.adapter.flow.lib.flow.utils;
 
+import dev.vality.adapter.common.cds.CdsStorageClient;
+import dev.vality.adapter.common.cds.model.CardDataProxyModel;
 import dev.vality.adapter.flow.lib.constant.OptionFields;
 import dev.vality.adapter.flow.lib.constant.Stage;
 import dev.vality.bender.BenderSrv;
 import dev.vality.bender.GenerationResult;
-import dev.vality.cds.client.storage.CdsClientStorage;
 import dev.vality.cds.storage.*;
 import dev.vality.damsel.domain.*;
 import dev.vality.damsel.proxy_provider.Cash;
 import dev.vality.damsel.proxy_provider.Invoice;
 import dev.vality.damsel.proxy_provider.InvoicePayment;
 import dev.vality.damsel.proxy_provider.*;
-import dev.vality.java.cds.utils.model.CardDataProxyModel;
 import org.apache.thrift.TException;
 import org.mockito.stubbing.Answer;
 
@@ -41,56 +41,56 @@ public class MockUtil {
     public static final String CVV_3DS_2 = "584";
     public static final String CVV_3DS_2_SIMPLE_FLOW = "590";
 
-    public static void mockAllWithout3Ds(CdsClientStorage cdsClientStorage, BenderSrv.Iface benderClient)
+    public static void mockAllWithout3Ds(CdsStorageClient cdsStorageClient, BenderSrv.Iface benderClient)
             throws TException {
-        MockUtil.mockCardDataWithout3ds(cdsClientStorage);
-        MockUtil.mockSessionData(cdsClientStorage);
+        MockUtil.mockCardDataWithout3ds(cdsStorageClient);
+        MockUtil.mockSessionData(cdsStorageClient);
         MockUtil.mockIdGenerator(benderClient);
     }
 
-    public static void mockCardDataWithout3ds(CdsClientStorage cdsClientStorage) {
+    public static void mockCardDataWithout3ds(CdsStorageClient cdsStorageClient) {
         mockCardData(EXP_MONTH_NON3DS,
                 EXP_YEAR_NON3DS,
                 CARDHOLDER_NAME,
                 PAN_SUCCESS_NON3DS,
-                cdsClientStorage);
+                cdsStorageClient);
     }
 
-    public static void mock3ds1CardData(CdsClientStorage cdsClientStorage) {
+    public static void mock3ds1CardData(CdsStorageClient cdsStorageClient) {
         mockCardData(EXP_MONTH_NON3DS,
                 EXP_YEAR_NON3DS,
                 CARDHOLDER_NAME,
                 PAN_SUCCESS_3DS_1,
-                cdsClientStorage);
+                cdsStorageClient);
     }
 
-    public static void mock3ds2FullFlowCardData(CdsClientStorage cdsClientStorage) {
+    public static void mock3ds2FullFlowCardData(CdsStorageClient cdsStorageClient) {
         mockCardData(EXP_MONTH_3DS_2,
                 EXP_YEAR_3DS_2,
                 CARDHOLDER_NAME,
                 PAN_SUCCESS_3DS_2,
-                cdsClientStorage);
+                cdsStorageClient);
     }
 
-    public static void mock3ds2SimpleFlowCardData(CdsClientStorage cdsClientStorage) {
+    public static void mock3ds2SimpleFlowCardData(CdsStorageClient cdsStorageClient) {
         mockCardData(EXP_MONTH_3DS_2,
                 EXP_YEAR_3DS_2,
                 CARDHOLDER_NAME,
                 PAN_SUCCESS_3DS_2_SIMPLE_FLOW,
-                cdsClientStorage);
+                cdsStorageClient);
     }
 
     private static void mockCardData(int expMonthNon3ds,
                                      int expYearNon3ds,
                                      String cardholderName,
                                      String panSuccessNon3ds,
-                                     CdsClientStorage cdsClientStorage) {
+                                     CdsStorageClient cdsStorageClient) {
         doAnswer((Answer<CardDataProxyModel>) invocationOnMock -> CardDataProxyModel.builder()
                 .expMonth((byte) expMonthNon3ds)
                 .expYear((short) expYearNon3ds)
                 .cardholderName(cardholderName)
                 .pan(panSuccessNon3ds)
-                .build()).when(cdsClientStorage).getCardData(any(RecurrentTokenContext.class));
+                .build()).when(cdsStorageClient).getCardData(any(RecurrentTokenContext.class));
         doAnswer((Answer<CardData>) invocation ->
                 new CardData()
                         .setExpDate(new ExpDate()
@@ -98,7 +98,7 @@ public class MockUtil {
                                 .setYear((short) expYearNon3ds))
                         .setPan(panSuccessNon3ds)
                         .setCardholderName(cardholderName))
-                .when(cdsClientStorage).getCardData(any(PaymentContext.class));
+                .when(cdsStorageClient).getCardData(any(PaymentContext.class));
         doAnswer((Answer<CardData>) invocation ->
                 new CardData()
                         .setExpDate(new ExpDate()
@@ -106,32 +106,32 @@ public class MockUtil {
                                 .setYear((short) expYearNon3ds))
                         .setPan(panSuccessNon3ds)
                         .setCardholderName(cardholderName))
-                .when(cdsClientStorage).getCardData(any(String.class));
+                .when(cdsStorageClient).getCardData(any(String.class));
     }
 
-    public static void mockSessionData(CdsClientStorage cdsClientStorage) {
-        mockCvv(CVV_NON3DS, cdsClientStorage);
+    public static void mockSessionData(CdsStorageClient cdsStorageClient) {
+        mockCvv(CVV_NON3DS, cdsStorageClient);
     }
 
-    public static void mock3ds1SessionData(CdsClientStorage cdsClientStorage) {
-        mockCvv(CVV_3DS_1, cdsClientStorage);
+    public static void mock3ds1SessionData(CdsStorageClient cdsStorageClient) {
+        mockCvv(CVV_3DS_1, cdsStorageClient);
     }
 
-    public static void mock3ds2FullFlowSessionData(CdsClientStorage cdsClientStorage) {
-        mockCvv(CVV_3DS_2, cdsClientStorage);
+    public static void mock3ds2FullFlowSessionData(CdsStorageClient cdsStorageClient) {
+        mockCvv(CVV_3DS_2, cdsStorageClient);
     }
 
-    public static void mock3ds2SimpleFlowSessionData(CdsClientStorage cdsClientStorage) {
-        mockCvv(CVV_3DS_2_SIMPLE_FLOW, cdsClientStorage);
+    public static void mock3ds2SimpleFlowSessionData(CdsStorageClient cdsStorageClient) {
+        mockCvv(CVV_3DS_2_SIMPLE_FLOW, cdsStorageClient);
     }
 
-    private static void mockCvv(String cvvNon3ds, CdsClientStorage cdsClientStorage) {
+    private static void mockCvv(String cvvNon3ds, CdsStorageClient cdsStorageClient) {
         doAnswer((Answer<SessionData>) invocation ->
                 new SessionData(AuthData.card_security_code(new CardSecurityCode(cvvNon3ds))))
-                .when(cdsClientStorage).getSessionData(any(RecurrentTokenContext.class));
+                .when(cdsStorageClient).getSessionData(any(RecurrentTokenContext.class));
         doAnswer((Answer<SessionData>) invocation ->
                 new SessionData(AuthData.card_security_code(new CardSecurityCode(cvvNon3ds))))
-                .when(cdsClientStorage).getSessionData(any(PaymentContext.class));
+                .when(cdsStorageClient).getSessionData(any(PaymentContext.class));
     }
 
     public static void mockIdGenerator(BenderSrv.Iface benderClient) throws TException {
