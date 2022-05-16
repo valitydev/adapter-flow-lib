@@ -53,7 +53,7 @@
         <lombok.version>1.18.24</lombok.version>
         <logback.version>1.2.11</logback.version>
         <logstash-logback-encoder.version>7.1.1</logstash-logback-encoder.version>
-        <jackson.version>2.13.2</jackson.version>
+        <jackson.version>2.13.2.1</jackson.version>
         <junit-jupiter-engine.version>5.8.2</junit-jupiter-engine.version>
         <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
         <javax.servlet-api.version>4.0.1</javax.servlet-api.version>
