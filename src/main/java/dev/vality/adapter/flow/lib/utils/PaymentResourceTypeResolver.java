@@ -1,8 +1,8 @@
 package dev.vality.adapter.flow.lib.utils;
 
+import dev.vality.adapter.common.damsel.model.PaymentResourceType;
 import dev.vality.damsel.proxy_provider.PaymentContext;
 import dev.vality.damsel.proxy_provider.PaymentResource;
-import dev.vality.java.damsel.constant.PaymentResourceType;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 

@@ -1,11 +1,11 @@
 package dev.vality.adapter.flow.lib.flow.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import dev.vality.adapter.common.utils.CommonConverter;
 import dev.vality.adapter.flow.lib.constant.Status;
 import dev.vality.adapter.flow.lib.constant.ThreeDsType;
 import dev.vality.adapter.flow.lib.model.BaseResponseModel;
 import dev.vality.adapter.flow.lib.model.ThreeDsData;
-import dev.vality.java.damsel.converter.CommonConverter;
 
 import java.nio.ByteBuffer;
 import java.util.HashMap;

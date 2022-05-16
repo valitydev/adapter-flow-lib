@@ -32,7 +32,7 @@ public class RefundPaymentNon3dsTest extends AbstractPaymentTest {
     @BeforeEach
     public void setUp() throws TException {
         MockitoAnnotations.openMocks(this);
-        MockUtil.mockAllWithout3Ds(cdsClientStorage, benderClient);
+        MockUtil.mockAllWithout3Ds(cdsStorageClient, benderClient);
 
         BaseResponseModel baseResponseModel = BeanUtils.createBaseResponseModel();
         Mockito.when(client.auth(any())).thenReturn(baseResponseModel);

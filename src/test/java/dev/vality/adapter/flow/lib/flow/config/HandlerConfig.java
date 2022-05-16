@@ -1,6 +1,9 @@
 package dev.vality.adapter.flow.lib.flow.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dev.vality.adapter.common.cds.CdsStorageClient;
+import dev.vality.adapter.common.hellgate.HellgateClient;
+import dev.vality.adapter.common.mapper.ErrorMapping;
 import dev.vality.adapter.flow.lib.converter.ExitStateModelToTemporaryContextConverter;
 import dev.vality.adapter.flow.lib.converter.base.EntryModelToBaseRequestModelConverter;
 import dev.vality.adapter.flow.lib.converter.entry.CtxToEntryModelConverter;
@@ -23,11 +26,8 @@ import dev.vality.adapter.flow.lib.utils.AdapterProperties;
 import dev.vality.adapter.flow.lib.utils.CallbackUrlExtractor;
 import dev.vality.adapter.flow.lib.utils.TimerProperties;
 import dev.vality.adapter.flow.lib.validator.AdapterConfigurationValidator;
-import dev.vality.adapter.helpers.hellgate.HellgateAdapterClient;
 import dev.vality.bender.BenderSrv;
-import dev.vality.cds.client.storage.CdsClientStorage;
 import dev.vality.damsel.proxy_provider.ProviderProxySrv;
-import dev.vality.error.mapping.ErrorMapping;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -83,12 +83,12 @@ public class HandlerConfig {
     }
 
     @Bean
-    public CtxToEntryModelConverter ctxToEntryModelConverter(CdsClientStorage cdsClientStorage,
+    public CtxToEntryModelConverter ctxToEntryModelConverter(CdsStorageClient cdsStorageClient,
                                                              TemporaryContextDeserializer adapterDeserializer,
                                                              IdGenerator idGenerator,
                                                              TemporaryContextService temporaryContextService,
                                                              CallbackUrlExtractor callbackUrlExtractor) {
-        return new CtxToEntryModelConverter(cdsClientStorage,
+        return new CtxToEntryModelConverter(cdsStorageClient,
                 adapterDeserializer,
                 idGenerator,
                 temporaryContextService,
@@ -104,12 +104,12 @@ public class HandlerConfig {
     }
 
     @Bean
-    public RecCtxToEntryModelConverter recCtxToEntryModelConverter(CdsClientStorage cdsClientStorage,
+    public RecCtxToEntryModelConverter recCtxToEntryModelConverter(CdsStorageClient cdsStorageClient,
                                                                    TemporaryContextDeserializer adapterDeserializer,
                                                                    IdGenerator idGenerator,
                                                                    TemporaryContextService temporaryContextService) {
         return new RecCtxToEntryModelConverter(adapterDeserializer,
-                cdsClientStorage,
+                cdsStorageClient,
                 idGenerator,
                 temporaryContextService);
     }
@@ -154,12 +154,13 @@ public class HandlerConfig {
     }
 
     @Bean
-    public ThreeDsAdapterService threeDsAdapterService(HellgateAdapterClient hgClient,
+    public ThreeDsAdapterService threeDsAdapterService(HellgateClient hellgateClient,
                                                        ParametersSerializer parametersSerializer,
                                                        ParametersDeserializer parametersDeserializer,
                                                        TagManagementService tagManagementService
     ) {
-        return new ThreeDsAdapterService(hgClient, parametersSerializer, parametersDeserializer, tagManagementService);
+        return new ThreeDsAdapterService(
+                hellgateClient, parametersSerializer, parametersDeserializer, tagManagementService);
     }
 
     @Bean

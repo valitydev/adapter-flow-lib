@@ -1,5 +1,7 @@
 package dev.vality.adapter.flow.lib.handler.callback;
 
+import dev.vality.adapter.common.damsel.BasePackageCreators;
+import dev.vality.adapter.common.damsel.ProxyProviderPackageCreators;
 import dev.vality.adapter.flow.lib.model.TemporaryContext;
 import dev.vality.adapter.flow.lib.serde.Deserializer;
 import dev.vality.adapter.flow.lib.serde.StateSerializer;
@@ -8,8 +10,6 @@ import dev.vality.damsel.proxy_provider.RecurrentTokenCallbackResult;
 import dev.vality.damsel.proxy_provider.RecurrentTokenContext;
 import dev.vality.damsel.proxy_provider.RecurrentTokenIntent;
 import dev.vality.damsel.proxy_provider.RecurrentTokenProxyResult;
-import dev.vality.java.damsel.utils.creators.BasePackageCreators;
-import dev.vality.java.damsel.utils.creators.ProxyProviderPackageCreators;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

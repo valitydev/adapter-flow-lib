@@ -1,9 +1,9 @@
 package dev.vality.adapter.flow.lib.service;
 
+import dev.vality.adapter.common.damsel.OptionsExtractors;
 import dev.vality.adapter.flow.lib.model.EntryStateModel;
 import dev.vality.adapter.flow.lib.model.PollingInfo;
 import dev.vality.adapter.flow.lib.utils.TimerProperties;
-import dev.vality.java.damsel.utils.extractors.OptionsExtractors;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
