@@ -10,6 +10,10 @@ import dev.vality.adapter.flow.lib.model.BaseResponseModel;
  */
 public interface RemoteClient {
 
+    default BaseResponseModel preAuth(BaseRequestModel request) {
+        throw new UnsupportedOperationException();
+    }
+
     default BaseResponseModel auth(BaseRequestModel request) {
         throw new UnsupportedOperationException();
     }

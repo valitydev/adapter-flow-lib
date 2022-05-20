@@ -2,6 +2,7 @@ package dev.vality.adapter.flow.lib.constant;
 
 public enum Step {
 
+    PRE_AUTH,
     AUTH,
     PAY,
     GENERATE_TOKEN,
