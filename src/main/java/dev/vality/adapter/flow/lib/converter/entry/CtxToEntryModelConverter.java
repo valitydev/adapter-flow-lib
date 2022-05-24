@@ -19,6 +19,7 @@ import dev.vality.cds.storage.Auth3DS;
 import dev.vality.cds.storage.CardData;
 import dev.vality.cds.storage.SessionData;
 import dev.vality.damsel.domain.BankCard;
+import dev.vality.damsel.domain.InvoiceDetails;
 import dev.vality.damsel.domain.TransactionInfo;
 import dev.vality.damsel.proxy_provider.*;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,7 @@ import org.springframework.core.convert.converter.Converter;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 @RequiredArgsConstructor
 public class CtxToEntryModelConverter implements Converter<PaymentContext, EntryStateModel> {
@@ -59,19 +61,21 @@ public class CtxToEntryModelConverter implements Converter<PaymentContext, Entry
         TransactionInfo trx = payment.getTrx();
         RecurrentPaymentData recurrentPaymentData = initRecurrentPaymentData(payment, paymentResource, trx);
         Map<String, String> adapterConfigurations = context.getOptions();
+        Invoice invoice = paymentInfo.getInvoice();
+        InvoiceDetails details = invoice.getDetails();
         return EntryStateModel.builder()
                 .baseRequestModel(BaseRequestModel.builder().recurrentPaymentData(recurrentPaymentData)
                         .mobilePaymentData(mobilePaymentData)
                         .cardData(cardData)
                         .refundData(initRefundData(paymentInfo))
-                        .paymentId(idGenerator.get(paymentInfo.getInvoice().getId()))
+                        .paymentId(idGenerator.get(invoice.getId()))
                         .createdAt(paymentInfo.getPayment().getCreatedAt())
                         .currency(Currency.builder()
                                 .symbolicCode(payment.getCost().getCurrency().getSymbolicCode())
                                 .numericCode(payment.getCost().getCurrency().getNumericCode())
                                 .build()
                         ).amount(payment.getCost().getAmount())
-                        .details(paymentInfo.getInvoice().getDetails().getDescription())
+                        .details(Objects.requireNonNullElse(details.getDescription(), details.getProduct()))
                         .payerInfo(PayerInfo.builder()
                                 .ip(ProxyProviderPackageCreators.extractIpAddress(context))
                                 .build())
