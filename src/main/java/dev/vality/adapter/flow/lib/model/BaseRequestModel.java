@@ -21,6 +21,10 @@ public class BaseRequestModel {
      */
     private Long paymentId;
     /**
+     * Uniq String identifier for payment invoice format.
+     */
+    private String invoiceFormatPaymentId;
+    /**
      * Uniq identifier from provider (if exists), not come in first methods.
      */
     private String providerTrxId;

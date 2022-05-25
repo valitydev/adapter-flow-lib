@@ -49,7 +49,8 @@ public class RecCtxToEntryModelConverter implements Converter<RecurrentTokenCont
         var mobilePaymentData = initMobilePaymentData(context, generalExitStateModel);
 
         TransactionInfo transactionInfo = tokenInfo.getTrx();
-        Long orderId = idGenerator.get(tokenInfo.getPaymentTool().getId());
+        String invoiceFormatPaymentId = tokenInfo.getPaymentTool().getId();
+        Long orderId = idGenerator.get(invoiceFormatPaymentId);
         var temporaryContext = temporaryContextService.getTemporaryContext(context, temporaryContextDeserializer);
 
         return entryStateModelBuilder
@@ -65,6 +66,7 @@ public class RecCtxToEntryModelConverter implements Converter<RecurrentTokenCont
                         .cardData(cardData)
                         .refundData(initRefundData(recurrentPaymentTool, orderId))
                         .paymentId(orderId)
+                        .invoiceFormatPaymentId(invoiceFormatPaymentId)
                         .currency(Currency.builder()
                                 .symbolicCode(
                                         recurrentPaymentTool.getMinimalPaymentCost().getCurrency().getSymbolicCode())

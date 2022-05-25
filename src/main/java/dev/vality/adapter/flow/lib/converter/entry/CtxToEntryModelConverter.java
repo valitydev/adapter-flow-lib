@@ -63,12 +63,14 @@ public class CtxToEntryModelConverter implements Converter<PaymentContext, Entry
         Map<String, String> adapterConfigurations = context.getOptions();
         Invoice invoice = paymentInfo.getInvoice();
         InvoiceDetails details = invoice.getDetails();
+        String invoiceFormatPaymentId = getInvoiceFormatPaymentId(payment, invoice);
         return EntryStateModel.builder()
                 .baseRequestModel(BaseRequestModel.builder().recurrentPaymentData(recurrentPaymentData)
                         .mobilePaymentData(mobilePaymentData)
                         .cardData(cardData)
                         .refundData(initRefundData(paymentInfo))
-                        .paymentId(idGenerator.get(invoice.getId()))
+                        .paymentId(idGenerator.get(invoiceFormatPaymentId))
+                        .invoiceFormatPaymentId(invoiceFormatPaymentId)
                         .createdAt(paymentInfo.getPayment().getCreatedAt())
                         .currency(Currency.builder()
                                 .symbolicCode(payment.getCost().getCurrency().getSymbolicCode())
@@ -89,6 +91,10 @@ public class CtxToEntryModelConverter implements Converter<PaymentContext, Entry
                 .currentStep(currentStep)
                 .startedPollingInfo(temporaryContext.getPollingInfo())
                 .build();
+    }
+
+    private String getInvoiceFormatPaymentId(InvoicePayment payment, Invoice invoice) {
+        return invoice.getId() + "." + payment.getId();
     }
 
     private String getSuccessRedirectUrl(InvoicePayment payment, Map<String, String> adapterConfigurations) {
