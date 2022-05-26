@@ -57,7 +57,7 @@ public class IntentResultFactory {
                 new SuspendIntent(
                         tagManagementService.findTag(params),
                         Timer.timeout(timerRedirectTimeout)
-                ).setUserInteraction(createUserInteraction(threeDsData))
+                ).setUserInteraction(createUserInteraction(threeDsData, params))
         );
     }
 
@@ -83,15 +83,15 @@ public class IntentResultFactory {
                         Timer.timeout(TimeoutUtils.toSeconds(timerRedirectTimeoutMin)))
                         .setTimeoutBehaviour(TimeoutBehaviour.callback(
                                 ByteBuffer.wrap(parametersSerializer.writeByte(params)))
-                        ).setUserInteraction(createUserInteraction(threeDsData))
+                        ).setUserInteraction(createUserInteraction(threeDsData, params))
         );
     }
 
-    private UserInteraction createUserInteraction(ThreeDsData threeDsData) {
+    private UserInteraction createUserInteraction(ThreeDsData threeDsData, Map<String, String> parameters) {
         if (threeDsData.getHttpMethod() == HttpMethod.GET) {
             return createGetUserInteraction(threeDsData.getAcsUrl());
         } else {
-            return createPostUserInteraction(threeDsData.getAcsUrl(), threeDsData.getParameters());
+            return createPostUserInteraction(threeDsData.getAcsUrl(), parameters);
         }
     }
 
