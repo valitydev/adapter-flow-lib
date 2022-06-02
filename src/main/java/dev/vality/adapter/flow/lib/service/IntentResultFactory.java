@@ -50,13 +50,13 @@ public class IntentResultFactory {
         Map<String, String> params = ThreeDsDataInitializer.initThreeDsParameters(exitStateModel);
         String redirectUrl = entryStateModel.getBaseRequestModel().getSuccessRedirectUrl();
         params.put(RedirectFields.TERM_URL.getValue(), callbackUrlExtractor.extractCallbackUrl(redirectUrl));
-        int timerRedirectTimeout = extractRedirectTimeout(
+        int timerRedirectTimeoutMin = extractRedirectTimeout(
                 entryStateModel.getBaseRequestModel().getAdapterConfigurations(),
                 timerProperties.getRedirectTimeoutMin());
         return Intent.suspend(
                 new SuspendIntent(
                         tagManagementService.findTag(params),
-                        Timer.timeout(timerRedirectTimeout)
+                        Timer.timeout(TimeoutUtils.toSeconds(timerRedirectTimeoutMin))
                 ).setUserInteraction(createUserInteraction(threeDsData, params))
         );
     }
