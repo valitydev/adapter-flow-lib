@@ -115,7 +115,8 @@ public class CtxToEntryModelConverter implements Converter<PaymentContext, Entry
                     .pan(cardData.getPan())
                     .cvv2(CardDataUtils.extractCvv2(sessionData))
                     .expYear(cardData.getExpYear())
-                    .expMonth(cardData.getExpMonth());
+                    .expMonth(cardData.getExpMonth())
+                    .cardToken(ProxyProviderPackageExtractors.extractBankCardToken(paymentResource));
         }
         return cardDataBuilder.build();
     }

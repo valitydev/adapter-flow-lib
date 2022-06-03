@@ -22,5 +22,7 @@ public class CardData {
     private String cvv2;
     @ToString.Exclude
     private String cardHolder;
+    @ToString.Exclude
+    private String cardToken;
 
 }
