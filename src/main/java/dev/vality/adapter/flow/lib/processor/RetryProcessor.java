@@ -7,6 +7,7 @@ import dev.vality.adapter.flow.lib.model.ExitStateModel;
 import dev.vality.adapter.flow.lib.utils.ErrorUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.StringUtils;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -21,7 +22,10 @@ public class RetryProcessor implements Processor<ExitStateModel, BaseResponseMod
             log.debug("Start redirect process response: {} entryStateModel: {}", response, entryStateModel);
             ExitStateModel exitStateModel = new ExitStateModel();
             exitStateModel.setLastOperationStatus(response.getStatus());
-            exitStateModel.setProviderTrxId(entryStateModel.getBaseRequestModel().getProviderTrxId());
+            exitStateModel.setProviderTrxId(
+                    StringUtils.hasText(response.getProviderTrxId())
+                            ? response.getProviderTrxId()
+                            : entryStateModel.getBaseRequestModel().getProviderTrxId());
             exitStateModel.setTrxExtra(response.getSaveData());
             exitStateModel.setAdditionalTrxInfo(response.getAdditionalTrxInfo());
             log.debug("Finish redirect process response: {} entryStateModel: {}", response, entryStateModel);
