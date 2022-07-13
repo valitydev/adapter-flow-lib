@@ -10,7 +10,6 @@ import dev.vality.adapter.flow.lib.constant.TargetStatus;
 import dev.vality.adapter.flow.lib.model.*;
 import dev.vality.adapter.flow.lib.serde.TemporaryContextDeserializer;
 import dev.vality.adapter.flow.lib.service.CardDataService;
-import dev.vality.adapter.flow.lib.service.CardDataServiceWithHolderNamesImpl;
 import dev.vality.adapter.flow.lib.service.IdGenerator;
 import dev.vality.adapter.flow.lib.service.TemporaryContextService;
 import dev.vality.adapter.flow.lib.utils.CallbackUrlExtractor;

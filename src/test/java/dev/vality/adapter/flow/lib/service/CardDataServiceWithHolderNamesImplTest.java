@@ -1,6 +1,5 @@
 package dev.vality.adapter.flow.lib.service;
 
-import dev.vality.adapter.common.cds.CdsStorageClient;
 import dev.vality.adapter.common.cds.model.CardDataProxyModel;
 import dev.vality.adapter.flow.lib.constant.OptionFields;
 import dev.vality.adapter.flow.lib.flow.AbstractPaymentTest;
