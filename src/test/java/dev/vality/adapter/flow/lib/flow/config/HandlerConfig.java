@@ -31,7 +31,9 @@ import dev.vality.damsel.proxy_provider.ProviderProxySrv;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
 
+import java.io.IOException;
 import java.util.List;
 
 @Configuration
@@ -83,16 +85,29 @@ public class HandlerConfig {
     }
 
     @Bean
+    public CardHolderNamesService cardHolderNamesService(AdapterProperties properties) throws IOException {
+        return new CardHolderNamesService(properties);
+    }
+
+    @Bean
+    public CardDataServiceWithHolderNamesImpl cardDataService(CdsStorageClient cdsStorageClient,
+                                                              CardHolderNamesService cardHolderNamesService) {
+        return new CardDataServiceWithHolderNamesImpl(cdsStorageClient, cardHolderNamesService);
+    }
+
+    @Bean
     public CtxToEntryModelConverter ctxToEntryModelConverter(CdsStorageClient cdsStorageClient,
                                                              TemporaryContextDeserializer adapterDeserializer,
                                                              IdGenerator idGenerator,
                                                              TemporaryContextService temporaryContextService,
-                                                             CallbackUrlExtractor callbackUrlExtractor) {
+                                                             CallbackUrlExtractor callbackUrlExtractor,
+                                                             CardDataServiceWithHolderNamesImpl cardDataService) {
         return new CtxToEntryModelConverter(cdsStorageClient,
                 adapterDeserializer,
                 idGenerator,
                 temporaryContextService,
-                callbackUrlExtractor);
+                callbackUrlExtractor,
+                cardDataService);
     }
 
     @Bean
@@ -100,6 +115,7 @@ public class HandlerConfig {
         AdapterProperties adapterProperties = new AdapterProperties();
         adapterProperties.setCallbackUrl("http://localhost:8080/adapter/term_url");
         adapterProperties.setSuccessRedirectUrl("http://localhost:8080/adapter/term_url");
+        adapterProperties.setCardHolderNamesFile(new ClassPathResource("csv/holders.csv"));
         return adapterProperties;
     }
 
@@ -107,11 +123,13 @@ public class HandlerConfig {
     public RecCtxToEntryModelConverter recCtxToEntryModelConverter(CdsStorageClient cdsStorageClient,
                                                                    TemporaryContextDeserializer adapterDeserializer,
                                                                    IdGenerator idGenerator,
-                                                                   TemporaryContextService temporaryContextService) {
+                                                                   TemporaryContextService temporaryContextService,
+                                                                   CardDataServiceWithHolderNamesImpl cardDataService) {
         return new RecCtxToEntryModelConverter(adapterDeserializer,
                 cdsStorageClient,
                 idGenerator,
-                temporaryContextService);
+                temporaryContextService,
+                cardDataService);
     }
 
     @Bean

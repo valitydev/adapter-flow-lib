@@ -2,6 +2,7 @@ package dev.vality.adapter.flow.lib.utils;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.core.io.Resource;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.NotEmpty;
@@ -33,5 +34,7 @@ public class AdapterProperties {
             "ThreeDSSessionData",
             "tag"
     );
+
+    private Resource cardHolderNamesFile;
 
 }
