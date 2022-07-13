@@ -2,6 +2,7 @@ package dev.vality.adapter.flow.lib.constant;
 
 public enum OptionFields {
 
-    STAGE
+    STAGE,
+    CARD_HOLDER_FROM_FILE,
 
 }

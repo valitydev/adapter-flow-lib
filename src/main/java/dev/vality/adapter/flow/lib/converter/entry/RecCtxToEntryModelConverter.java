@@ -1,6 +1,5 @@
 package dev.vality.adapter.flow.lib.converter.entry;
 
-import dev.vality.adapter.common.cds.BankCardExtractor;
 import dev.vality.adapter.common.cds.CdsStorageClient;
 import dev.vality.adapter.common.cds.model.CardDataProxyModel;
 import dev.vality.adapter.common.damsel.ProxyProviderPackageCreators;
@@ -8,6 +7,8 @@ import dev.vality.adapter.common.damsel.ProxyProviderPackageExtractors;
 import dev.vality.adapter.flow.lib.constant.MetaData;
 import dev.vality.adapter.flow.lib.model.*;
 import dev.vality.adapter.flow.lib.serde.TemporaryContextDeserializer;
+import dev.vality.adapter.flow.lib.service.CardDataService;
+import dev.vality.adapter.flow.lib.service.CardDataServiceWithHolderNamesImpl;
 import dev.vality.adapter.flow.lib.service.IdGenerator;
 import dev.vality.adapter.flow.lib.service.TemporaryContextService;
 import dev.vality.adapter.flow.lib.utils.CardDataUtils;
@@ -34,6 +35,7 @@ public class RecCtxToEntryModelConverter implements Converter<RecurrentTokenCont
     private final CdsStorageClient cdsStorageClient;
     private final IdGenerator idGenerator;
     private final TemporaryContextService temporaryContextService;
+    private final CardDataService cardDataService;
 
     @Override
     public EntryStateModel convert(RecurrentTokenContext context) {
@@ -141,6 +143,7 @@ public class RecCtxToEntryModelConverter implements Converter<RecurrentTokenCont
         String cardToken = ProxyProviderPackageExtractors.extractBankCardToken(paymentResource);
         CardData cardData = cdsStorageClient.getCardData(cardToken);
         BankCard bankCard = ProxyProviderPackageExtractors.extractBankCard(context);
-        return BankCardExtractor.initCardDataProxyModel(bankCard, cardData);
+        return cardDataService.getCardDataProxyModel(context, cardData, bankCard);
     }
+
 }
