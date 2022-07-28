@@ -4,5 +4,6 @@ public enum OptionFields {
 
     STAGE,
     CARD_HOLDER_FROM_FILE,
+    FAILED_URL
 
 }
