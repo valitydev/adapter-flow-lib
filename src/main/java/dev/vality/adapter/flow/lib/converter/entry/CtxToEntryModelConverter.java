@@ -116,7 +116,6 @@ public class CtxToEntryModelConverter implements Converter<PaymentContext, Entry
                 ? redirectUrl
                 : adapterConfigurations.getOrDefault(
                         OptionFields.FAILED_URL.name(), adapterProperties.getFailedRedirectUrl());
-
     }
 
     private dev.vality.adapter.flow.lib.model.CardData initCardData(PaymentContext context,
