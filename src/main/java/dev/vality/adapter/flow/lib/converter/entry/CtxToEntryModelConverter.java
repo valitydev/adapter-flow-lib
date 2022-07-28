@@ -23,6 +23,7 @@ import dev.vality.damsel.domain.TransactionInfo;
 import dev.vality.damsel.proxy_provider.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -86,7 +87,7 @@ public class CtxToEntryModelConverter implements Converter<PaymentContext, Entry
                         .providerTrxId(trx != null ? trx.getId() : temporaryContext.getProviderTrxId())
                         .savedData(trx != null ? trx.getExtra() : new HashMap<>())
                         .successRedirectUrl(getSuccessRedirectUrl(payment, adapterConfigurations))
-                        .failedRedirectUrl(getFailureRedirectUrl(adapterConfigurations))
+                        .failedRedirectUrl(getFailureRedirectUrl(payment, adapterConfigurations))
                         .threeDsDataFromMpiCallback(temporaryContext.getThreeDsData())
                         .build())
                 .targetStatus(targetStatus)
@@ -107,9 +108,14 @@ public class CtxToEntryModelConverter implements Converter<PaymentContext, Entry
                         : null);
     }
 
-    private String getFailureRedirectUrl(Map<String, String> adapterConfigurations) {
-        return adapterConfigurations.getOrDefault(OptionFields.FAILED_URL.name(),
-                adapterProperties.getFailedRedirectUrl());
+    private String getFailureRedirectUrl(InvoicePayment payment, Map<String, String> adapterConfigurations) {
+        String redirectUrl = payment.isSetPayerSessionInfo()
+                ? payment.getPayerSessionInfo().getRedirectUrl()
+                : null;
+        return StringUtils.hasText(redirectUrl)
+                ? redirectUrl
+                : adapterConfigurations.getOrDefault(
+                        OptionFields.FAILED_URL.name(), adapterProperties.getFailedRedirectUrl());
 
     }
 
