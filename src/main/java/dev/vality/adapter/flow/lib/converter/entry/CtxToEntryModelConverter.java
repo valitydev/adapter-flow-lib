@@ -4,14 +4,13 @@ import dev.vality.adapter.common.cds.CdsStorageClient;
 import dev.vality.adapter.common.cds.model.CardDataProxyModel;
 import dev.vality.adapter.common.damsel.ProxyProviderPackageCreators;
 import dev.vality.adapter.common.damsel.ProxyProviderPackageExtractors;
-import dev.vality.adapter.flow.lib.constant.MetaData;
-import dev.vality.adapter.flow.lib.constant.Step;
-import dev.vality.adapter.flow.lib.constant.TargetStatus;
+import dev.vality.adapter.flow.lib.constant.*;
 import dev.vality.adapter.flow.lib.model.*;
 import dev.vality.adapter.flow.lib.serde.TemporaryContextDeserializer;
 import dev.vality.adapter.flow.lib.service.CardDataService;
 import dev.vality.adapter.flow.lib.service.IdGenerator;
 import dev.vality.adapter.flow.lib.service.TemporaryContextService;
+import dev.vality.adapter.flow.lib.utils.AdapterProperties;
 import dev.vality.adapter.flow.lib.utils.CallbackUrlExtractor;
 import dev.vality.adapter.flow.lib.utils.CardDataUtils;
 import dev.vality.adapter.flow.lib.utils.TargetStatusResolver;
@@ -24,6 +23,7 @@ import dev.vality.damsel.domain.TransactionInfo;
 import dev.vality.damsel.proxy_provider.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -38,6 +38,7 @@ public class CtxToEntryModelConverter implements Converter<PaymentContext, Entry
     private final TemporaryContextService temporaryContextService;
     private final CallbackUrlExtractor callbackUrlExtractor;
     private final CardDataService cardDataService;
+    private final AdapterProperties adapterProperties;
 
     @Override
     public EntryStateModel convert(PaymentContext context) {
@@ -86,6 +87,7 @@ public class CtxToEntryModelConverter implements Converter<PaymentContext, Entry
                         .providerTrxId(trx != null ? trx.getId() : temporaryContext.getProviderTrxId())
                         .savedData(trx != null ? trx.getExtra() : new HashMap<>())
                         .successRedirectUrl(getSuccessRedirectUrl(payment, adapterConfigurations))
+                        .failedRedirectUrl(getFailureRedirectUrl(payment, adapterConfigurations))
                         .threeDsDataFromMpiCallback(temporaryContext.getThreeDsData())
                         .build())
                 .targetStatus(targetStatus)
@@ -104,6 +106,16 @@ public class CtxToEntryModelConverter implements Converter<PaymentContext, Entry
                 payment.isSetPayerSessionInfo()
                         ? payment.getPayerSessionInfo().getRedirectUrl()
                         : null);
+    }
+
+    private String getFailureRedirectUrl(InvoicePayment payment, Map<String, String> adapterConfigurations) {
+        String redirectUrl = payment.isSetPayerSessionInfo()
+                ? payment.getPayerSessionInfo().getRedirectUrl()
+                : null;
+        return StringUtils.hasText(redirectUrl)
+                ? redirectUrl
+                : adapterConfigurations.getOrDefault(
+                        OptionFields.FAILED_URL.name(), adapterProperties.getFailedRedirectUrl());
     }
 
     private dev.vality.adapter.flow.lib.model.CardData initCardData(PaymentContext context,

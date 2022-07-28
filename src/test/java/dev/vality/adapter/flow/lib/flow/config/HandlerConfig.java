@@ -101,13 +101,15 @@ public class HandlerConfig {
                                                              IdGenerator idGenerator,
                                                              TemporaryContextService temporaryContextService,
                                                              CallbackUrlExtractor callbackUrlExtractor,
-                                                             CardDataServiceWithHolderNamesImpl cardDataService) {
+                                                             CardDataServiceWithHolderNamesImpl cardDataService,
+                                                             AdapterProperties adapterProperties) {
         return new CtxToEntryModelConverter(cdsStorageClient,
                 adapterDeserializer,
                 idGenerator,
                 temporaryContextService,
                 callbackUrlExtractor,
-                cardDataService);
+                cardDataService,
+                adapterProperties);
     }
 
     @Bean
