@@ -82,6 +82,8 @@ public class CtxToEntryModelConverter implements Converter<PaymentContext, Entry
                         .details(Objects.requireNonNullElse(details.getDescription(), details.getProduct()))
                         .payerInfo(PayerInfo.builder()
                                 .ip(ProxyProviderPackageCreators.extractIpAddress(context))
+                                .email(payment.getContactInfo().getEmail())
+                                .phone(payment.getContactInfo().getPhoneNumber())
                                 .build())
                         .adapterConfigurations(adapterConfigurations)
                         .providerTrxId(trx != null ? trx.getId() : temporaryContext.getProviderTrxId())
