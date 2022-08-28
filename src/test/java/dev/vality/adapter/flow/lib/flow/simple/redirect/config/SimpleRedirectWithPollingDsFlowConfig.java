@@ -11,8 +11,8 @@ import dev.vality.adapter.flow.lib.flow.ResultIntentResolver;
 import dev.vality.adapter.flow.lib.flow.StepResolver;
 import dev.vality.adapter.flow.lib.flow.simple.GenerateTokenSimpleRedirectWithPollingStepResolverImpl;
 import dev.vality.adapter.flow.lib.flow.simple.SimpleRedirectGenerateTokenResultIntentResolver;
-import dev.vality.adapter.flow.lib.flow.simple.SimpleRedirectWIthPollingStepResolverImpl;
 import dev.vality.adapter.flow.lib.flow.simple.SimpleRedirectWithPollingResultIntentResolver;
+import dev.vality.adapter.flow.lib.flow.simple.SimpleRedirectWithPollingStepResolverImpl;
 import dev.vality.adapter.flow.lib.handler.CommonHandler;
 import dev.vality.adapter.flow.lib.handler.ServerFlowHandler;
 import dev.vality.adapter.flow.lib.handler.payment.*;
@@ -36,7 +36,7 @@ public class SimpleRedirectWithPollingDsFlowConfig {
 
     @Bean
     public StepResolver<EntryStateModel, ExitStateModel> stepResolverImpl() {
-        return new SimpleRedirectWIthPollingStepResolverImpl();
+        return new SimpleRedirectWithPollingStepResolverImpl();
     }
 
     @Bean

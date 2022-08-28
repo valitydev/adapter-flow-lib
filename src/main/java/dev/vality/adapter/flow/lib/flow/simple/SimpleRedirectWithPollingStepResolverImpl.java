@@ -6,7 +6,7 @@ import dev.vality.adapter.flow.lib.flow.AbstractPaymentStepResolver;
 import dev.vality.adapter.flow.lib.model.EntryStateModel;
 import dev.vality.adapter.flow.lib.model.ExitStateModel;
 
-public class SimpleRedirectWIthPollingStepResolverImpl
+public class SimpleRedirectWithPollingStepResolverImpl
         extends AbstractPaymentStepResolver<EntryStateModel, ExitStateModel> {
 
     @Override
