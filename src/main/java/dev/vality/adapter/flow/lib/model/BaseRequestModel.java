@@ -3,6 +3,7 @@ package dev.vality.adapter.flow.lib.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
 import java.util.Map;
@@ -79,6 +80,7 @@ public class BaseRequestModel {
      * All static parameters from configuration by support team.
      * (options - in old naming)
      */
+    @ToString.Exclude
     private Map<String, String> adapterConfigurations;
     /**
      * Data that you send to save on previous steps.
