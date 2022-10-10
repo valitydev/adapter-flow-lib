@@ -12,12 +12,18 @@ import lombok.experimental.SuperBuilder;
 public class Currency {
 
     /**
-     * Currency in symbolic formats (example: "USD").
+     * Currency code ISO 4217 in symbolic format (e.g., "USD" for United States dollar)
      */
     private String symbolicCode;
+
     /**
-     * Currency in symbolic formats (example: "USD").
+     * Currency code ISO 4217 in numeric format (e.g., "840" for United States dollar)
      */
     private Short numericCode;
 
+    /**
+     * Number of decimal places between the smallest defined currency unit
+     * and a whole currency unit ("2" for most currencies)
+     */
+    private Short exponent;
 }
