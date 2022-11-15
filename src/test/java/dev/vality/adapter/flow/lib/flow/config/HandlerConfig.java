@@ -42,7 +42,7 @@ public class HandlerConfig {
 
     @Bean
     public IdGenerator idGenerator(BenderSrv.Iface iface) {
-        return new IdGenerator(iface);
+        return new BenderGenerator(iface);
     }
 
     @Bean
