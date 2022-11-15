@@ -20,6 +20,7 @@ public class BenderGenerator implements IdGenerator {
     private String adapterPrefix;
 
     @SneakyThrows
+    @Override
     public Long get(String invoiceId) {
         GenerationSchema schema = GenerationSchema.sequence(new SequenceSchema().setSequenceId(SEQ_ID));
         GenerationResult result = benderClient.generateID(adapterPrefix + invoiceId, schema, Value.nl(new Nil()));
