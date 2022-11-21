@@ -8,7 +8,6 @@ import dev.vality.adapter.flow.lib.model.ExitStateModel;
 import dev.vality.adapter.flow.lib.model.PollingInfo;
 import dev.vality.adapter.flow.lib.model.ThreeDsData;
 import dev.vality.adapter.flow.lib.serde.ParametersSerializer;
-import dev.vality.adapter.flow.lib.utils.CallbackUrlExtractor;
 import dev.vality.adapter.flow.lib.utils.ThreeDsDataInitializer;
 import dev.vality.adapter.flow.lib.utils.TimeoutUtils;
 import dev.vality.adapter.flow.lib.utils.TimerProperties;

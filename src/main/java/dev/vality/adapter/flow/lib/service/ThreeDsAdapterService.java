@@ -4,7 +4,6 @@ import dev.vality.adapter.common.exception.HellgateException;
 import dev.vality.adapter.common.hellgate.HellgateClient;
 import dev.vality.adapter.flow.lib.serde.ParametersDeserializer;
 import dev.vality.adapter.flow.lib.serde.ParametersSerializer;
-import dev.vality.adapter.flow.lib.utils.CallbackUrlExtractor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
