@@ -16,6 +16,11 @@ public class CallbackUrlExtractorImpl implements CallbackUrlExtractor {
 
     @Override
     public String extractCallbackUrl(String redirectUrl) {
+        return extractCallbackUrl(null, redirectUrl);
+    }
+
+    @Override
+    public String extractCallbackUrl(Map<String, String> adapterConfigurations, String redirectUrl) {
         return UriComponentsBuilder.fromUriString(adapterProperties.getCallbackUrl())
                 .path(adapterProperties.getPathCallbackUrl())
                 .queryParam(TERMINATION_URI, redirectUrl).build().toUriString();
