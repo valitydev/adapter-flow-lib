@@ -48,9 +48,11 @@ public class IntentResultFactory {
         ThreeDsData threeDsData = exitStateModel.getThreeDsData();
         Map<String, String> params = ThreeDsDataInitializer.initThreeDsParameters(exitStateModel);
         String redirectUrl = entryStateModel.getBaseRequestModel().getSuccessRedirectUrl();
-        params.put(RedirectFields.TERM_URL.getValue(), callbackUrlExtractor.extractCallbackUrl(redirectUrl));
+        Map<String, String> adapterConfigurations = entryStateModel.getBaseRequestModel().getAdapterConfigurations();
+        params.put(RedirectFields.TERM_URL.getValue(),
+                callbackUrlExtractor.extractCallbackUrl(adapterConfigurations, redirectUrl));
         int timerRedirectTimeoutMin = extractRedirectTimeout(
-                entryStateModel.getBaseRequestModel().getAdapterConfigurations(),
+                adapterConfigurations,
                 timerProperties.getRedirectTimeoutMin());
         return Intent.suspend(
                 new SuspendIntent(
@@ -71,10 +73,12 @@ public class IntentResultFactory {
         exitStateModel.setPollingInfo(pollingInfo);
 
         String redirectUrl = entryStateModel.getBaseRequestModel().getSuccessRedirectUrl();
-        params.put(RedirectFields.TERM_URL.getValue(), callbackUrlExtractor.extractCallbackUrl(redirectUrl));
+        Map<String, String> adapterConfigurations = entryStateModel.getBaseRequestModel().getAdapterConfigurations();
+        params.put(RedirectFields.TERM_URL.getValue(),
+                callbackUrlExtractor.extractCallbackUrl(adapterConfigurations, redirectUrl));
         ThreeDsData threeDsData = exitStateModel.getThreeDsData();
         int timerRedirectTimeoutMin = extractRedirectTimeout(
-                entryStateModel.getBaseRequestModel().getAdapterConfigurations(),
+                adapterConfigurations,
                 timerProperties.getRedirectTimeoutMin());
         return Intent.suspend(
                 new SuspendIntent(

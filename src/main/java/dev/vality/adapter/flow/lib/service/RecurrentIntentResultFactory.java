@@ -34,9 +34,11 @@ public class RecurrentIntentResultFactory {
         ThreeDsData threeDsData = exitStateModel.getThreeDsData();
         Map<String, String> params = ThreeDsDataInitializer.initThreeDsParameters(exitStateModel);
         String redirectUrl = entryStateModel.getBaseRequestModel().getSuccessRedirectUrl();
-        params.put(RedirectFields.TERM_URL.getValue(), callbackUrlExtractor.extractCallbackUrl(redirectUrl));
+        Map<String, String> adapterConfigurations = entryStateModel.getBaseRequestModel().getAdapterConfigurations();
+        params.put(RedirectFields.TERM_URL.getValue(),
+                callbackUrlExtractor.extractCallbackUrl(adapterConfigurations, redirectUrl));
         int timerRedirectTimeoutMin = extractRedirectTimeout(
-                entryStateModel.getBaseRequestModel().getAdapterConfigurations(),
+                adapterConfigurations,
                 timerProperties.getRedirectTimeoutMin());
         return RecurrentTokenIntent.suspend(
                 new SuspendIntent(
