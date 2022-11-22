@@ -11,7 +11,7 @@ import dev.vality.adapter.flow.lib.service.CardDataService;
 import dev.vality.adapter.flow.lib.service.IdGenerator;
 import dev.vality.adapter.flow.lib.service.TemporaryContextService;
 import dev.vality.adapter.flow.lib.utils.AdapterProperties;
-import dev.vality.adapter.flow.lib.utils.CallbackUrlExtractor;
+import dev.vality.adapter.flow.lib.service.CallbackUrlExtractor;
 import dev.vality.adapter.flow.lib.utils.CardDataUtils;
 import dev.vality.adapter.flow.lib.utils.TargetStatusResolver;
 import dev.vality.cds.storage.Auth3DS;

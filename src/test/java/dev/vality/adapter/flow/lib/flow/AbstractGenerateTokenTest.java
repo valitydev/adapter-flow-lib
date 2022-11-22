@@ -11,7 +11,7 @@ import dev.vality.adapter.flow.lib.flow.full.FullThreeDsAllVersionsStepResolverI
 import dev.vality.adapter.flow.lib.flow.full.GenerateTokenFullThreeDsAllVersionsStepResolverImpl;
 import dev.vality.adapter.flow.lib.serde.TemporaryContextDeserializer;
 import dev.vality.adapter.flow.lib.service.TagManagementService;
-import dev.vality.adapter.flow.lib.utils.CallbackUrlExtractor;
+import dev.vality.adapter.flow.lib.service.impl.CallbackUrlExtractorImpl;
 import dev.vality.adapter.flow.lib.validator.AdapterConfigurationValidator;
 import dev.vality.bender.BenderSrv;
 import dev.vality.damsel.proxy_provider.*;
@@ -25,11 +25,10 @@ import static dev.vality.adapter.common.damsel.DomainPackageCreators.createTarge
 import static dev.vality.adapter.flow.lib.flow.full.three.ds.ForwardRecurrentPaymentNon3dsTest.RECURRENT_TOKEN;
 import static org.junit.jupiter.api.Assertions.*;
 
-
 @PropertySource("classpath:application.yaml")
 @ContextConfiguration(classes = {HandlerConfig.class, AppConfig.class, ProcessorConfig.class, SerdeConfig.class,
         ThreeDsCallbackController.class, TomcatEmbeddedConfiguration.class, TagManagementService.class,
-        CallbackUrlExtractor.class, FullThreeDsAllVersionsStepResolverImpl.class,
+        CallbackUrlExtractorImpl.class, FullThreeDsAllVersionsStepResolverImpl.class,
         GenerateTokenFullThreeDsAllVersionsStepResolverImpl.class})
 public class AbstractGenerateTokenTest {
 
