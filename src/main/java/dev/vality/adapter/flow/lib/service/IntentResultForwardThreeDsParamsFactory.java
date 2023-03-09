@@ -2,7 +2,6 @@ package dev.vality.adapter.flow.lib.service;
 
 import dev.vality.adapter.common.mapper.ErrorMapping;
 import dev.vality.adapter.flow.lib.constant.HttpMethod;
-import dev.vality.adapter.flow.lib.constant.RedirectFields;
 import dev.vality.adapter.flow.lib.model.EntryStateModel;
 import dev.vality.adapter.flow.lib.model.ExitStateModel;
 import dev.vality.adapter.flow.lib.model.PollingInfo;
@@ -27,7 +26,6 @@ import static dev.vality.adapter.common.damsel.ProxyProviderPackageCreators.*;
 public class IntentResultForwardThreeDsParamsFactory {
 
     private final TimerProperties timerProperties;
-    private final CallbackUrlExtractor callbackUrlExtractor;
     private final TagManagementService tagManagementService;
     private final ParametersSerializer parametersSerializer;
     private final PollingInfoService pollingInfoService;
@@ -78,7 +76,7 @@ public class IntentResultForwardThreeDsParamsFactory {
                         Timer.timeout(TimeoutUtils.toSeconds(timerRedirectTimeoutMin)))
                         .setTimeoutBehaviour(TimeoutBehaviour.callback(
                                 ByteBuffer.wrap(parametersSerializer.writeByte(params)))
-                        ).setUserInteraction(createUserInteraction( exitStateModel.getThreeDsData(), params))
+                        ).setUserInteraction(createUserInteraction(exitStateModel.getThreeDsData(), params))
         );
     }
 

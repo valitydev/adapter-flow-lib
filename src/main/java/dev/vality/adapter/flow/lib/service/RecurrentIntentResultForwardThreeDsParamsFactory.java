@@ -1,7 +1,6 @@
 package dev.vality.adapter.flow.lib.service;
 
 import dev.vality.adapter.common.mapper.ErrorMapping;
-import dev.vality.adapter.flow.lib.constant.RedirectFields;
 import dev.vality.adapter.flow.lib.model.EntryStateModel;
 import dev.vality.adapter.flow.lib.model.ExitStateModel;
 import dev.vality.adapter.flow.lib.model.PollingInfo;
@@ -23,7 +22,6 @@ import static dev.vality.adapter.common.damsel.ProxyProviderPackageCreators.crea
 public class RecurrentIntentResultForwardThreeDsParamsFactory {
 
     private final TimerProperties timerProperties;
-    private final CallbackUrlExtractor callbackUrlExtractor;
     private final TagManagementService tagManagementService;
     private final PollingInfoService pollingInfoService;
     private final ErrorMapping errorMapping;
