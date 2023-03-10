@@ -4,7 +4,7 @@ import dev.vality.adapter.flow.lib.converter.ExitStateModelToTemporaryContextCon
 import dev.vality.adapter.flow.lib.flow.RecurrentResultIntentResolver;
 import dev.vality.adapter.flow.lib.model.ExitStateModel;
 import dev.vality.adapter.flow.lib.serde.TemporaryContextSerializer;
-import dev.vality.adapter.flow.lib.service.factory.RecurrentIntentResultFactory;
+import dev.vality.adapter.flow.lib.service.factory.RecurrentIntentResultFactoryImpl;
 import dev.vality.adapter.flow.lib.utils.AdditionalInfoUtils;
 import dev.vality.damsel.domain.TransactionInfo;
 import dev.vality.damsel.proxy_provider.RecurrentTokenIntent;
@@ -17,7 +17,7 @@ import java.util.HashMap;
 @RequiredArgsConstructor
 public class ExitModelToRecTokenProxyResultConverter implements Converter<ExitStateModel, RecurrentTokenProxyResult> {
 
-    private final RecurrentIntentResultFactory recurrentIntentResultFactory;
+    private final RecurrentIntentResultFactoryImpl recurrentIntentResultFactory;
     private final TemporaryContextSerializer serializer;
     private final RecurrentResultIntentResolver recurrentResultIntentResolver;
     private final ExitStateModelToTemporaryContextConverter contextConverter;

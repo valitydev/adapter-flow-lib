@@ -20,8 +20,8 @@ import dev.vality.adapter.flow.lib.model.BaseResponseModel;
 import dev.vality.adapter.flow.lib.model.EntryStateModel;
 import dev.vality.adapter.flow.lib.model.ExitStateModel;
 import dev.vality.adapter.flow.lib.processor.Processor;
-import dev.vality.adapter.flow.lib.service.factory.IntentResultFactory;
-import dev.vality.adapter.flow.lib.service.factory.RecurrentIntentResultFactory;
+import dev.vality.adapter.flow.lib.service.factory.IntentResultFactoryImpl;
+import dev.vality.adapter.flow.lib.service.factory.RecurrentIntentResultFactoryImpl;
 import dev.vality.damsel.proxy_provider.PaymentContext;
 import dev.vality.damsel.proxy_provider.PaymentProxyResult;
 import dev.vality.damsel.proxy_provider.RecurrentTokenContext;
@@ -61,12 +61,12 @@ public class SimpleRedirectWithPollingDsFlowConfig {
 
     @Bean
     public RecurrentResultIntentResolver recurrentResultIntentResolver(
-            RecurrentIntentResultFactory recurrentIntentResultFactory) {
+            RecurrentIntentResultFactoryImpl recurrentIntentResultFactory) {
         return new SimpleRedirectGenerateTokenResultIntentResolver(recurrentIntentResultFactory);
     }
 
     @Bean
-    public ResultIntentResolver resultIntentResolver(IntentResultFactory intentResultFactory) {
+    public ResultIntentResolver resultIntentResolver(IntentResultFactoryImpl intentResultFactory) {
         return new SimpleRedirectWithPollingResultIntentResolver(intentResultFactory);
     }
 
