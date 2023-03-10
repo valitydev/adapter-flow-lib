@@ -28,7 +28,7 @@ import static dev.vality.adapter.common.damsel.OptionsExtractors.extractRedirect
 import static dev.vality.adapter.common.damsel.ProxyProviderPackageCreators.*;
 
 @RequiredArgsConstructor
-public class IntentResultFactoryImpl implements IntentResultFactory {
+public class SimpleIntentResultFactory implements IntentResultFactory {
 
     private final TimerProperties timerProperties;
     private final CallbackUrlExtractor callbackUrlExtractor;

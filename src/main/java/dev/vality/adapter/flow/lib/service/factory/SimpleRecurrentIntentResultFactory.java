@@ -24,7 +24,7 @@ import static dev.vality.adapter.common.damsel.ProxyProviderPackageCreators.crea
 import static dev.vality.adapter.common.damsel.ProxyProviderPackageCreators.createRecurrentTokenStatusSuccess;
 
 @RequiredArgsConstructor
-public class RecurrentIntentResultFactoryImpl implements RecurrentIntentResultFactory {
+public class SimpleRecurrentIntentResultFactory implements RecurrentIntentResultFactory {
 
     private final TimerProperties timerProperties;
     private final CallbackUrlExtractor callbackUrlExtractor;
