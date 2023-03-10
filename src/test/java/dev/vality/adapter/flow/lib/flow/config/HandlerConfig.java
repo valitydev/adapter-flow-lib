@@ -22,8 +22,8 @@ import dev.vality.adapter.flow.lib.serde.ParametersSerializer;
 import dev.vality.adapter.flow.lib.serde.TemporaryContextDeserializer;
 import dev.vality.adapter.flow.lib.serde.TemporaryContextSerializer;
 import dev.vality.adapter.flow.lib.service.*;
-import dev.vality.adapter.flow.lib.service.factory.IntentResultFactory;
-import dev.vality.adapter.flow.lib.service.factory.RecurrentIntentResultFactory;
+import dev.vality.adapter.flow.lib.service.factory.SimpleIntentResultFactory;
+import dev.vality.adapter.flow.lib.service.factory.SimpleRecurrentIntentResultFactory;
 import dev.vality.adapter.flow.lib.utils.AdapterProperties;
 import dev.vality.adapter.flow.lib.service.CallbackUrlExtractor;
 import dev.vality.adapter.flow.lib.utils.TimerProperties;
@@ -143,7 +143,7 @@ public class HandlerConfig {
 
     @Bean
     public ExitModelToRecTokenProxyResultConverter exitModelToRecTokenProxyResultConverter(
-            RecurrentIntentResultFactory recurrentIntentResultFactory,
+            SimpleRecurrentIntentResultFactory recurrentIntentResultFactory,
             TemporaryContextSerializer temporaryContextSerializer,
             RecurrentResultIntentResolver recurrentResultIntentResolver,
             ExitStateModelToTemporaryContextConverter exitStateModelToTemporaryContextConverter) {
@@ -187,7 +187,7 @@ public class HandlerConfig {
 
     @Bean
     public ExitModelToProxyResultConverter exitModelToProxyResultConverter(
-            IntentResultFactory intentResultFactory,
+            SimpleIntentResultFactory intentResultFactory,
             TemporaryContextSerializer temporaryContextSerializer,
             ResultIntentResolver resultIntentResolver,
             ExitStateModelToTemporaryContextConverter exitStateModelToTemporaryContextConverter) {
@@ -224,7 +224,7 @@ public class HandlerConfig {
     }
 
     @Bean
-    public IntentResultFactory intentResultFactory(
+    public SimpleIntentResultFactory intentResultFactory(
             TimerProperties timerProperties,
             CallbackUrlExtractor callbackUrlExtractor,
             TagManagementService tagManagementService,
@@ -232,19 +232,19 @@ public class HandlerConfig {
             PollingInfoService pollingInfoService,
             ErrorMapping errorMapping,
             ExponentialBackOffPollingService exponentialBackOffPollingService) {
-        return new IntentResultFactory(timerProperties, callbackUrlExtractor, tagManagementService,
+        return new SimpleIntentResultFactory(timerProperties, callbackUrlExtractor, tagManagementService,
                 parametersSerializer, pollingInfoService, errorMapping, exponentialBackOffPollingService);
     }
 
     @Bean
-    public RecurrentIntentResultFactory recurrentIntentResultFactory(
+    public SimpleRecurrentIntentResultFactory recurrentIntentResultFactory(
             TimerProperties timerProperties,
             CallbackUrlExtractor callbackUrlExtractor,
             TagManagementService tagManagementService,
             PollingInfoService pollingInfoService,
             ErrorMapping errorMapping,
             ExponentialBackOffPollingService exponentialBackOffPollingService) {
-        return new RecurrentIntentResultFactory(timerProperties, callbackUrlExtractor, tagManagementService,
+        return new SimpleRecurrentIntentResultFactory(timerProperties, callbackUrlExtractor, tagManagementService,
                 pollingInfoService, errorMapping, exponentialBackOffPollingService);
     }
 

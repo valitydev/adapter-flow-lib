@@ -20,8 +20,8 @@ import dev.vality.adapter.flow.lib.model.BaseResponseModel;
 import dev.vality.adapter.flow.lib.model.EntryStateModel;
 import dev.vality.adapter.flow.lib.model.ExitStateModel;
 import dev.vality.adapter.flow.lib.processor.Processor;
-import dev.vality.adapter.flow.lib.service.factory.IntentResultFactory;
-import dev.vality.adapter.flow.lib.service.factory.RecurrentIntentResultFactory;
+import dev.vality.adapter.flow.lib.service.factory.SimpleIntentResultFactory;
+import dev.vality.adapter.flow.lib.service.factory.SimpleRecurrentIntentResultFactory;
 import dev.vality.damsel.proxy_provider.PaymentContext;
 import dev.vality.damsel.proxy_provider.PaymentProxyResult;
 import dev.vality.damsel.proxy_provider.RecurrentTokenContext;
@@ -78,12 +78,12 @@ public class FullThreeDsFlowConfig {
 
     @Bean
     public RecurrentResultIntentResolver recurrentResultIntentResolver(
-            RecurrentIntentResultFactory recurrentIntentResultFactory) {
+            SimpleRecurrentIntentResultFactory recurrentIntentResultFactory) {
         return new GenerateTokenResultIntentResolverImpl(recurrentIntentResultFactory);
     }
 
     @Bean
-    public ResultIntentResolver resultIntentResolver(IntentResultFactory intentResultFactory) {
+    public ResultIntentResolver resultIntentResolver(SimpleIntentResultFactory intentResultFactory) {
         return new ResultIntentResolverImpl(intentResultFactory);
     }
 

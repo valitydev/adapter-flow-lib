@@ -2,11 +2,13 @@ package dev.vality.adapter.flow.lib.service.factory;
 
 import dev.vality.adapter.common.mapper.ErrorMapping;
 import dev.vality.adapter.flow.lib.constant.HttpMethod;
+import dev.vality.adapter.flow.lib.constant.RedirectFields;
 import dev.vality.adapter.flow.lib.model.EntryStateModel;
 import dev.vality.adapter.flow.lib.model.ExitStateModel;
 import dev.vality.adapter.flow.lib.model.PollingInfo;
 import dev.vality.adapter.flow.lib.model.ThreeDsData;
 import dev.vality.adapter.flow.lib.serde.ParametersSerializer;
+import dev.vality.adapter.flow.lib.service.CallbackUrlExtractor;
 import dev.vality.adapter.flow.lib.service.ExponentialBackOffPollingService;
 import dev.vality.adapter.flow.lib.service.PollingInfoService;
 import dev.vality.adapter.flow.lib.service.TagManagementService;
@@ -26,9 +28,10 @@ import static dev.vality.adapter.common.damsel.OptionsExtractors.extractRedirect
 import static dev.vality.adapter.common.damsel.ProxyProviderPackageCreators.*;
 
 @RequiredArgsConstructor
-public class IntentResultForwardThreeDsParamsFactory implements IntentResultFactory {
+public class SimpleIntentResultFactory implements IntentResultFactory {
 
     private final TimerProperties timerProperties;
+    private final CallbackUrlExtractor callbackUrlExtractor;
     private final TagManagementService tagManagementService;
     private final ParametersSerializer parametersSerializer;
     private final PollingInfoService pollingInfoService;
@@ -50,7 +53,10 @@ public class IntentResultForwardThreeDsParamsFactory implements IntentResultFact
         EntryStateModel entryStateModel = exitStateModel.getEntryStateModel();
         ThreeDsData threeDsData = exitStateModel.getThreeDsData();
         Map<String, String> params = ThreeDsDataInitializer.initThreeDsParameters(exitStateModel);
+        String redirectUrl = entryStateModel.getBaseRequestModel().getSuccessRedirectUrl();
         Map<String, String> adapterConfigurations = entryStateModel.getBaseRequestModel().getAdapterConfigurations();
+        params.put(RedirectFields.TERM_URL.getValue(),
+                callbackUrlExtractor.extractCallbackUrl(adapterConfigurations, redirectUrl));
         int timerRedirectTimeoutMin = extractRedirectTimeout(
                 adapterConfigurations,
                 timerProperties.getRedirectTimeoutMin());
@@ -72,7 +78,12 @@ public class IntentResultForwardThreeDsParamsFactory implements IntentResultFact
             return createFinishIntentFailed("Sleep timeout", "Max time pool limit reached");
         }
         exitStateModel.setPollingInfo(pollingInfo);
+
+        String redirectUrl = entryStateModel.getBaseRequestModel().getSuccessRedirectUrl();
         Map<String, String> adapterConfigurations = entryStateModel.getBaseRequestModel().getAdapterConfigurations();
+        params.put(RedirectFields.TERM_URL.getValue(),
+                callbackUrlExtractor.extractCallbackUrl(adapterConfigurations, redirectUrl));
+        ThreeDsData threeDsData = exitStateModel.getThreeDsData();
         int timerRedirectTimeoutMin = extractRedirectTimeout(
                 adapterConfigurations,
                 timerProperties.getRedirectTimeoutMin());
@@ -82,7 +93,7 @@ public class IntentResultForwardThreeDsParamsFactory implements IntentResultFact
                         Timer.timeout(TimeoutUtils.toSeconds(timerRedirectTimeoutMin)))
                         .setTimeoutBehaviour(TimeoutBehaviour.callback(
                                 ByteBuffer.wrap(parametersSerializer.writeByte(params)))
-                        ).setUserInteraction(createUserInteraction(exitStateModel.getThreeDsData(), params))
+                        ).setUserInteraction(createUserInteraction(threeDsData, params))
         );
     }
 
