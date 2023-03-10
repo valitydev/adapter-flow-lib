@@ -4,7 +4,7 @@ import dev.vality.adapter.flow.lib.constant.Step;
 import dev.vality.adapter.flow.lib.flow.ResultIntentResolver;
 import dev.vality.adapter.flow.lib.model.EntryStateModel;
 import dev.vality.adapter.flow.lib.model.ExitStateModel;
-import dev.vality.adapter.flow.lib.service.IntentResultFactory;
+import dev.vality.adapter.flow.lib.service.factory.IntentResultFactory;
 import dev.vality.damsel.proxy_provider.Intent;
 import lombok.RequiredArgsConstructor;
 

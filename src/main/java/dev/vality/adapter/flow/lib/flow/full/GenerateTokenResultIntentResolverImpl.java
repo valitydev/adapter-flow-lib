@@ -3,7 +3,7 @@ package dev.vality.adapter.flow.lib.flow.full;
 import dev.vality.adapter.flow.lib.constant.Step;
 import dev.vality.adapter.flow.lib.flow.RecurrentResultIntentResolver;
 import dev.vality.adapter.flow.lib.model.ExitStateModel;
-import dev.vality.adapter.flow.lib.service.RecurrentIntentResultFactory;
+import dev.vality.adapter.flow.lib.service.factory.RecurrentIntentResultFactory;
 import dev.vality.damsel.proxy_provider.RecurrentTokenIntent;
 import lombok.RequiredArgsConstructor;
 

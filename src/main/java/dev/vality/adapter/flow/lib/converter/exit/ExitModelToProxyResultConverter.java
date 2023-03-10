@@ -4,7 +4,7 @@ import dev.vality.adapter.flow.lib.converter.ExitStateModelToTemporaryContextCon
 import dev.vality.adapter.flow.lib.flow.ResultIntentResolver;
 import dev.vality.adapter.flow.lib.model.ExitStateModel;
 import dev.vality.adapter.flow.lib.serde.TemporaryContextSerializer;
-import dev.vality.adapter.flow.lib.service.IntentResultFactory;
+import dev.vality.adapter.flow.lib.service.factory.IntentResultFactory;
 import dev.vality.adapter.flow.lib.utils.AdditionalInfoUtils;
 import dev.vality.damsel.domain.TransactionInfo;
 import dev.vality.damsel.proxy_provider.Intent;

@@ -1,10 +1,15 @@
-package dev.vality.adapter.flow.lib.service;
+package dev.vality.adapter.flow.lib.service.factory;
 
 import dev.vality.adapter.common.mapper.ErrorMapping;
+import dev.vality.adapter.flow.lib.constant.RedirectFields;
 import dev.vality.adapter.flow.lib.model.EntryStateModel;
 import dev.vality.adapter.flow.lib.model.ExitStateModel;
 import dev.vality.adapter.flow.lib.model.PollingInfo;
 import dev.vality.adapter.flow.lib.model.ThreeDsData;
+import dev.vality.adapter.flow.lib.service.CallbackUrlExtractor;
+import dev.vality.adapter.flow.lib.service.ExponentialBackOffPollingService;
+import dev.vality.adapter.flow.lib.service.PollingInfoService;
+import dev.vality.adapter.flow.lib.service.TagManagementService;
 import dev.vality.adapter.flow.lib.utils.ThreeDsDataInitializer;
 import dev.vality.adapter.flow.lib.utils.TimeoutUtils;
 import dev.vality.adapter.flow.lib.utils.TimerProperties;
@@ -19,9 +24,10 @@ import static dev.vality.adapter.common.damsel.ProxyProviderPackageCreators.crea
 import static dev.vality.adapter.common.damsel.ProxyProviderPackageCreators.createRecurrentTokenStatusSuccess;
 
 @RequiredArgsConstructor
-public class RecurrentIntentResultForwardThreeDsParamsFactory {
+public class RecurrentIntentResultFactory {
 
     private final TimerProperties timerProperties;
+    private final CallbackUrlExtractor callbackUrlExtractor;
     private final TagManagementService tagManagementService;
     private final PollingInfoService pollingInfoService;
     private final ErrorMapping errorMapping;
@@ -31,7 +37,10 @@ public class RecurrentIntentResultForwardThreeDsParamsFactory {
         EntryStateModel entryStateModel = exitStateModel.getEntryStateModel();
         ThreeDsData threeDsData = exitStateModel.getThreeDsData();
         Map<String, String> params = ThreeDsDataInitializer.initThreeDsParameters(exitStateModel);
+        String redirectUrl = entryStateModel.getBaseRequestModel().getSuccessRedirectUrl();
         Map<String, String> adapterConfigurations = entryStateModel.getBaseRequestModel().getAdapterConfigurations();
+        params.put(RedirectFields.TERM_URL.getValue(),
+                callbackUrlExtractor.extractCallbackUrl(adapterConfigurations, redirectUrl));
         int timerRedirectTimeoutMin = extractRedirectTimeout(
                 adapterConfigurations,
                 timerProperties.getRedirectTimeoutMin());
