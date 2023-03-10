@@ -22,6 +22,8 @@ import dev.vality.adapter.flow.lib.serde.ParametersSerializer;
 import dev.vality.adapter.flow.lib.serde.TemporaryContextDeserializer;
 import dev.vality.adapter.flow.lib.serde.TemporaryContextSerializer;
 import dev.vality.adapter.flow.lib.service.*;
+import dev.vality.adapter.flow.lib.service.factory.IntentResultFactory;
+import dev.vality.adapter.flow.lib.service.factory.RecurrentIntentResultFactory;
 import dev.vality.adapter.flow.lib.utils.AdapterProperties;
 import dev.vality.adapter.flow.lib.service.CallbackUrlExtractor;
 import dev.vality.adapter.flow.lib.utils.TimerProperties;
