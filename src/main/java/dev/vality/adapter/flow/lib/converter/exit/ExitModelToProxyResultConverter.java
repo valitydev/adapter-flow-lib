@@ -28,23 +28,28 @@ public class ExitModelToProxyResultConverter implements Converter<ExitStateModel
     @Override
     public PaymentProxyResult convert(ExitStateModel exitStateModel) {
         if (StringUtils.hasText(exitStateModel.getErrorCode())) {
-            return new PaymentProxyResult(intentResultFactory.createFinishIntentFailed(exitStateModel));
+            return new PaymentProxyResult(intentResultFactory.createFinishIntentFailed(exitStateModel))
+                    .setTrx(getTransactionInfo(exitStateModel));
         }
 
         Intent intent = resultIntentResolver.initIntentByStep(exitStateModel);
 
         return new PaymentProxyResult(intent)
                 .setNextState(serializer.writeByte(contextConverter.convert(exitStateModel)))
-                .setTrx(
-                        new TransactionInfo()
-                                .setId(exitStateModel.getProviderTrxId())
-                                .setExtra(exitStateModel.getTrxExtra() != null
-                                        ? exitStateModel.getTrxExtra()
-                                        : new HashMap<>())
-                                .setAdditionalInfo(AdditionalInfoUtils.initAdditionalTrxInfo(exitStateModel))
-                );
+                .setTrx(getTransactionInfo(exitStateModel));
     }
 
-
+    private TransactionInfo getTransactionInfo(ExitStateModel exitStateModel) {
+        if (StringUtils.hasText(exitStateModel.getProviderTrxId())) {
+            return new TransactionInfo()
+                    .setId(exitStateModel.getProviderTrxId())
+                    .setExtra(exitStateModel.getTrxExtra() != null
+                            ? exitStateModel.getTrxExtra()
+                            : new HashMap<>())
+                    .setAdditionalInfo(AdditionalInfoUtils.initAdditionalTrxInfo(exitStateModel));
+        } else {
+            return null;
+        }
+    }
 }
 
