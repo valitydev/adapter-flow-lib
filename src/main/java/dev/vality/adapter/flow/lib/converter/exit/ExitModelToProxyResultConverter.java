@@ -29,7 +29,9 @@ public class ExitModelToProxyResultConverter implements Converter<ExitStateModel
     public PaymentProxyResult convert(ExitStateModel exitStateModel) {
         if (StringUtils.hasText(exitStateModel.getErrorCode())) {
             return new PaymentProxyResult(intentResultFactory.createFinishIntentFailed(exitStateModel))
-                    .setTrx(getTransactionInfo(exitStateModel));
+                    .setTrx(StringUtils.hasText(exitStateModel.getProviderTrxId())
+                            ? getTransactionInfo(exitStateModel)
+                            : null);
         }
 
         Intent intent = resultIntentResolver.initIntentByStep(exitStateModel);
@@ -40,16 +42,12 @@ public class ExitModelToProxyResultConverter implements Converter<ExitStateModel
     }
 
     private TransactionInfo getTransactionInfo(ExitStateModel exitStateModel) {
-        if (StringUtils.hasText(exitStateModel.getProviderTrxId())) {
-            return new TransactionInfo()
-                    .setId(exitStateModel.getProviderTrxId())
-                    .setExtra(exitStateModel.getTrxExtra() != null
-                            ? exitStateModel.getTrxExtra()
-                            : new HashMap<>())
-                    .setAdditionalInfo(AdditionalInfoUtils.initAdditionalTrxInfo(exitStateModel));
-        } else {
-            return null;
-        }
+        return new TransactionInfo()
+                .setId(exitStateModel.getProviderTrxId())
+                .setExtra(exitStateModel.getTrxExtra() != null
+                        ? exitStateModel.getTrxExtra()
+                        : new HashMap<>())
+                .setAdditionalInfo(AdditionalInfoUtils.initAdditionalTrxInfo(exitStateModel));
     }
 }
 

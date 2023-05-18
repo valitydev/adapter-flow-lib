@@ -30,7 +30,9 @@ public class ExitModelToRecTokenProxyResultConverter implements Converter<ExitSt
                     recurrentIntentResultFactory.createFinishIntentFailed(
                             exitStateModel.getErrorCode(),
                             exitStateModel.getErrorMessage()))
-                    .setTrx(getTransactionInfo(exitStateModel));
+                    .setTrx(StringUtils.hasText(exitStateModel.getProviderTrxId())
+                            ? getTransactionInfo(exitStateModel)
+                            : null);
         }
 
         RecurrentTokenIntent intent = recurrentResultIntentResolver.initIntentByStep(exitStateModel);
@@ -41,16 +43,12 @@ public class ExitModelToRecTokenProxyResultConverter implements Converter<ExitSt
     }
 
     private TransactionInfo getTransactionInfo(ExitStateModel exitStateModel) {
-        if (StringUtils.hasText(exitStateModel.getProviderTrxId())) {
-            return new TransactionInfo()
-                    .setId(exitStateModel.getProviderTrxId())
-                    .setExtra(exitStateModel.getTrxExtra() != null
-                            ? exitStateModel.getTrxExtra()
-                            : new HashMap<>())
-                    .setAdditionalInfo(AdditionalInfoUtils.initAdditionalTrxInfo(exitStateModel));
-        } else {
-            return null;
-        }
+        return new TransactionInfo()
+                .setId(exitStateModel.getProviderTrxId())
+                .setExtra(exitStateModel.getTrxExtra() != null
+                        ? exitStateModel.getTrxExtra()
+                        : new HashMap<>())
+                .setAdditionalInfo(AdditionalInfoUtils.initAdditionalTrxInfo(exitStateModel));
     }
 }
 
