@@ -11,6 +11,7 @@ import dev.vality.damsel.proxy_provider.RecurrentTokenIntent;
 import dev.vality.damsel.proxy_provider.RecurrentTokenProxyResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
 
@@ -28,23 +29,26 @@ public class ExitModelToRecTokenProxyResultConverter implements Converter<ExitSt
             return new RecurrentTokenProxyResult(
                     recurrentIntentResultFactory.createFinishIntentFailed(
                             exitStateModel.getErrorCode(),
-                            exitStateModel.getErrorMessage())
-            );
+                            exitStateModel.getErrorMessage()))
+                    .setTrx(StringUtils.hasText(exitStateModel.getProviderTrxId())
+                            ? getTransactionInfo(exitStateModel)
+                            : null);
         }
 
         RecurrentTokenIntent intent = recurrentResultIntentResolver.initIntentByStep(exitStateModel);
 
         return new RecurrentTokenProxyResult(intent)
                 .setNextState(serializer.writeByte(contextConverter.convert(exitStateModel)))
-                .setTrx(
-                        new TransactionInfo()
-                                .setId(exitStateModel.getProviderTrxId())
-                                .setExtra(exitStateModel.getTrxExtra() != null
-                                        ? exitStateModel.getTrxExtra()
-                                        : new HashMap<>())
-                                .setAdditionalInfo(AdditionalInfoUtils.initAdditionalTrxInfo(exitStateModel))
-                );
+                .setTrx(getTransactionInfo(exitStateModel));
     }
 
+    private TransactionInfo getTransactionInfo(ExitStateModel exitStateModel) {
+        return new TransactionInfo()
+                .setId(exitStateModel.getProviderTrxId())
+                .setExtra(exitStateModel.getTrxExtra() != null
+                        ? exitStateModel.getTrxExtra()
+                        : new HashMap<>())
+                .setAdditionalInfo(AdditionalInfoUtils.initAdditionalTrxInfo(exitStateModel));
+    }
 }
 
