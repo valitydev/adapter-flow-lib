@@ -87,9 +87,17 @@ public class BaseRequestModel {
      */
     private Map<String, String> savedData;
     /**
+     * Additional trx info from previous steps.
+     */
+    private AdditionalTrxInfo additionalTrxInfo;
+    /**
      * Data that comes in a callback from mpi after the 3ds step.
      * Parameter names can be unique to your implementation, only you can know.
      */
     private Map<String, String> threeDsDataFromMpiCallback;
+    /**
+     * Custom data for more flexibility
+     */
+    private byte[] customContext;
 
 }

@@ -31,6 +31,7 @@ public class SuccessFinishProcessor
                     : entryStateModel.getBaseRequestModel().getProviderTrxId());
             exitStateModel.setLastOperationStatus(response.getStatus());
             exitStateModel.setAdditionalTrxInfo(response.getAdditionalTrxInfo());
+            exitStateModel.setCustomContext(response.getCustomContext());
             Map<String, String> saveData = response.getSaveData();
             if (entryStateModel.getBaseRequestModel().getRecurrentPaymentData() != null
                     && entryStateModel.getBaseRequestModel().getRecurrentPaymentData().isMakeRecurrent()) {

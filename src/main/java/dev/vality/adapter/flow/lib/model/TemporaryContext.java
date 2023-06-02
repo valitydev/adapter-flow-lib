@@ -18,5 +18,6 @@ public class TemporaryContext {
     private String providerTrxId;
     private PollingInfo pollingInfo;
     private Map<String, String> threeDsData;
+    private byte[] customContext;
 
 }

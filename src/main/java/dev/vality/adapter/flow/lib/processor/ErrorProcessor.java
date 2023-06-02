@@ -21,6 +21,7 @@ public class ErrorProcessor implements Processor<ExitStateModel, BaseResponseMod
             exitStateModel.setErrorCode(String.valueOf(response.getErrorCode()));
             exitStateModel.setErrorMessage(response.getErrorMessage());
             exitStateModel.setAdditionalTrxInfo(response.getAdditionalTrxInfo());
+            exitStateModel.setCustomContext(response.getCustomContext());
             exitStateModel.setProviderTrxId(
                     StringUtils.hasText(response.getProviderTrxId())
                             ? response.getProviderTrxId()

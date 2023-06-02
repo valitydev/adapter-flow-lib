@@ -42,5 +42,9 @@ public class BaseResponseModel {
      * Data for support about transactions.
      */
     private AdditionalTrxInfo additionalTrxInfo;
+    /**
+     * Custom data for more flexibility
+     */
+    private byte[] customContext;
 
 }
