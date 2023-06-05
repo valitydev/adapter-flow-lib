@@ -17,6 +17,7 @@ import dev.vality.adapter.flow.lib.utils.TargetStatusResolver;
 import dev.vality.cds.storage.Auth3DS;
 import dev.vality.cds.storage.CardData;
 import dev.vality.cds.storage.SessionData;
+import dev.vality.damsel.domain.AdditionalTransactionInfo;
 import dev.vality.damsel.domain.BankCard;
 import dev.vality.damsel.domain.InvoiceDetails;
 import dev.vality.damsel.domain.TransactionInfo;
@@ -88,6 +89,7 @@ public class CtxToEntryModelConverter implements Converter<PaymentContext, Entry
                         .adapterConfigurations(adapterConfigurations)
                         .providerTrxId(trx != null ? trx.getId() : temporaryContext.getProviderTrxId())
                         .savedData(trx != null ? trx.getExtra() : new HashMap<>())
+                        .additionalTrxInfo(getAdditionalTrxInfo(context))
                         .successRedirectUrl(getSuccessRedirectUrl(payment, adapterConfigurations))
                         .failedRedirectUrl(getFailureRedirectUrl(payment, adapterConfigurations))
                         .threeDsDataFromMpiCallback(temporaryContext.getThreeDsData())
@@ -184,6 +186,18 @@ public class CtxToEntryModelConverter implements Converter<PaymentContext, Entry
             return cardDataService.getCardDataProxyModel(context, cardData, bankCard);
         }
         return cardDataService.getCardDataProxyModelFromCds(context);
+    }
+
+    private AdditionalTrxInfo getAdditionalTrxInfo(PaymentContext context) {
+        TransactionInfo trx = context.getPaymentInfo().getPayment().getTrx();
+        if (trx == null || trx.getAdditionalInfo() == null) {
+            return null;
+        }
+        AdditionalTransactionInfo additionalTransactionInfo = trx.getAdditionalInfo();
+        return AdditionalTrxInfo.builder()
+                .approvalCode(additionalTransactionInfo.getApprovalCode())
+                .rrn(additionalTransactionInfo.getRrn())
+                .build();
     }
 
 }

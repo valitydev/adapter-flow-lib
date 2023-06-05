@@ -29,6 +29,7 @@ public class ExitStateModel {
     private AdditionalTrxInfo additionalTrxInfo;
 
     private String recToken;
+    private byte[] customContext;
 
 
 }

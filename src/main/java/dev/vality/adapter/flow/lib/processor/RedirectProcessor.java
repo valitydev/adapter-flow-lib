@@ -27,6 +27,7 @@ public class RedirectProcessor implements Processor<ExitStateModel, BaseResponse
             exitStateModel.setProviderTrxId(response.getProviderTrxId());
             exitStateModel.setTrxExtra(response.getSaveData());
             exitStateModel.setAdditionalTrxInfo(response.getAdditionalTrxInfo());
+            exitStateModel.setCustomContext(response.getCustomContext());
             log.debug("Finish redirect process response: {} entryStateModel: {}", response, entryStateModel);
             return exitStateModel;
         }
