@@ -15,6 +15,7 @@ import dev.vality.adapter.flow.lib.flow.full.GenerateTokenResultIntentResolverIm
 import dev.vality.adapter.flow.lib.flow.full.ResultIntentResolverImpl;
 import dev.vality.adapter.flow.lib.handler.CommonHandler;
 import dev.vality.adapter.flow.lib.handler.ServerFlowHandler;
+import dev.vality.adapter.flow.lib.handler.ServerFlowHandlerImpl;
 import dev.vality.adapter.flow.lib.handler.payment.*;
 import dev.vality.adapter.flow.lib.model.BaseResponseModel;
 import dev.vality.adapter.flow.lib.model.EntryStateModel;
@@ -53,7 +54,7 @@ public class FullThreeDsFlowConfig {
             StepResolver<EntryStateModel, ExitStateModel> fullThreeDsAllVersionsStepResolverImpl,
             CtxToEntryModelConverter ctxToEntryModelConverter,
             ExitModelToProxyResultConverter exitModelToProxyResultConverter) {
-        return new ServerFlowHandler<>(
+        return new ServerFlowHandlerImpl<>(
                 getHandlers(client, entryModelToBaseRequestModelConverter, baseProcessor),
                 fullThreeDsAllVersionsStepResolverImpl,
                 ctxToEntryModelConverter,
@@ -69,7 +70,7 @@ public class FullThreeDsFlowConfig {
             RecCtxToEntryModelConverter recCtxToEntryStateModelConverter,
             ExitModelToRecTokenProxyResultConverter exitModelToRecTokenProxyResultConverter
     ) {
-        return new ServerFlowHandler<>(
+        return new ServerFlowHandlerImpl<>(
                 getHandlers(client, entryModelToBaseRequestModelConverter, baseProcessor),
                 generateTokenFullThreeDsAllVersionsStepResolverImpl,
                 recCtxToEntryStateModelConverter,

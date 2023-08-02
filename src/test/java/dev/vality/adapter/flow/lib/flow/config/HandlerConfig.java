@@ -22,6 +22,7 @@ import dev.vality.adapter.flow.lib.serde.ParametersSerializer;
 import dev.vality.adapter.flow.lib.serde.TemporaryContextDeserializer;
 import dev.vality.adapter.flow.lib.serde.TemporaryContextSerializer;
 import dev.vality.adapter.flow.lib.service.*;
+import dev.vality.adapter.flow.lib.service.factory.IntentResultFactory;
 import dev.vality.adapter.flow.lib.service.factory.SimpleIntentResultFactory;
 import dev.vality.adapter.flow.lib.service.factory.SimpleRecurrentIntentResultFactory;
 import dev.vality.adapter.flow.lib.utils.AdapterProperties;
@@ -187,7 +188,7 @@ public class HandlerConfig {
 
     @Bean
     public ExitModelToProxyResultConverter exitModelToProxyResultConverter(
-            SimpleIntentResultFactory intentResultFactory,
+            IntentResultFactory intentResultFactory,
             TemporaryContextSerializer temporaryContextSerializer,
             ResultIntentResolver resultIntentResolver,
             ExitStateModelToTemporaryContextConverter exitStateModelToTemporaryContextConverter) {

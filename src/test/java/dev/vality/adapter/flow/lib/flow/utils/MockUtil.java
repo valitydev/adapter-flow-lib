@@ -171,6 +171,38 @@ public class MockUtil {
                 .setOptions(options);
     }
 
+    public static PaymentContext buildPaymentContextPaymentTerminal(String invoiceId, Map<String, String> options) {
+        return new PaymentContext()
+                .setSession(new Session()
+                        .setTarget(TargetInvoicePaymentStatus.processed(
+                                new InvoicePaymentProcessed())))
+                .setPaymentInfo(new PaymentInfo()
+                        .setInvoice(new Invoice()
+                                .setId(invoiceId)
+                                .setDetails(new InvoiceDetails()
+                                        .setDescription("details")))
+                        .setPayment(new InvoicePayment()
+                                .setId("payment_id")
+                                .setCreatedAt("2016-03-22T06:12:27Z")
+                                .setPaymentResource(PaymentResource.disposable_payment_resource(
+                                        new DisposablePaymentResource()
+                                                .setClientInfo(new ClientInfo()
+                                                        .setIpAddress("185.31.132.50"))
+                                                .setPaymentTool(buildPaymentToolPaymentTerminal())))
+                                .setCost(new Cash()
+                                        .setAmount(1200)
+                                        .setCurrency(new Currency()
+                                                .setSymbolicCode("RUB")
+                                                .setNumericCode((short) 643)))
+                                .setContactInfo(new ContactInfo()
+                                        .setEmail("kkkk@kkk.ru")
+                                        .setPhoneNumber("89037772299"))
+                        )
+                )
+
+                .setOptions(options);
+    }
+
     public static Map<String, String> buildOptionsOneStage() {
         return Map.of(OptionFields.STAGE.name(), Stage.ONE);
     }
@@ -187,6 +219,12 @@ public class MockUtil {
                         .setExpDate(new BankCardExpDate()
                                 .setMonth((byte) EXP_MONTH_NON3DS)
                                 .setYear((short) EXP_YEAR_NON3DS))
+        );
+    }
+
+    public static PaymentTool buildPaymentToolPaymentTerminal() {
+        return PaymentTool.payment_terminal(
+                new PaymentTerminal()
         );
     }
 

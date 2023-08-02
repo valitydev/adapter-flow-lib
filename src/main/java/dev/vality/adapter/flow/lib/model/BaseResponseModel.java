@@ -39,6 +39,10 @@ public class BaseResponseModel {
      */
     private ThreeDsData threeDsData;
     /**
+     * Data for display qr code.
+     */
+    private QrDisplayData qrDisplayData;
+    /**
      * Data for support about transactions.
      */
     private AdditionalTrxInfo additionalTrxInfo;

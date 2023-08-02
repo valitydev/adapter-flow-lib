@@ -4,14 +4,17 @@ import dev.vality.adapter.common.cds.CdsStorageClient;
 import dev.vality.adapter.common.cds.model.CardDataProxyModel;
 import dev.vality.adapter.common.damsel.ProxyProviderPackageCreators;
 import dev.vality.adapter.common.damsel.ProxyProviderPackageExtractors;
-import dev.vality.adapter.flow.lib.constant.*;
+import dev.vality.adapter.flow.lib.constant.MetaData;
+import dev.vality.adapter.flow.lib.constant.OptionFields;
+import dev.vality.adapter.flow.lib.constant.Step;
+import dev.vality.adapter.flow.lib.constant.TargetStatus;
 import dev.vality.adapter.flow.lib.model.*;
 import dev.vality.adapter.flow.lib.serde.TemporaryContextDeserializer;
+import dev.vality.adapter.flow.lib.service.CallbackUrlExtractor;
 import dev.vality.adapter.flow.lib.service.CardDataService;
 import dev.vality.adapter.flow.lib.service.IdGenerator;
 import dev.vality.adapter.flow.lib.service.TemporaryContextService;
 import dev.vality.adapter.flow.lib.utils.AdapterProperties;
-import dev.vality.adapter.flow.lib.service.CallbackUrlExtractor;
 import dev.vality.adapter.flow.lib.utils.CardDataUtils;
 import dev.vality.adapter.flow.lib.utils.TargetStatusResolver;
 import dev.vality.cds.storage.Auth3DS;
@@ -55,7 +58,8 @@ public class CtxToEntryModelConverter implements Converter<PaymentContext, Entry
         MobilePaymentData mobilePaymentData = null;
         if (paymentResource.isSetDisposablePaymentResource()
                 && currentStep == null
-                && targetStatus == TargetStatus.PROCESSED) {
+                && targetStatus == TargetStatus.PROCESSED
+                && paymentResource.getDisposablePaymentResource().getPaymentTool().isSetBankCard()) {
             SessionData sessionData = cdsStorageClient.getSessionData(context);
             cardData = initCardData(context, paymentResource, sessionData);
             mobilePaymentData = initMobilePaymentData(sessionData);
@@ -119,7 +123,7 @@ public class CtxToEntryModelConverter implements Converter<PaymentContext, Entry
         return StringUtils.hasText(redirectUrl)
                 ? redirectUrl
                 : adapterConfigurations.getOrDefault(
-                        OptionFields.FAILED_URL.name(), adapterProperties.getFailedRedirectUrl());
+                OptionFields.FAILED_URL.name(), adapterProperties.getFailedRedirectUrl());
     }
 
     private dev.vality.adapter.flow.lib.model.CardData initCardData(PaymentContext context,
@@ -149,7 +153,7 @@ public class CtxToEntryModelConverter implements Converter<PaymentContext, Entry
     }
 
     private boolean isMobilePay(SessionData sessionData) {
-        return sessionData.isSetAuthData() && sessionData.getAuthData().isSetAuth3ds();
+        return sessionData != null && sessionData.isSetAuthData() && sessionData.getAuthData().isSetAuth3ds();
     }
 
     private RefundData initRefundData(PaymentInfo paymentInfo) {
