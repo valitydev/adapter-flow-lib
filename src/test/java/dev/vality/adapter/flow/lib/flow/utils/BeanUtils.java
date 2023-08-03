@@ -5,6 +5,7 @@ import dev.vality.adapter.common.utils.CommonConverter;
 import dev.vality.adapter.flow.lib.constant.Status;
 import dev.vality.adapter.flow.lib.constant.ThreeDsType;
 import dev.vality.adapter.flow.lib.model.BaseResponseModel;
+import dev.vality.adapter.flow.lib.model.QrDisplayData;
 import dev.vality.adapter.flow.lib.model.ThreeDsData;
 
 import java.nio.ByteBuffer;
@@ -38,6 +39,13 @@ public class BeanUtils {
                 .threeDsType(ThreeDsType.V1)
                 .acsUrl("http://localhost/3ds")
                 .parameters(parameters)
+                .build();
+    }
+
+    public static QrDisplayData createQrDisplayData() {
+        return QrDisplayData.builder()
+                .tagId("testTagId")
+                .qrUrl("http://localhost/3ds")
                 .build();
     }
 

@@ -18,7 +18,12 @@ public class TagManagementService {
         Optional<String> first = adapterProperties.getTagGeneratorFieldNames().stream()
                 .filter(s -> StringUtils.hasText(parameters.get(s)))
                 .findFirst();
-        return adapterProperties.getTagPrefix() + parameters.get(first.get());
+        String tagId = parameters.get(first.get());
+        return initTag(tagId);
+    }
+
+    public String initTag(String tagId) {
+        return adapterProperties.getTagPrefix() + tagId;
     }
 
 }

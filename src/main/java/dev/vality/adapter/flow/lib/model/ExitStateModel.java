@@ -26,6 +26,7 @@ public class ExitStateModel {
     private Map<String, String> trxExtra;
     private PollingInfo pollingInfo;
     private ThreeDsData threeDsData;
+    private QrDisplayData qrDisplayData;
     private AdditionalTrxInfo additionalTrxInfo;
 
     private String recToken;
