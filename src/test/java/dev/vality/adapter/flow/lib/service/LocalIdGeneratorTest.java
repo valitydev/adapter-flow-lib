@@ -12,13 +12,13 @@ class LocalIdGeneratorTest {
     void get() {
         LocalIdGenerator localIdGenerator = new LocalIdGenerator();
 
-        Long idTest_1 = localIdGenerator.get(TEST);
-        Long idTest_2 = localIdGenerator.get(TEST);
+        Long idTest1 = localIdGenerator.get(TEST);
+        Long idTest2 = localIdGenerator.get(TEST);
 
-        Assertions.assertEquals(idTest_1, idTest_2);
+        Assertions.assertEquals(idTest1, idTest2);
 
-        Long idTest_3 = localIdGenerator.get(TEST_2);
+        Long idTest3 = localIdGenerator.get(TEST_2);
 
-        Assertions.assertNotEquals(idTest_1, idTest_3);
+        Assertions.assertNotEquals(idTest1, idTest3);
     }
 }
