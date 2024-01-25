@@ -9,7 +9,8 @@ public class AdditionalInfoUtils {
         if (exitStateModel.getAdditionalTrxInfo() != null) {
             return new AdditionalTransactionInfo()
                     .setRrn(exitStateModel.getAdditionalTrxInfo().getRrn())
-                    .setApprovalCode(exitStateModel.getAdditionalTrxInfo().getApprovalCode());
+                    .setApprovalCode(exitStateModel.getAdditionalTrxInfo().getApprovalCode())
+                    .setExtraPaymentInfo(exitStateModel.getAdditionalTrxInfo().getExtraInfo());
         }
         return null;
     }

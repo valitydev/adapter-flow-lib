@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.util.Map;
+
 @Data
 @SuperBuilder
 @NoArgsConstructor
@@ -13,5 +15,6 @@ public class AdditionalTrxInfo {
 
     private String rrn;
     private String approvalCode;
+    private Map<String, String> extraInfo;
 
 }
