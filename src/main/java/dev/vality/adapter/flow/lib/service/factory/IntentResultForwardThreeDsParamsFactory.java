@@ -18,6 +18,7 @@ import dev.vality.damsel.proxy_provider.*;
 import dev.vality.damsel.timeout_behaviour.TimeoutBehaviour;
 import dev.vality.damsel.user_interaction.UserInteraction;
 import lombok.RequiredArgsConstructor;
+import org.springframework.util.ObjectUtils;
 
 import java.nio.ByteBuffer;
 import java.util.Map;
@@ -42,7 +43,7 @@ public class IntentResultForwardThreeDsParamsFactory implements IntentResultFact
                 && entryStateModel.getBaseRequestModel().getRecurrentPaymentData().isMakeRecurrent()) {
             return createFinishIntentSuccessWithToken(exitStateModel.getRecToken());
         }
-        return createFinishIntentSuccess();
+        return createFinishIntentSuccess(exitStateModel);
     }
 
     @Override
@@ -95,7 +96,11 @@ public class IntentResultForwardThreeDsParamsFactory implements IntentResultFact
     }
 
     @Override
-    public Intent createFinishIntentSuccess() {
+    public Intent createFinishIntentSuccess(ExitStateModel exitStateModel) {
+        var success = new Success();
+        if (!ObjectUtils.isEmpty(exitStateModel.getChangedCost())) {
+            success.setChangedCost(exitStateModel.getChangedCost());
+        }
         return Intent.finish(new FinishIntent(FinishStatus.success(new Success())));
     }
 
