@@ -1,6 +1,7 @@
 package dev.vality.adapter.flow.lib.model;
 
 import dev.vality.adapter.flow.lib.constant.Status;
+import dev.vality.damsel.proxy_provider.Cash;
 import lombok.Data;
 import lombok.experimental.SuperBuilder;
 
@@ -50,5 +51,10 @@ public class BaseResponseModel {
      * Custom data for more flexibility
      */
     private byte[] customContext;
+    /**
+     * Cash that was actually received by provider.
+     * Is used when payer transferred wrong amount of money.
+     */
+    private Cash changedCost;
 
 }

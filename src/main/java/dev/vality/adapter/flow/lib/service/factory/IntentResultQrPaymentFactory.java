@@ -1,7 +1,6 @@
 package dev.vality.adapter.flow.lib.service.factory;
 
 import dev.vality.adapter.common.mapper.ErrorMapping;
-import dev.vality.adapter.flow.lib.constant.HttpMethod;
 import dev.vality.adapter.flow.lib.model.*;
 import dev.vality.adapter.flow.lib.serde.ParametersSerializer;
 import dev.vality.adapter.flow.lib.service.ExponentialBackOffPollingService;
@@ -16,6 +15,7 @@ import dev.vality.damsel.user_interaction.QrCode;
 import dev.vality.damsel.user_interaction.QrCodeDisplayRequest;
 import dev.vality.damsel.user_interaction.UserInteraction;
 import lombok.RequiredArgsConstructor;
+import org.springframework.util.ObjectUtils;
 
 import java.nio.ByteBuffer;
 import java.util.Map;
@@ -41,7 +41,7 @@ public class IntentResultQrPaymentFactory implements IntentResultFactory {
                 && entryStateModel.getBaseRequestModel().getRecurrentPaymentData().isMakeRecurrent()) {
             return createFinishIntentSuccessWithToken(exitStateModel.getRecToken());
         }
-        return createFinishIntentSuccess();
+        return createFinishIntentSuccess(exitStateModel);
     }
 
     @Override
@@ -96,7 +96,11 @@ public class IntentResultQrPaymentFactory implements IntentResultFactory {
     }
 
     @Override
-    public Intent createFinishIntentSuccess() {
+    public Intent createFinishIntentSuccess(ExitStateModel exitStateModel) {
+        var success = new Success();
+        if (!ObjectUtils.isEmpty(exitStateModel.getChangedCost())) {
+            success.setChangedCost(exitStateModel.getChangedCost());
+        }
         return Intent.finish(new FinishIntent(FinishStatus.success(new Success())));
     }
 

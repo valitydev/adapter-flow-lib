@@ -11,7 +11,7 @@ public interface IntentResultFactory {
 
     Intent createSuspendIntentWithCallbackAfterTimeout(ExitStateModel exitStateModel);
 
-    Intent createFinishIntentSuccess();
+    Intent createFinishIntentSuccess(ExitStateModel exitStateModel);
 
     Intent createSleepIntentWithExponentialPolling(ExitStateModel exitStateModel);
 
