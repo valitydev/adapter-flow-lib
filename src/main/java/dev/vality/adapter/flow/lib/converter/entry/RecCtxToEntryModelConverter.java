@@ -69,6 +69,7 @@ public class RecCtxToEntryModelConverter implements Converter<RecurrentTokenCont
                         .paymentId(orderId)
                         .invoiceFormatPaymentId(invoiceFormatPaymentId)
                         .currency(Currency.builder()
+                                .name(recurrentPaymentTool.getMinimalPaymentCost().getCurrency().getName())
                                 .symbolicCode(
                                         recurrentPaymentTool.getMinimalPaymentCost().getCurrency().getSymbolicCode())
                                 .numericCode(

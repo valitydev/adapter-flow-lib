@@ -80,6 +80,7 @@ public class CtxToEntryModelConverter implements Converter<PaymentContext, Entry
                         .invoiceFormatPaymentId(invoiceFormatPaymentId)
                         .createdAt(paymentInfo.getPayment().getCreatedAt())
                         .currency(Currency.builder()
+                                .name(payment.getCost().getCurrency().getName())
                                 .symbolicCode(payment.getCost().getCurrency().getSymbolicCode())
                                 .numericCode(payment.getCost().getCurrency().getNumericCode())
                                 .build()

@@ -12,6 +12,11 @@ import lombok.experimental.SuperBuilder;
 public class Currency {
 
     /**
+     * Currency name
+     */
+    private String name;
+
+    /**
      * Currency code ISO 4217 in symbolic format (e.g., "USD" for United States dollar)
      */
     private String symbolicCode;
