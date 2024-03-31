@@ -74,6 +74,7 @@ public class RecCtxToEntryModelConverter implements Converter<RecurrentTokenCont
                                         recurrentPaymentTool.getMinimalPaymentCost().getCurrency().getSymbolicCode())
                                 .numericCode(
                                         recurrentPaymentTool.getMinimalPaymentCost().getCurrency().getNumericCode())
+                                .exponent(recurrentPaymentTool.getMinimalPaymentCost().getCurrency().getExponent())
                                 .build()
                         )
                         .amount(recurrentPaymentTool.getMinimalPaymentCost().getAmount())
