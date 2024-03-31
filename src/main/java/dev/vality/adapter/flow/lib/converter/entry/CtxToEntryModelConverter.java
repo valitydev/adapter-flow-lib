@@ -83,6 +83,7 @@ public class CtxToEntryModelConverter implements Converter<PaymentContext, Entry
                                 .name(payment.getCost().getCurrency().getName())
                                 .symbolicCode(payment.getCost().getCurrency().getSymbolicCode())
                                 .numericCode(payment.getCost().getCurrency().getNumericCode())
+                                .exponent(payment.getCost().getCurrency().getExponent())
                                 .build()
                         ).amount(payment.getCost().getAmount())
                         .details(Objects.requireNonNullElse(details.getDescription(), details.getProduct()))
