@@ -2,10 +2,11 @@ package dev.vality.adapter.flow.lib.servlet;
 
 import dev.vality.damsel.proxy_provider.ProviderProxySrv;
 import dev.vality.woody.thrift.impl.http.THServiceBuilder;
+import jakarta.servlet.*;
+import jakarta.servlet.annotation.WebServlet;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.servlet.*;
-import javax.servlet.annotation.WebServlet;
+
 import java.io.IOException;
 
 @WebServlet("/adapter/${service.name}")
@@ -23,9 +24,9 @@ public class AdapterServlet extends GenericServlet {
     }
 
     @Override
-    public void service(ServletRequest request, ServletResponse response) throws ServletException, IOException {
+    public void service(ServletRequest request,
+                        ServletResponse response) throws ServletException, IOException {
         servlet.service(request, response);
     }
-
 }
 

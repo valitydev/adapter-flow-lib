@@ -7,12 +7,12 @@
     <parent>
         <groupId>dev.vality</groupId>
         <artifactId>library-parent-pom</artifactId>
-        <version>1.0.2</version>
+        <version>2.0.2</version>
         <relativePath/>
     </parent>
 
     <artifactId>adapter-flow-lib</artifactId>
-    <version>0.2.6</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
 
     <name>adapter-flow-lib</name>
@@ -44,7 +44,7 @@
         <dockerfile.registry>${env.REGISTRY}</dockerfile.registry>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <woody.version>1.0.4</woody.version>
+        <woody.version>2.0.0</woody.version>
         <bender-proto.version>1.20-be9cdeb</bender-proto.version>
         <damsel.version>1.614-3df747f</damsel.version>
         <apache.commons.lang3.version>3.12.0</apache.commons.lang3.version>
@@ -54,14 +54,14 @@
         <logback.version>1.2.11</logback.version>
         <logstash-logback-encoder.version>7.1.1</logstash-logback-encoder.version>
         <jackson.version>2.14.0</jackson.version>
-        <junit-jupiter-engine.version>5.8.2</junit-jupiter-engine.version>
+        <junit-jupiter-engine.version>5.10.3</junit-jupiter-engine.version>
         <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
         <javax.servlet-api.version>4.0.1</javax.servlet-api.version>
         <validation-api.version>2.0.1.Final</validation-api.version>
-        <spring.version>5.3.19</spring.version>
-        <spring-boot-starter.version>2.6.7</spring-boot-starter.version>
+        <spring.version>6.1.6</spring.version>
+        <spring-boot-starter.version>3.3.1</spring-boot-starter.version>
         <cds-proto.version>1.66-01353ce</cds-proto.version>
-        <adapter-common-lib.version>1.1.2</adapter-common-lib.version>
+        <adapter-common-lib.version>2.0.0</adapter-common-lib.version>
     </properties>
 
     <dependencies>
@@ -89,12 +89,6 @@
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>
             <version>${validation-api.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <version>${javax.servlet-api.version}</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -222,6 +216,13 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven-surefire-plugin.version}</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <parameters>true</parameters>
+                </configuration>
             </plugin>
         </plugins>
     </build>

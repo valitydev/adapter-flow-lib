@@ -36,11 +36,6 @@ import java.util.List;
 public class SimpleRedirectWithPollingDsFlowConfig {
 
     @Bean
-    public StepResolver<EntryStateModel, ExitStateModel> stepResolverImpl() {
-        return new SimpleRedirectWithPollingStepResolverImpl();
-    }
-
-    @Bean
     public StepResolver<EntryStateModel, ExitStateModel> generateTokenStepResolverImpl() {
         return new GenerateTokenSimpleRedirectWithPollingStepResolverImpl();
     }
@@ -50,12 +45,11 @@ public class SimpleRedirectWithPollingDsFlowConfig {
             RemoteClient client,
             EntryModelToBaseRequestModelConverter entryModelToBaseRequestModelConverter,
             Processor<ExitStateModel, BaseResponseModel, EntryStateModel> baseProcessor,
-            StepResolver<EntryStateModel, ExitStateModel> stepResolverImpl,
             CtxToEntryModelConverter ctxToEntryModelConverter,
             ExitModelToProxyResultConverter exitModelToProxyResultConverter) {
         return new ServerFlowHandlerImpl<>(
                 getHandlers(client, entryModelToBaseRequestModelConverter, baseProcessor),
-                stepResolverImpl,
+                new SimpleRedirectWithPollingStepResolverImpl(),
                 ctxToEntryModelConverter,
                 exitModelToProxyResultConverter);
     }
