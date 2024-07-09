@@ -163,7 +163,7 @@ public class HandlerConfig {
 
     @Bean
     public TagManagementService tagManagementService(AdapterProperties adapterProperties) {
-        return new TagManagementService(adapterProperties);
+        return new TagManagementServiceImpl(adapterProperties);
     }
 
     @Bean

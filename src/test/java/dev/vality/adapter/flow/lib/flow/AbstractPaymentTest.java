@@ -10,7 +10,7 @@ import dev.vality.adapter.flow.lib.flow.config.*;
 import dev.vality.adapter.flow.lib.flow.full.FullThreeDsAllVersionsStepResolverImpl;
 import dev.vality.adapter.flow.lib.flow.full.GenerateTokenFullThreeDsAllVersionsStepResolverImpl;
 import dev.vality.adapter.flow.lib.serde.TemporaryContextDeserializer;
-import dev.vality.adapter.flow.lib.service.TagManagementService;
+import dev.vality.adapter.flow.lib.service.TagManagementServiceImpl;
 import dev.vality.adapter.flow.lib.service.impl.CallbackUrlExtractorImpl;
 import dev.vality.adapter.flow.lib.validator.AdapterConfigurationValidator;
 import dev.vality.bender.BenderSrv;
@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @PropertySource("classpath:application.yaml")
 @ContextConfiguration(classes = {HandlerConfig.class, AppConfig.class, ProcessorConfig.class, SerdeConfig.class,
-        ThreeDsCallbackController.class, TomcatEmbeddedConfiguration.class, TagManagementService.class,
+        ThreeDsCallbackController.class, TomcatEmbeddedConfiguration.class, TagManagementServiceImpl.class,
         CallbackUrlExtractorImpl.class, FullThreeDsAllVersionsStepResolverImpl.class,
         GenerateTokenFullThreeDsAllVersionsStepResolverImpl.class})
 public class AbstractPaymentTest {

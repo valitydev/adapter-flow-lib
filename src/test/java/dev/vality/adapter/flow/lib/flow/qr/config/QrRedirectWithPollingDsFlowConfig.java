@@ -39,11 +39,6 @@ import java.util.List;
 @Configuration
 public class QrRedirectWithPollingDsFlowConfig {
 
-//    @Bean
-//    public StepResolver<EntryStateModel, ExitStateModel> stepResolverImpl() {
-//        return new SimpleRedirectWithPollingStepResolverImpl();
-//    }
-
     @Bean
     public StepResolver<EntryStateModel, ExitStateModel> generateTokenStepResolverImpl() {
         return new UnsupportedGenerateTokenStepResolverImpl();
