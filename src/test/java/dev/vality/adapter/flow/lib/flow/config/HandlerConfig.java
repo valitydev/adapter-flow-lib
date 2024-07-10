@@ -30,7 +30,7 @@ import dev.vality.adapter.flow.lib.service.CallbackUrlExtractor;
 import dev.vality.adapter.flow.lib.utils.TimerProperties;
 import dev.vality.adapter.flow.lib.validator.AdapterConfigurationValidator;
 import dev.vality.bender.BenderSrv;
-import dev.vality.damsel.proxy_provider.ProviderProxySrv;
+import dev.vality.damsel.proxy_provider.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -163,7 +163,7 @@ public class HandlerConfig {
 
     @Bean
     public TagManagementService tagManagementService(AdapterProperties adapterProperties) {
-        return new TagManagementService(adapterProperties);
+        return new TagManagementServiceImpl(adapterProperties);
     }
 
     @Bean
@@ -207,8 +207,8 @@ public class HandlerConfig {
     public ProviderProxySrv.Iface serverHandlerLogDecorator(
             PaymentCallbackHandler paymentCallbackHandler,
             RecurrentTokenCallbackHandler recurrentTokenCallbackHandler,
-            ServerFlowHandler serverFlowHandler,
-            ServerFlowHandler generateTokenFlowHandler,
+            ServerFlowHandler<PaymentContext, PaymentProxyResult> serverFlowHandler,
+            ServerFlowHandler<RecurrentTokenContext, RecurrentTokenProxyResult> generateTokenFlowHandler,
             AdapterConfigurationValidator paymentContextValidator) {
         return new ServerHandlerLogDecorator(new ProxyProviderServiceImpl(
                 paymentCallbackHandler,

@@ -4,12 +4,12 @@ import dev.vality.adapter.common.exception.HellgateException;
 import dev.vality.adapter.common.hellgate.HellgateClient;
 import dev.vality.adapter.flow.lib.serde.ParametersDeserializer;
 import dev.vality.adapter.flow.lib.serde.ParametersSerializer;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
@@ -57,5 +57,4 @@ public class ThreeDsAdapterService {
         log.info("<- callback 3ds {}", resp);
         return resp;
     }
-
 }

@@ -1,7 +1,10 @@
 package dev.vality.adapter.flow.lib.service.factory;
 
 import dev.vality.adapter.common.mapper.ErrorMapping;
-import dev.vality.adapter.flow.lib.model.*;
+import dev.vality.adapter.flow.lib.model.EntryStateModel;
+import dev.vality.adapter.flow.lib.model.ExitStateModel;
+import dev.vality.adapter.flow.lib.model.PollingInfo;
+import dev.vality.adapter.flow.lib.model.QrDisplayData;
 import dev.vality.adapter.flow.lib.serde.ParametersSerializer;
 import dev.vality.adapter.flow.lib.service.ExponentialBackOffPollingService;
 import dev.vality.adapter.flow.lib.service.PollingInfoService;
@@ -21,7 +24,7 @@ import java.nio.ByteBuffer;
 import java.util.Map;
 
 import static dev.vality.adapter.common.damsel.OptionsExtractors.extractRedirectTimeout;
-import static dev.vality.adapter.common.damsel.ProxyProviderPackageCreators.*;
+import static dev.vality.adapter.common.damsel.ProxyProviderPackageCreators.createFinishIntentSuccessWithToken;
 import static dev.vality.adapter.flow.lib.utils.ThreeDsDataInitializer.TAG;
 
 @RequiredArgsConstructor
