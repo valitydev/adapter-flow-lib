@@ -1,0 +1,93 @@
+spring:
+  application:
+    name: adapter
+    description: adapter
+  main:
+    allow-bean-definition-overriding: true
+---
+management:
+  security:
+    flag: false
+  server:
+    port: 8083
+  metrics:
+    export:
+      statsd:
+        flavor: etsy
+        enabled: false
+      prometheus:
+        enabled: false
+  endpoint:
+    health:
+      show-details: always
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+---
+info:
+  version: test
+  stage: dev
+---
+server:
+  port: 8022
+  rest:
+    port: 8080
+    endpoint: adapter
+---
+http.properties:
+  requestTimeout: 60000
+  poolTimeout: 10000
+  connectionTimeout: 10000
+  validationAfterInactivityMs: 3000
+  maxTotalPooling: 200
+  defaultMaxPerRoute: 200
+---
+hellgate:
+  client:
+    adapter:
+      url: http://127.0.0.1:8023/v1/proxyhost/provider
+      networkTimeout: 30000
+---
+cds:
+  client:
+    storage:
+      url: http://127.0.0.1:8021/v1/storage
+      networkTimeout: 5000
+---
+bender:
+  url: http://bender:8022/kek
+  networkTimeout: 10000
+---
+adapter:
+  url: https://egwtest.open.ru/cgi-bin/cgi_link
+  callbackUrl: http://127.0.0.1:8080
+  pathCallbackUrl: /${server.rest.endpoint}/term_url
+  pathRecurrentCallbackUrl: /${server.rest.endpoint}/rec_term_url
+  pathCallbackUrlV2: /${server.rest.endpoint}/term_url_v2
+  pathRecurrentCallbackUrlV2: /${server.rest.endpoint}/rec_term_url_v2
+  successRedirectUrl: https://checkout.valitydev.com/v1/finish-interaction.html
+---
+service:
+  secret:
+    key: testkeyecom19
+    enabled: true
+---
+time.config:
+  redirectTimeout: 600
+  maxTimePolling: 600
+  pollingDelay: 10
+---
+error-mapping:
+  file: classpath:fixture/errors.json
+  patternReason: "'%s' - '%s'" # 'code' - 'description'
+
+spring:
+  cache:
+    cache-names: cardData,sessionData
+    caffeine:
+      spec: maximumSize=500,expireAfterAccess=100s
