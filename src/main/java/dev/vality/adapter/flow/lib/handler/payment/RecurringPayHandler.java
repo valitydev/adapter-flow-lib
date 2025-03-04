@@ -18,7 +18,7 @@ public class RecurringPayHandler
             Converter<EntryStateModel, BaseRequestModel> converter,
             Processor<ExitStateModel, BaseResponseModel, EntryStateModel> responseProcessorChain
     ) {
-        super(client::recurrentPay, converter, responseProcessorChain);
+        super(client::recurringPay, converter, responseProcessorChain);
     }
 
     @Override

@@ -18,7 +18,7 @@ public class RecurringGenerateTokenHandler
             Converter<EntryStateModel, BaseRequestModel> converter,
             Processor<ExitStateModel, BaseResponseModel, EntryStateModel> responseProcessorChain
     ) {
-        super(client::recurrentGenerateToken, converter, responseProcessorChain);
+        super(client::recurringGenerateToken, converter, responseProcessorChain);
     }
 
     @Override

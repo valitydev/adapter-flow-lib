@@ -54,11 +54,11 @@ public interface RemoteClient {
         throw new UnsupportedOperationException();
     }
 
-    default BaseResponseModel recurrentGenerateToken(BaseRequestModel request) {
+    default BaseResponseModel recurringGenerateToken(BaseRequestModel request) {
         throw new UnsupportedOperationException();
     }
 
-    default BaseResponseModel recurrentPay(BaseRequestModel request) {
+    default BaseResponseModel recurringPay(BaseRequestModel request) {
         throw new UnsupportedOperationException();
     }
 
