@@ -58,7 +58,7 @@
         <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
         <javax.servlet-api.version>4.0.1</javax.servlet-api.version>
         <validation-api.version>2.0.1.Final</validation-api.version>
-        <spring.version>6.1.6</spring.version>
+        <spring.version>6.1.12</spring.version>
         <spring-boot-starter.version>3.3.1</spring-boot-starter.version>
         <cds-proto.version>1.66-01353ce</cds-proto.version>
         <adapter-common-lib.version>2.0.0</adapter-common-lib.version>
