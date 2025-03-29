@@ -12,7 +12,7 @@
     </parent>
 
     <artifactId>adapter-flow-lib</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <packaging>jar</packaging>
 
     <name>adapter-flow-lib</name>
@@ -46,7 +46,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <woody.version>2.0.0</woody.version>
         <bender-proto.version>1.20-be9cdeb</bender-proto.version>
-        <damsel.version>1.614-3df747f</damsel.version>
+        <damsel.version>1.652-ecf4977</damsel.version>
         <apache.commons.lang3.version>3.12.0</apache.commons.lang3.version>
         <apache.commons.codec.version>1.15</apache.commons.codec.version>
         <slf4j.version>1.7.36</slf4j.version>
