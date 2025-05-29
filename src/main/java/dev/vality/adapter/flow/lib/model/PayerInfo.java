@@ -14,5 +14,13 @@ public class PayerInfo {
     private String ip;
     private String email;
     private String phone;
-
+    private String firstName;
+    private String lastName;
+    private String country;
+    private String state;
+    private String city;
+    private String address;
+    private String postalCode;
+    private String dateOfBirth;
+    private String documentId;
 }
