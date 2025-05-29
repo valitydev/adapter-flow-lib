@@ -26,7 +26,6 @@ import dev.vality.adapter.flow.lib.service.factory.IntentResultFactory;
 import dev.vality.adapter.flow.lib.service.factory.SimpleIntentResultFactory;
 import dev.vality.adapter.flow.lib.service.factory.SimpleRecurrentIntentResultFactory;
 import dev.vality.adapter.flow.lib.utils.AdapterProperties;
-import dev.vality.adapter.flow.lib.service.CallbackUrlExtractor;
 import dev.vality.adapter.flow.lib.utils.TimerProperties;
 import dev.vality.adapter.flow.lib.validator.AdapterConfigurationValidator;
 import dev.vality.bender.BenderSrv;

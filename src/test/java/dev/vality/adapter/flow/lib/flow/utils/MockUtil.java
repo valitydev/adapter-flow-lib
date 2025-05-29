@@ -8,10 +8,10 @@ import dev.vality.bender.BenderSrv;
 import dev.vality.bender.GenerationResult;
 import dev.vality.cds.storage.*;
 import dev.vality.damsel.domain.*;
+import dev.vality.damsel.proxy_provider.*;
 import dev.vality.damsel.proxy_provider.Cash;
 import dev.vality.damsel.proxy_provider.Invoice;
 import dev.vality.damsel.proxy_provider.InvoicePayment;
-import dev.vality.damsel.proxy_provider.*;
 import org.apache.thrift.TException;
 import org.mockito.stubbing.Answer;
 
