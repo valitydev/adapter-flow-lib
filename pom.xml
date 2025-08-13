@@ -7,12 +7,12 @@
     <parent>
         <groupId>dev.vality</groupId>
         <artifactId>library-parent-pom</artifactId>
-        <version>3.0.1</version>
+        <version>3.1.0</version>
         <relativePath/>
     </parent>
 
     <artifactId>adapter-flow-lib</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
     <packaging>jar</packaging>
 
     <name>adapter-flow-lib</name>

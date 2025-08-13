@@ -112,7 +112,7 @@ public class SimpleIntentResultFactory implements IntentResultFactory {
         if (!ObjectUtils.isEmpty(exitStateModel.getChangedCost())) {
             success.setChangedCost(exitStateModel.getChangedCost());
         }
-        return Intent.finish(new FinishIntent(FinishStatus.success(new Success())));
+        return Intent.finish(new FinishIntent(FinishStatus.success(success)));
     }
 
     @Override
