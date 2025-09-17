@@ -12,7 +12,7 @@
     </parent>
 
     <artifactId>adapter-flow-lib</artifactId>
-    <version>1.0.4</version>
+    <version>1.1.0</version>
     <packaging>jar</packaging>
 
     <name>adapter-flow-lib</name>
@@ -49,7 +49,7 @@
         <damsel.version>1.654-ab44b9d</damsel.version>
         <apache.commons.lang3.version>3.12.0</apache.commons.lang3.version>
         <apache.commons.codec.version>1.15</apache.commons.codec.version>
-        <slf4j.version>1.7.36</slf4j.version>
+        <slf4j.version>2.0.17</slf4j.version>
         <lombok.version>1.18.36</lombok.version>
         <logback.version>1.2.11</logback.version>
         <logstash-logback-encoder.version>7.1.1</logstash-logback-encoder.version>
