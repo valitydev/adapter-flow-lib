@@ -12,7 +12,7 @@
     </parent>
 
     <artifactId>adapter-flow-lib</artifactId>
-    <version>1.0.4</version>
+    <version>1.0.5</version>
     <packaging>jar</packaging>
 
     <name>adapter-flow-lib</name>
@@ -59,7 +59,7 @@
         <validation-api.version>3.0.2</validation-api.version>
         <spring.version>6.1.6</spring.version>
         <spring-boot-starter.version>3.3.1</spring-boot-starter.version>
-        <cds-proto.version>1.66-01353ce</cds-proto.version>
+        <cds-proto.version>1.70-5227377</cds-proto.version>
         <adapter-common-lib.version>2.0.0</adapter-common-lib.version>
     </properties>
 
