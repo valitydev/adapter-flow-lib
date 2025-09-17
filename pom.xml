@@ -12,7 +12,7 @@
     </parent>
 
     <artifactId>adapter-flow-lib</artifactId>
-    <version>1.0.4</version>
+    <version>1.0.5</version>
     <packaging>jar</packaging>
 
     <name>adapter-flow-lib</name>
@@ -199,7 +199,7 @@
         <dependency>
             <groupId>dev.vality.geck</groupId>
             <artifactId>serializer</artifactId>
-            <version>0.0.1</version>
+            <version>1.0.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
