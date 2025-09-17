@@ -16,6 +16,8 @@ public enum Step {
     CAPTURE,
     DO_NOTHING,
     RECURRING_GENERATE_TOKEN,
-    RECURRING_PAY
+    RECURRING_PAY,
+    REDIRECT,
+    CALLBACK
 
 }
