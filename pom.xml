@@ -12,7 +12,7 @@
     </parent>
 
     <artifactId>adapter-flow-lib</artifactId>
-    <version>1.0.4</version>
+    <version>1.1.0</version>
     <packaging>jar</packaging>
 
     <name>adapter-flow-lib</name>
@@ -55,7 +55,7 @@
         <logstash-logback-encoder.version>7.1.1</logstash-logback-encoder.version>
         <jackson.version>2.14.0</jackson.version>
         <junit-jupiter-engine.version>5.10.3</junit-jupiter-engine.version>
-        <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
+        <maven-surefire-plugin.version>3.5.4</maven-surefire-plugin.version>
         <validation-api.version>3.0.2</validation-api.version>
         <spring.version>6.1.6</spring.version>
         <spring-boot-starter.version>3.3.1</spring-boot-starter.version>
