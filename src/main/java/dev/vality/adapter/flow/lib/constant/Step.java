@@ -18,6 +18,7 @@ public enum Step {
     RECURRING_GENERATE_TOKEN,
     RECURRING_PAY,
     REDIRECT,
-    CALLBACK
+    CALLBACK,
+    TIMEOUT
 
 }
