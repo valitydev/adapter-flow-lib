@@ -8,7 +8,6 @@ import dev.vality.cds.storage.CardData;
 import dev.vality.damsel.domain.BankCard;
 import dev.vality.damsel.domain.BankCardExpDate;
 import dev.vality.damsel.proxy_provider.PaymentContext;
-import dev.vality.damsel.proxy_provider.RecurrentTokenContext;
 import org.apache.thrift.TException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -59,28 +58,6 @@ class CardDataServiceWithHolderNamesImplTest extends AbstractPaymentTest {
 
         cardDataProxyModel = cardDataServiceWithHolderNames.getCardDataProxyModel(
                 new PaymentContext()
-                        .setOptions(Map.of()),
-                new CardData(),
-                new BankCard().setToken("test")
-                        .setExpDate(new BankCardExpDate()));
-
-        Assertions.assertNotEquals(TEST_1, cardDataProxyModel.getCardholderName());
-    }
-
-    @Test
-    void testGetCardDataProxyModel() {
-        CardDataProxyModel cardDataProxyModel = cardDataServiceWithHolderNames.getCardDataProxyModel(
-                new RecurrentTokenContext()
-                        .setOptions(Map.of(OptionFields.CARD_HOLDER_FROM_FILE.name(), "true")),
-                new CardData(),
-                new BankCard()
-                        .setToken("test")
-                        .setExpDate(new BankCardExpDate()));
-
-        Assertions.assertEquals(TEST_1, cardDataProxyModel.getCardholderName());
-
-        cardDataProxyModel = cardDataServiceWithHolderNames.getCardDataProxyModel(
-                new RecurrentTokenContext()
                         .setOptions(Map.of()),
                 new CardData(),
                 new BankCard().setToken("test")

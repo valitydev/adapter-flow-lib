@@ -2,7 +2,6 @@ package dev.vality.adapter.flow.lib.logback.mdc;
 
 import dev.vality.damsel.domain.TransactionInfo;
 import dev.vality.damsel.proxy_provider.PaymentContext;
-import dev.vality.damsel.proxy_provider.RecurrentTokenContext;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.slf4j.MDC;
@@ -13,11 +12,6 @@ import java.util.regex.Pattern;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MdcContext {
 
-    public static void mdcPutContext(RecurrentTokenContext context, String[] fieldsToPutInMdc) {
-        TransactionInfo transactionInfo = context.getTokenInfo().getTrx();
-        mdcPutContextTransactionInfo(transactionInfo, fieldsToPutInMdc);
-    }
-
     public static void mdcPutContext(PaymentContext context, String[] fieldsToPutInMdc) {
         TransactionInfo transactionInfo = context.getPaymentInfo().getPayment().getTrx();
         mdcPutContextTransactionInfo(transactionInfo, fieldsToPutInMdc);
@@ -25,11 +19,6 @@ public class MdcContext {
 
     public static void mdcPutContext(PaymentContext context) {
         TransactionInfo transactionInfo = context.getPaymentInfo().getPayment().getTrx();
-        mdcPutContextTransactionInfo(transactionInfo);
-    }
-
-    public static void mdcPutContext(RecurrentTokenContext context) {
-        TransactionInfo transactionInfo = context.getTokenInfo().getTrx();
         mdcPutContextTransactionInfo(transactionInfo);
     }
 

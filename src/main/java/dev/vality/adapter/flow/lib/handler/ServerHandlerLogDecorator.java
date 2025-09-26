@@ -1,14 +1,18 @@
 package dev.vality.adapter.flow.lib.handler;
 
 import dev.vality.adapter.flow.lib.utils.PaymentResourceTypeResolver;
-import dev.vality.damsel.proxy_provider.*;
+import dev.vality.damsel.proxy_provider.PaymentCallbackResult;
+import dev.vality.damsel.proxy_provider.PaymentContext;
+import dev.vality.damsel.proxy_provider.PaymentProxyResult;
+import dev.vality.damsel.proxy_provider.ProviderProxySrv;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.thrift.TException;
 
 import java.nio.ByteBuffer;
 
-import static dev.vality.adapter.common.damsel.ProxyProviderPackageExtractors.*;
+import static dev.vality.adapter.common.damsel.ProxyProviderPackageExtractors.extractInvoiceId;
+import static dev.vality.adapter.common.damsel.ProxyProviderPackageExtractors.extractTargetInvoicePaymentStatus;
 import static dev.vality.adapter.common.damsel.ProxyProviderVerification.isUndefinedResultOrUnavailable;
 
 @Slf4j
@@ -16,31 +20,6 @@ import static dev.vality.adapter.common.damsel.ProxyProviderVerification.isUndef
 public class ServerHandlerLogDecorator implements ProviderProxySrv.Iface {
 
     private final ProviderProxySrv.Iface handler;
-
-    @Override
-    public RecurrentTokenProxyResult generateToken(RecurrentTokenContext context) throws TException {
-        String recurrentId = extractRecurrentId(context);
-        log.info("Generate token started with recurrentId {}", recurrentId);
-        try {
-            RecurrentTokenProxyResult proxyResult = handler.generateToken(context);
-            log.info("Generate token finished {} with recurrentId {}", proxyResult, recurrentId);
-            return proxyResult;
-        } catch (Exception ex) {
-            String message = "Failed handle generate token with recurrentId " + recurrentId;
-            logMessage(ex, message);
-            throw ex;
-        }
-    }
-
-    @Override
-    public RecurrentTokenCallbackResult handleRecurrentTokenCallback(ByteBuffer byteBuffer,
-                                                                     RecurrentTokenContext context) throws TException {
-        String recurrentId = extractRecurrentId(context);
-        log.info("handleRecurrentTokenCallback: start with recurrentId {}", recurrentId);
-        RecurrentTokenCallbackResult result = handler.handleRecurrentTokenCallback(byteBuffer, context);
-        log.info("handleRecurrentTokenCallback end {} with recurrentId {}", result, recurrentId);
-        return result;
-    }
 
     @Override
     public PaymentProxyResult processPayment(PaymentContext context) throws TException {

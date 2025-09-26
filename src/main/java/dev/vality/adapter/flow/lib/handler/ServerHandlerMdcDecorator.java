@@ -1,7 +1,10 @@
 package dev.vality.adapter.flow.lib.handler;
 
 import dev.vality.adapter.flow.lib.logback.mdc.MdcContext;
-import dev.vality.damsel.proxy_provider.*;
+import dev.vality.damsel.proxy_provider.PaymentCallbackResult;
+import dev.vality.damsel.proxy_provider.PaymentContext;
+import dev.vality.damsel.proxy_provider.PaymentProxyResult;
+import dev.vality.damsel.proxy_provider.ProviderProxySrv;
 import lombok.RequiredArgsConstructor;
 import org.apache.thrift.TException;
 import org.slf4j.MDC;
@@ -12,27 +15,6 @@ import java.nio.ByteBuffer;
 public class ServerHandlerMdcDecorator implements ProviderProxySrv.Iface {
 
     private final ProviderProxySrv.Iface serverHandlerLogDecorator;
-
-    public RecurrentTokenProxyResult generateToken(RecurrentTokenContext recurrentTokenContext) throws TException {
-        MdcContext.mdcPutContext(recurrentTokenContext);
-        try {
-            return serverHandlerLogDecorator.generateToken(recurrentTokenContext);
-        } finally {
-            MDC.clear();
-        }
-    }
-
-    @Override
-    public RecurrentTokenCallbackResult handleRecurrentTokenCallback(ByteBuffer byteBuffer,
-                                                                     RecurrentTokenContext recurrentTokenContext)
-            throws TException {
-        MdcContext.mdcPutContext(recurrentTokenContext);
-        try {
-            return serverHandlerLogDecorator.handleRecurrentTokenCallback(byteBuffer, recurrentTokenContext);
-        } finally {
-            MDC.clear();
-        }
-    }
 
     @Override
     public PaymentProxyResult processPayment(PaymentContext paymentContext) throws TException {

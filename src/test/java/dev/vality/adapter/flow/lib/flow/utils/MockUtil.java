@@ -85,12 +85,6 @@ public class MockUtil {
                                      String cardholderName,
                                      String panSuccessNon3ds,
                                      CdsStorageClient cdsStorageClient) {
-        doAnswer((Answer<CardDataProxyModel>) invocationOnMock -> CardDataProxyModel.builder()
-                .expMonth((byte) expMonthNon3ds)
-                .expYear((short) expYearNon3ds)
-                .cardholderName(cardholderName)
-                .pan(panSuccessNon3ds)
-                .build()).when(cdsStorageClient).getCardData(any(RecurrentTokenContext.class));
         doAnswer((Answer<CardData>) invocation ->
                 new CardData()
                         .setExpDate(new ExpDate()
@@ -126,9 +120,6 @@ public class MockUtil {
     }
 
     private static void mockCvv(String cvvNon3ds, CdsStorageClient cdsStorageClient) {
-        doAnswer((Answer<SessionData>) invocation ->
-                new SessionData(AuthData.card_security_code(new CardSecurityCode(cvvNon3ds))))
-                .when(cdsStorageClient).getSessionData(any(RecurrentTokenContext.class));
         doAnswer((Answer<SessionData>) invocation ->
                 new SessionData(AuthData.card_security_code(new CardSecurityCode(cvvNon3ds))))
                 .when(cdsStorageClient).getSessionData(any(PaymentContext.class));
@@ -236,27 +227,5 @@ public class MockUtil {
                         .setPaymentTool(MockUtil.buildPaymentTool())
                         .setRecToken(token)));
         return paymentContext;
-    }
-
-    public static RecurrentTokenContext buildRecurrentTokenContext(String recurrentId, Map<String, String> options) {
-        return new RecurrentTokenContext()
-                .setSession(new RecurrentTokenSession())
-                .setTokenInfo(new RecurrentTokenInfo()
-                        .setPaymentTool(new RecurrentPaymentTool()
-                                .setId(recurrentId)
-                                .setCreatedAt("2016-03-22T06:12:27Z")
-                                .setPaymentResource(new DisposablePaymentResource()
-                                        .setPaymentTool(PaymentTool.bank_card(new BankCard()
-                                                .setToken("kektoken")
-                                                .setBin("1234")
-                                                .setExpDate(new BankCardExpDate()
-                                                        .setMonth((byte) EXP_MONTH_NON3DS)
-                                                        .setYear((short) EXP_YEAR_NON3DS)))))
-                                .setMinimalPaymentCost(new Cash()
-                                        .setAmount(1000)
-                                        .setCurrency(new Currency()
-                                                .setSymbolicCode("RUB")
-                                                .setNumericCode((short) 643)))))
-                .setOptions(options);
     }
 }

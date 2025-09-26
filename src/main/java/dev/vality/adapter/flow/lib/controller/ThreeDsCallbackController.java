@@ -22,10 +22,4 @@ public class ThreeDsCallbackController {
                                                    HttpServletResponse servletResponse) {
         return this.threeDsAdapterService.receivePaymentIncomingParameters(servletRequest, servletResponse);
     }
-
-    @PostMapping({"recurrent-term-url"})
-    public String receiveRecurrentIncomingParameters(HttpServletRequest servletRequest,
-                                                     HttpServletResponse servletResponse) {
-        return this.threeDsAdapterService.receiveRecurrentIncomingParameters(servletRequest, servletResponse);
-    }
 }
