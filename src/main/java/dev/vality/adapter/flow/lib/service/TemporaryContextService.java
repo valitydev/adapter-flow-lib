@@ -4,7 +4,6 @@ import dev.vality.adapter.flow.lib.model.TemporaryContext;
 import dev.vality.adapter.flow.lib.serde.Deserializer;
 import dev.vality.adapter.flow.lib.serde.ParametersDeserializer;
 import dev.vality.damsel.proxy_provider.PaymentContext;
-import dev.vality.damsel.proxy_provider.RecurrentTokenContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -42,12 +41,6 @@ public class TemporaryContextService {
     }
 
     private static byte[] getState(Object context) {
-        if (context instanceof RecurrentTokenContext) {
-            if (((RecurrentTokenContext) context).getSession() == null) {
-                return new byte[0];
-            }
-            return ((RecurrentTokenContext) context).getSession().getState();
-        }
         return ((PaymentContext) context).getSession().getState();
     }
 

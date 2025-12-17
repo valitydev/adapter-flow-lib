@@ -29,11 +29,6 @@ public class ThreeDsAdapterService {
         return this.processCallback(servletRequest, servletResponse, hellgateClient::processPaymentCallback);
     }
 
-    public String receiveRecurrentIncomingParameters(HttpServletRequest servletRequest,
-                                                     HttpServletResponse servletResponse) {
-        return this.processCallback(servletRequest, servletResponse, hellgateClient::processRecurrentTokenCallback);
-    }
-
     private String processCallback(HttpServletRequest servletRequest,
                                    HttpServletResponse servletResponse,
                                    BiFunction<String, ByteBuffer, ByteBuffer> hgFunction) {

@@ -5,12 +5,10 @@ import dev.vality.adapter.flow.lib.client.RemoteClient;
 import dev.vality.adapter.flow.lib.converter.base.EntryModelToBaseRequestModelConverter;
 import dev.vality.adapter.flow.lib.converter.entry.CtxToEntryModelConverter;
 import dev.vality.adapter.flow.lib.converter.exit.ExitModelToProxyResultConverter;
-import dev.vality.adapter.flow.lib.flow.RecurrentResultIntentResolver;
 import dev.vality.adapter.flow.lib.flow.ResultIntentResolver;
 import dev.vality.adapter.flow.lib.flow.StepResolver;
 import dev.vality.adapter.flow.lib.flow.simple.SimpleRedirectWithPollingResultIntentResolver;
 import dev.vality.adapter.flow.lib.flow.simple.SimpleRedirectWithPollingStepResolverImpl;
-import dev.vality.adapter.flow.lib.flow.simple.UnsupportedGenerateTokenResultIntentResolver;
 import dev.vality.adapter.flow.lib.flow.simple.UnsupportedGenerateTokenStepResolverImpl;
 import dev.vality.adapter.flow.lib.handler.CommonHandler;
 import dev.vality.adapter.flow.lib.handler.ServerFlowHandler;
@@ -28,8 +26,6 @@ import dev.vality.adapter.flow.lib.service.factory.IntentResultQrPaymentFactory;
 import dev.vality.adapter.flow.lib.utils.TimerProperties;
 import dev.vality.damsel.proxy_provider.PaymentContext;
 import dev.vality.damsel.proxy_provider.PaymentProxyResult;
-import dev.vality.damsel.proxy_provider.RecurrentTokenContext;
-import dev.vality.damsel.proxy_provider.RecurrentTokenProxyResult;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -68,19 +64,8 @@ public class QrRedirectWithPollingDsFlowConfig {
     }
 
     @Bean
-    public RecurrentResultIntentResolver recurrentResultIntentResolver() {
-        return new UnsupportedGenerateTokenResultIntentResolver();
-    }
-
-    @Bean
     public ResultIntentResolver resultIntentResolver(IntentResultQrPaymentFactory intentResultFactory) {
         return new SimpleRedirectWithPollingResultIntentResolver(intentResultFactory);
-    }
-
-    @Bean
-    public ServerFlowHandler<RecurrentTokenContext, RecurrentTokenProxyResult> generateTokenFlowHandler() {
-        return new ServerFlowHandler<>() {
-        };
     }
 
     @Bean
