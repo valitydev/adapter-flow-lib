@@ -5,12 +5,11 @@ import dev.vality.adapter.common.v2.mapper.ErrorMapping;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import tools.jackson.databind.DeserializationFeature;
-import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.io.IOException;
 
@@ -38,10 +37,8 @@ public class AppConfig {
     }
 
     @Bean
-    @Primary
-    public ObjectMapper objectMapper() {
-        return new ObjectMapper()
-                .rebuild()
+    public JsonMapper objectMapper() {
+        return JsonMapper.builder()
                 .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
                 .build();
     }
