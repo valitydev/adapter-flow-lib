@@ -6,7 +6,9 @@ import ch.qos.logback.classic.spi.IThrowableProxy;
 import ch.qos.logback.classic.spi.LoggerContextVO;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Marker;
+import org.slf4j.event.KeyValuePair;
 
+import java.util.List;
 import java.util.Map;
 
 @RequiredArgsConstructor
@@ -71,6 +73,11 @@ public class MaskedEvent implements ILoggingEvent {
     }
 
     @Override
+    public List<Marker> getMarkerList() {
+        return event.getMarkerList();
+    }
+
+    @Override
     public Map<String, String> getMDCPropertyMap() {
         return event.getMDCPropertyMap();
     }
@@ -83,6 +90,21 @@ public class MaskedEvent implements ILoggingEvent {
     @Override
     public long getTimeStamp() {
         return event.getTimeStamp();
+    }
+
+    @Override
+    public int getNanoseconds() {
+        return event.getNanoseconds();
+    }
+
+    @Override
+    public long getSequenceNumber() {
+        return event.getSequenceNumber();
+    }
+
+    @Override
+    public List<KeyValuePair> getKeyValuePairs() {
+        return event.getKeyValuePairs();
     }
 
     @Override

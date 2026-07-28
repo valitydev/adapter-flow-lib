@@ -1,9 +1,8 @@
 package dev.vality.adapter.flow.lib.flow.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.vality.adapter.common.cds.CdsStorageClient;
 import dev.vality.adapter.common.hellgate.HellgateClient;
-import dev.vality.adapter.common.mapper.ErrorMapping;
+import dev.vality.adapter.common.v2.mapper.ErrorMapping;
 import dev.vality.adapter.flow.lib.converter.ExitStateModelToTemporaryContextConverter;
 import dev.vality.adapter.flow.lib.converter.base.EntryModelToBaseRequestModelConverter;
 import dev.vality.adapter.flow.lib.converter.entry.CtxToEntryModelConverter;
@@ -17,7 +16,17 @@ import dev.vality.adapter.flow.lib.serde.ParametersDeserializer;
 import dev.vality.adapter.flow.lib.serde.ParametersSerializer;
 import dev.vality.adapter.flow.lib.serde.TemporaryContextDeserializer;
 import dev.vality.adapter.flow.lib.serde.TemporaryContextSerializer;
-import dev.vality.adapter.flow.lib.service.*;
+import dev.vality.adapter.flow.lib.service.BenderGenerator;
+import dev.vality.adapter.flow.lib.service.CallbackUrlExtractor;
+import dev.vality.adapter.flow.lib.service.CardDataServiceWithHolderNamesImpl;
+import dev.vality.adapter.flow.lib.service.CardHolderNamesService;
+import dev.vality.adapter.flow.lib.service.ExponentialBackOffPollingService;
+import dev.vality.adapter.flow.lib.service.IdGenerator;
+import dev.vality.adapter.flow.lib.service.PollingInfoService;
+import dev.vality.adapter.flow.lib.service.TagManagementService;
+import dev.vality.adapter.flow.lib.service.TagManagementServiceImpl;
+import dev.vality.adapter.flow.lib.service.TemporaryContextService;
+import dev.vality.adapter.flow.lib.service.ThreeDsAdapterService;
 import dev.vality.adapter.flow.lib.service.factory.IntentResultFactory;
 import dev.vality.adapter.flow.lib.service.factory.SimpleIntentResultFactory;
 import dev.vality.adapter.flow.lib.utils.AdapterProperties;
@@ -31,6 +40,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
+import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.util.List;

@@ -7,12 +7,12 @@
     <parent>
         <groupId>dev.vality</groupId>
         <artifactId>library-parent-pom</artifactId>
-        <version>3.1.0</version>
+        <version>4.0.0</version>
         <relativePath/>
     </parent>
 
     <artifactId>adapter-flow-lib</artifactId>
-    <version>1.1.0</version>
+    <version>2.0.0</version>
     <packaging>jar</packaging>
 
     <name>adapter-flow-lib</name>
@@ -44,65 +44,65 @@
         <dockerfile.registry>${env.REGISTRY}</dockerfile.registry>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <woody.version>2.0.0</woody.version>
-        <bender-proto.version>1.20-be9cdeb</bender-proto.version>
-        <damsel.version>1.670-1d0c1ec</damsel.version>
-        <apache.commons.lang3.version>3.12.0</apache.commons.lang3.version>
-        <apache.commons.codec.version>1.15</apache.commons.codec.version>
-        <slf4j.version>1.7.36</slf4j.version>
-        <lombok.version>1.18.36</lombok.version>
-        <logback.version>1.2.11</logback.version>
-        <logstash-logback-encoder.version>7.1.1</logstash-logback-encoder.version>
-        <jackson.version>2.14.0</jackson.version>
-        <junit-jupiter-engine.version>5.10.3</junit-jupiter-engine.version>
-        <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
-        <validation-api.version>3.0.2</validation-api.version>
-        <spring.version>6.1.6</spring.version>
-        <spring-boot-starter.version>3.3.1</spring-boot-starter.version>
-        <cds-proto.version>1.66-01353ce</cds-proto.version>
-        <adapter-common-lib.version>3.0.0</adapter-common-lib.version>
+        <woody.version>3.0.0</woody.version>
+        <bender-proto.version>1.27-753b935</bender-proto.version>
+        <damsel.version>1.698-99c91c9</damsel.version>
+        <spring-boot.version>4.0.6</spring-boot.version>
+        <lombok.version>1.18.46</lombok.version>
+        <logstash-logback-encoder.version>9.0</logstash-logback-encoder.version>
+        <maven-surefire-plugin.version>3.5.5</maven-surefire-plugin.version>
+        <cds-proto.version>1.71-b3db02c</cds-proto.version>
+        <msgpack-proto.version>1.17-7481bb4</msgpack-proto.version>
+        <geck.version>1.0.2</geck.version>
+        <adapter-common-lib.version>4.0.0</adapter-common-lib.version>
     </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <!-- springframework -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
-            <version>${spring-boot-starter.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
-            <version>${spring.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
-            <version>${spring.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
             <scope>provided</scope>
         </dependency>
         <!-- Third party libs -->
         <dependency>
             <groupId>jakarta.validation</groupId>
             <artifactId>jakarta.validation-api</artifactId>
-            <version>${validation-api.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>${apache.commons.lang3.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-            <version>${apache.commons.codec.version}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>${slf4j.version}</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -113,13 +113,11 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>
-            <version>${logback.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>${logback.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -129,14 +127,8 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
+            <groupId>tools.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>${jackson.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.datatype</groupId>
-            <artifactId>jackson-datatype-jsr310</artifactId>
-            <version>${jackson.version}</version>
         </dependency>
 
         <!--Vality libs-->
@@ -153,9 +145,27 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>dev.vality.woody</groupId>
+            <artifactId>woody-api</artifactId>
+            <version>${woody.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>dev.vality.woody</groupId>
+            <artifactId>libthrift</artifactId>
+            <version>${woody.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>dev.vality</groupId>
             <artifactId>bender-proto</artifactId>
             <version>${bender-proto.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>dev.vality</groupId>
+            <artifactId>msgpack-proto</artifactId>
+            <version>${msgpack-proto.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -175,31 +185,27 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <version>${spring-boot-starter.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
-            <version>${spring-boot-starter.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
-            <version>${spring-boot-starter.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
-            <version>${junit-jupiter-engine.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>dev.vality.geck</groupId>
             <artifactId>serializer</artifactId>
-            <version>0.0.1</version>
+            <version>${geck.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -221,6 +227,13 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
                     <parameters>true</parameters>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
                 </configuration>
             </plugin>
         </plugins>

@@ -1,6 +1,5 @@
 package dev.vality.adapter.flow.lib.flow.simple.redirect;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import dev.vality.adapter.flow.lib.constant.OptionFields;
 import dev.vality.adapter.flow.lib.constant.Stage;
 import dev.vality.adapter.flow.lib.constant.Status;
@@ -22,6 +21,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import tools.jackson.core.JacksonException;
 
 import java.io.IOException;
 import java.util.Map;
@@ -78,7 +78,7 @@ public class PaymentSuccess3dsTest extends AbstractPaymentTest {
         test3ds1(options);
     }
 
-    private void test3ds1(Map<String, String> options) throws TException, JsonProcessingException {
+    private void test3ds1(Map<String, String> options) throws TException, JacksonException {
         PaymentContext paymentContext = MockUtil.buildPaymentContext("invoice_id", options);
 
         PaymentProxyResult paymentProxyResult = serverHandlerLogDecorator.processPayment(paymentContext);
@@ -91,10 +91,10 @@ public class PaymentSuccess3dsTest extends AbstractPaymentTest {
 
         //capture
         if (Stage.ONE.equals(options.get(OptionFields.STAGE.name()))) {
-            paymentProxyResult = checkSuccessCapture(paymentContext, paymentProxyResult, new byte[] {});
+            paymentProxyResult = checkSuccessCapture(paymentContext, paymentProxyResult, new byte[]{});
             processWithDoNothingSuccessResult(paymentContext, paymentProxyResult);
         } else {
-            paymentProxyResult = processCaptureWithCheckStatusResult(paymentContext, paymentProxyResult, new byte[] {});
+            paymentProxyResult = processCaptureWithCheckStatusResult(paymentContext, paymentProxyResult, new byte[]{});
             processWithCheckStatusResult(paymentContext, paymentProxyResult);
         }
 

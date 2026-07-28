@@ -1,6 +1,6 @@
 package dev.vality.adapter.flow.lib.flow.qr.config;
 
-import dev.vality.adapter.common.mapper.ErrorMapping;
+import dev.vality.adapter.common.v2.mapper.ErrorMapping;
 import dev.vality.adapter.flow.lib.client.RemoteClient;
 import dev.vality.adapter.flow.lib.converter.base.EntryModelToBaseRequestModelConverter;
 import dev.vality.adapter.flow.lib.converter.entry.CtxToEntryModelConverter;
@@ -13,11 +13,21 @@ import dev.vality.adapter.flow.lib.flow.simple.UnsupportedGenerateTokenStepResol
 import dev.vality.adapter.flow.lib.handler.CommonHandler;
 import dev.vality.adapter.flow.lib.handler.ServerFlowHandler;
 import dev.vality.adapter.flow.lib.handler.ServerFlowHandlerImpl;
-import dev.vality.adapter.flow.lib.handler.payment.*;
+import dev.vality.adapter.flow.lib.handler.payment.AuthHandler;
+import dev.vality.adapter.flow.lib.handler.payment.CancelHandler;
+import dev.vality.adapter.flow.lib.handler.payment.CaptureHandler;
+import dev.vality.adapter.flow.lib.handler.payment.DoNothingHandler;
+import dev.vality.adapter.flow.lib.handler.payment.PaymentHandler;
+import dev.vality.adapter.flow.lib.handler.payment.RefundHandler;
+import dev.vality.adapter.flow.lib.handler.payment.StatusHandler;
 import dev.vality.adapter.flow.lib.model.BaseResponseModel;
 import dev.vality.adapter.flow.lib.model.EntryStateModel;
 import dev.vality.adapter.flow.lib.model.ExitStateModel;
-import dev.vality.adapter.flow.lib.processor.*;
+import dev.vality.adapter.flow.lib.processor.ErrorProcessor;
+import dev.vality.adapter.flow.lib.processor.Processor;
+import dev.vality.adapter.flow.lib.processor.QrDisplayProcessor;
+import dev.vality.adapter.flow.lib.processor.RetryProcessor;
+import dev.vality.adapter.flow.lib.processor.SuccessFinishProcessor;
 import dev.vality.adapter.flow.lib.serde.ParametersSerializer;
 import dev.vality.adapter.flow.lib.service.ExponentialBackOffPollingService;
 import dev.vality.adapter.flow.lib.service.PollingInfoService;

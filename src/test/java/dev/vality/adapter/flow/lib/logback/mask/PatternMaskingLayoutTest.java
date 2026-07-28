@@ -9,10 +9,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
+import org.slf4j.event.KeyValuePair;
 
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -115,6 +117,11 @@ public class PatternMaskingLayoutTest {
             }
 
             @Override
+            public List<Marker> getMarkerList() {
+                return null;
+            }
+
+            @Override
             public Map<String, String> getMDCPropertyMap() {
                 return null;
             }
@@ -127,6 +134,21 @@ public class PatternMaskingLayoutTest {
             @Override
             public long getTimeStamp() {
                 return date.getTime();
+            }
+
+            @Override
+            public int getNanoseconds() {
+                return 0;
+            }
+
+            @Override
+            public long getSequenceNumber() {
+                return 0;
+            }
+
+            @Override
+            public List<KeyValuePair> getKeyValuePairs() {
+                return null;
             }
 
             @Override
