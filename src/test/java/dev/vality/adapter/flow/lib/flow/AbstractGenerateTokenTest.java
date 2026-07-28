@@ -5,7 +5,11 @@ import dev.vality.adapter.common.hellgate.HellgateClient;
 import dev.vality.adapter.flow.lib.client.RemoteClient;
 import dev.vality.adapter.flow.lib.constant.Step;
 import dev.vality.adapter.flow.lib.controller.ThreeDsCallbackController;
-import dev.vality.adapter.flow.lib.flow.config.*;
+import dev.vality.adapter.flow.lib.flow.config.AppConfig;
+import dev.vality.adapter.flow.lib.flow.config.HandlerConfig;
+import dev.vality.adapter.flow.lib.flow.config.ProcessorConfig;
+import dev.vality.adapter.flow.lib.flow.config.SerdeConfig;
+import dev.vality.adapter.flow.lib.flow.config.TomcatEmbeddedConfiguration;
 import dev.vality.adapter.flow.lib.flow.full.FullThreeDsAllVersionsStepResolverImpl;
 import dev.vality.adapter.flow.lib.flow.full.GenerateTokenFullThreeDsAllVersionsStepResolverImpl;
 import dev.vality.adapter.flow.lib.serde.TemporaryContextDeserializer;
@@ -19,13 +23,13 @@ import dev.vality.damsel.proxy_provider.PaymentProxyResult;
 import dev.vality.damsel.proxy_provider.ProviderProxySrv;
 import org.apache.thrift.TException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import static dev.vality.adapter.common.damsel.DomainPackageCreators.createTargetProcessed;
-import static dev.vality.adapter.flow.lib.flow.full.three.ds.ForwardRecurrentPaymentNon3dsTest.RECURRENT_TOKEN;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @PropertySource("classpath:application.yaml")
 @ContextConfiguration(classes = {HandlerConfig.class, AppConfig.class, ProcessorConfig.class, SerdeConfig.class,
@@ -34,15 +38,15 @@ import static org.junit.jupiter.api.Assertions.*;
         GenerateTokenFullThreeDsAllVersionsStepResolverImpl.class})
 public class AbstractGenerateTokenTest {
 
-    @MockBean
+    @MockitoBean
     protected CdsStorageClient cdsStorageClient;
-    @MockBean
+    @MockitoBean
     protected AdapterConfigurationValidator paymentContextValidator;
-    @MockBean
+    @MockitoBean
     protected BenderSrv.Iface benderClient;
-    @MockBean
+    @MockitoBean
     protected RemoteClient client;
-    @MockBean
+    @MockitoBean
     protected HellgateClient hellgateClient;
     @Autowired
     public TemporaryContextDeserializer temporaryContextDeserializer;

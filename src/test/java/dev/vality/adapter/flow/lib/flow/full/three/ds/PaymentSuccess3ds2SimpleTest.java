@@ -1,6 +1,5 @@
 package dev.vality.adapter.flow.lib.flow.full.three.ds;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import dev.vality.adapter.flow.lib.constant.Status;
 import dev.vality.adapter.flow.lib.constant.Step;
 import dev.vality.adapter.flow.lib.flow.AbstractPaymentTest;
@@ -21,6 +20,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import tools.jackson.core.JacksonException;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -72,7 +72,7 @@ public class PaymentSuccess3ds2SimpleTest extends AbstractPaymentTest {
         test3ds2Full(options);
     }
 
-    private void test3ds2Full(Map<String, String> options) throws TException, JsonProcessingException {
+    private void test3ds2Full(Map<String, String> options) throws TException, JacksonException {
         // auth
         PaymentContext paymentContext = MockUtil.buildPaymentContext("invoice_id", options);
 
@@ -96,7 +96,7 @@ public class PaymentSuccess3ds2SimpleTest extends AbstractPaymentTest {
 
         //capture
         PaymentProxyResult paymentProxyResultDeposit =
-                checkSuccessCapture(paymentContext, paymentProxyResult, new byte[] {});
+                checkSuccessCapture(paymentContext, paymentProxyResult, new byte[]{});
 
         //refund
         checkSuccessRefund(1100L, paymentContext, paymentProxyResultDeposit);

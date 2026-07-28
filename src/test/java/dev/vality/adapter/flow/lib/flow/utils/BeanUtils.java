@@ -1,12 +1,12 @@
 package dev.vality.adapter.flow.lib.flow.utils;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import dev.vality.adapter.common.utils.CommonConverter;
 import dev.vality.adapter.flow.lib.constant.Status;
 import dev.vality.adapter.flow.lib.constant.ThreeDsType;
 import dev.vality.adapter.flow.lib.model.BaseResponseModel;
 import dev.vality.adapter.flow.lib.model.QrDisplayData;
 import dev.vality.adapter.flow.lib.model.ThreeDsData;
+import tools.jackson.core.JacksonException;
 
 import java.nio.ByteBuffer;
 import java.util.HashMap;
@@ -71,14 +71,14 @@ public class BeanUtils {
                 .build();
     }
 
-    public static ByteBuffer createParesBuffer(String pares, String md) throws JsonProcessingException {
+    public static ByteBuffer createParesBuffer(String pares, String md) throws JacksonException {
         Map<String, String> map = new HashMap<>();
         map.put(PA_RES, pares);
         map.put(MD, md);
         return CommonConverter.mapToByteBuffer(map);
     }
 
-    public static ByteBuffer createCresBuffer(String cres, String threeDSSessionData) throws JsonProcessingException {
+    public static ByteBuffer createCresBuffer(String cres, String threeDSSessionData) throws JacksonException {
         Map<String, String> map = new HashMap<>();
         map.put(C_RES, cres);
         map.put(THREE_DS_SESSION_DATA, threeDSSessionData);
@@ -86,7 +86,7 @@ public class BeanUtils {
     }
 
     public static ByteBuffer createSessionBuffer(String methodData, String threeDSSessionData)
-            throws JsonProcessingException {
+            throws JacksonException {
         Map<String, String> map = new HashMap<>();
         map.put(THREE_DS_METHOD_DATA, methodData);
         map.put(THREE_DS_METHOD_STATE, threeDSSessionData);

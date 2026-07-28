@@ -1,13 +1,12 @@
 package dev.vality.adapter.flow.lib.logback.mask;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
-import com.fasterxml.jackson.core.JsonGenerator;
 import net.logstash.logback.composite.AbstractFieldJsonProvider;
 import net.logstash.logback.composite.FieldNamesAware;
 import net.logstash.logback.composite.JsonWritingUtils;
 import net.logstash.logback.fieldnames.LogstashFieldNames;
+import tools.jackson.core.JsonGenerator;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -29,7 +28,7 @@ public class PatternMaskingMessageJsonProvider extends AbstractFieldJsonProvider
     }
 
     @Override
-    public void writeTo(JsonGenerator generator, ILoggingEvent event) throws IOException {
+    public void writeTo(JsonGenerator generator, ILoggingEvent event) {
         JsonWritingUtils.writeStringField(generator, getFieldName(),
                 MaskingMessageWithPattern.maskMessage(event.getFormattedMessage(), multilinePattern)
         );

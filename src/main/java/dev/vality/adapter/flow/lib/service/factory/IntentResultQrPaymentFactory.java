@@ -1,6 +1,6 @@
 package dev.vality.adapter.flow.lib.service.factory;
 
-import dev.vality.adapter.common.mapper.ErrorMapping;
+import dev.vality.adapter.common.v2.mapper.ErrorMapping;
 import dev.vality.adapter.flow.lib.model.EntryStateModel;
 import dev.vality.adapter.flow.lib.model.ExitStateModel;
 import dev.vality.adapter.flow.lib.model.PollingInfo;
@@ -12,7 +12,12 @@ import dev.vality.adapter.flow.lib.service.TagManagementService;
 import dev.vality.adapter.flow.lib.utils.TimeoutUtils;
 import dev.vality.adapter.flow.lib.utils.TimerProperties;
 import dev.vality.damsel.base.Timer;
-import dev.vality.damsel.proxy_provider.*;
+import dev.vality.damsel.proxy_provider.FinishIntent;
+import dev.vality.damsel.proxy_provider.FinishStatus;
+import dev.vality.damsel.proxy_provider.Intent;
+import dev.vality.damsel.proxy_provider.SleepIntent;
+import dev.vality.damsel.proxy_provider.Success;
+import dev.vality.damsel.proxy_provider.SuspendIntent;
 import dev.vality.damsel.timeout_behaviour.TimeoutBehaviour;
 import dev.vality.damsel.user_interaction.QrCode;
 import dev.vality.damsel.user_interaction.QrCodeDisplayRequest;

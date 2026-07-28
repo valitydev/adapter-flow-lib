@@ -1,6 +1,6 @@
 package dev.vality.adapter.flow.lib.service.factory;
 
-import dev.vality.adapter.common.mapper.ErrorMapping;
+import dev.vality.adapter.common.v2.mapper.ErrorMapping;
 import dev.vality.adapter.flow.lib.constant.HttpMethod;
 import dev.vality.adapter.flow.lib.model.EntryStateModel;
 import dev.vality.adapter.flow.lib.model.ExitStateModel;
@@ -14,7 +14,12 @@ import dev.vality.adapter.flow.lib.utils.ThreeDsDataInitializer;
 import dev.vality.adapter.flow.lib.utils.TimeoutUtils;
 import dev.vality.adapter.flow.lib.utils.TimerProperties;
 import dev.vality.damsel.base.Timer;
-import dev.vality.damsel.proxy_provider.*;
+import dev.vality.damsel.proxy_provider.FinishIntent;
+import dev.vality.damsel.proxy_provider.FinishStatus;
+import dev.vality.damsel.proxy_provider.Intent;
+import dev.vality.damsel.proxy_provider.SleepIntent;
+import dev.vality.damsel.proxy_provider.Success;
+import dev.vality.damsel.proxy_provider.SuspendIntent;
 import dev.vality.damsel.timeout_behaviour.TimeoutBehaviour;
 import dev.vality.damsel.user_interaction.UserInteraction;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +29,9 @@ import java.nio.ByteBuffer;
 import java.util.Map;
 
 import static dev.vality.adapter.common.damsel.OptionsExtractors.extractRedirectTimeout;
-import static dev.vality.adapter.common.damsel.ProxyProviderPackageCreators.*;
+import static dev.vality.adapter.common.damsel.ProxyProviderPackageCreators.createFinishIntentSuccessWithToken;
+import static dev.vality.adapter.common.damsel.ProxyProviderPackageCreators.createGetUserInteraction;
+import static dev.vality.adapter.common.damsel.ProxyProviderPackageCreators.createPostUserInteraction;
 
 @RequiredArgsConstructor
 public class IntentResultForwardThreeDsParamsFactory implements IntentResultFactory {

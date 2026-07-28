@@ -1,12 +1,12 @@
 package dev.vality.adapter.flow.lib.serde;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.vality.adapter.flow.lib.exception.DeserializationException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -24,7 +24,7 @@ public class ParametersDeserializer implements Deserializer<Map<String, String>>
             try {
                 return mapper.readValue(data, new TypeReference<HashMap<String, String>>() {
                 });
-            } catch (IOException ex) {
+            } catch (JacksonException ex) {
                 throw new IllegalArgumentException(ex);
             }
         }
